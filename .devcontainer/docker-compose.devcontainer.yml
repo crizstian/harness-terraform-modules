@@ -40,4 +40,4 @@ services:
       - ../:/workspace:cached
       - ~/.kube:/workspace/.kube:cached
     command: /bin/sh -c "while sleep 1000; do :; done"
-    container_name: devcontainer
+    container_name: harness_tf
