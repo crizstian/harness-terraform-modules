@@ -1,5 +1,5 @@
 variable "harness_platform_api_key" {}
-variable "harness_delegate" {}
+variable "harness_platform_delegates" {}
 
 variable "harness_api_endpoint" {
   default = "https://app.harness.io/gateway/ng/api"
@@ -12,7 +12,7 @@ locals {
   harness_download_k8s_delegate_endpoint    = "${var.harness_api_endpoint}/download-delegates/kubernetes"
   harness_download_docker_delegate_endpoint = "${var.harness_api_endpoint}/download-delegates/docker"
 
-  docker_delegates = { for name, delegate in var.harness_delegate.docker : name => {
+  docker_delegates = { for name, delegate in var.harness_platform_delegates.docker : name => {
     docker_manifest = "${name}-${var.delegate_manifest}"
     remote          = try(delegate.remote, {})
     org_id          = delegate.org_id
