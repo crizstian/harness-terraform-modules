@@ -45,7 +45,7 @@ resource "harness_platform_connector_github" "connector" {
   validation_repo    = each.value.validation_repo
   delegate_selectors = each.value.delegate_selectors
   org_id             = each.value.org_id
-  project_id         = each.value.project_id
+  # project_id         = each.value.project_id
   credentials {
     http {
       username  = each.value.credentials.http.username
