@@ -1,6 +1,6 @@
 resource "harness_platform_secret_text" "harness_secrets" {
   for_each                  = local.secrets
-  identifier                = lower(replace(name, "/[\\s-.]/", "_"))
+  identifier                = lower(replace(each.key, "/[\\s-.]/", "_"))
   name                      = each.key
   description               = each.value.description
   secret_manager_identifier = "harnessSecretManager"
@@ -37,7 +37,7 @@ resource "harness_platform_secret_text" "harness_secrets" {
 
 resource "harness_platform_connector_github" "connector" {
   for_each           = local.github_connectors
-  identifier         = lower(replace(name, "/[\\s-.]/", "_"))
+  identifier         = lower(replace(each.key, "/[\\s-.]/", "_"))
   name               = each.key
   description        = each.value.description
   url                = each.value.url
