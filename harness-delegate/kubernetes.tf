@@ -5,11 +5,13 @@ resource "null_resource" "download_k8s_delegate_manifest" {
     interpreter = ["/bin/bash", "-c"]
     working_dir = path.root
     command     = <<-EOT
-        curl -o ../contrib/manifests/${each.value.k8s_manifest} \
+        curl -o ${each.value.k8s_manifest} \
         --location \
         --request POST '${local.harness_download_k8s_delegate_endpoint}?orgIdentifier=${each.value.org_id}' \
         --header 'Content-Type: application/json' \
         --header 'x-api-key: ${var.harness_platform_api_key}' --data-raw '${each.value.body}'
+
+        cat ${each.value.k8s_manifest}
         EOT
   }
 }

@@ -5,11 +5,13 @@ resource "null_resource" "download_docker_delegate_manifest" {
     interpreter = ["/bin/bash", "-c"]
     working_dir = path.root
     command     = <<-EOT
-        curl -o ../contrib/manifests/${each.value.docker_manifest} \
+        curl -o ${each.value.docker_manifest} \
         --location \
         --request POST '${local.harness_download_docker_delegate_endpoint}?orgIdentifier=${each.value.org_id}' \
         --header 'Content-Type: application/json' \
         --header 'x-api-key: ${var.harness_platform_api_key}' --data-raw '${each.value.body}'
+
+        cat ${each.value.docker_manifest}
         EOT
   }
 }
