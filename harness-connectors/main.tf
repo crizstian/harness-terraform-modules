@@ -36,16 +36,16 @@ resource "harness_platform_secret_text" "harness_secrets" {
 # }
 
 resource "harness_platform_connector_github" "connector" {
-  for_each           = local.github_connectors
-  identifier         = lower(replace(each.key, "/[\\s-.]/", "_"))
-  name               = each.key
-  description        = each.value.description
-  url                = each.value.url
-  connection_type    = each.value.connection_type
-  validation_repo    = each.value.validation_repo
-  delegate_selectors = each.value.delegate_selectors
-  org_id             = each.value.org_id
-  project_id         = each.value.project_id
+  for_each        = local.github_connectors
+  identifier      = lower(replace(each.key, "/[\\s-.]/", "_"))
+  name            = each.key
+  description     = each.value.description
+  url             = each.value.url
+  connection_type = each.value.connection_type
+  validation_repo = each.value.validation_repo
+  # delegate_selectors = each.value.delegate_selectors
+  org_id     = each.value.org_id
+  project_id = each.value.project_id
   credentials {
     http {
       username  = each.value.credentials.http.username
