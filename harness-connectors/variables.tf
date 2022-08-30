@@ -11,7 +11,8 @@ locals {
     project_id      = try(details.project_id, "")
     credentials = {
       http = {
-        username = details.credentials.http.username
+        username     = details.credentials.http.username
+        token_ref_id = try(details.credentials.http.token_ref_id, "")
       }
     }
   } if details.enable }
@@ -45,7 +46,7 @@ locals {
     description = details.description
     org_id      = try(details.org_id, "")
     project_id  = try(details.project_id, "")
-  } if details.enable }
+  } if details.enable && !can(details.credentials.http.token_ref_id) }
 
   # docker_secrets = { for name, details in var.harness_connectors.docker : "${name}_docker_connector_secret" => {
   #   secret      = details.credentials.password_ref

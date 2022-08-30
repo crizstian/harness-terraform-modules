@@ -49,7 +49,7 @@ resource "harness_platform_connector_github" "connector" {
   credentials {
     http {
       username  = each.value.credentials.http.username
-      token_ref = harness_platform_secret_text.harness_secrets["${each.key}_secret"].id
+      token_ref = each.value.credentials.http.token_ref_id != "" ? each.value.credentials.http.token_ref_id : harness_platform_secret_text.harness_secrets["${each.key}_secret"].id
     }
   }
 }
