@@ -17,7 +17,7 @@ resource "null_resource" "download_k8s_delegate_manifest" {
 data "local_file" "k8s_manifests" {
   for_each   = local.k8s_delegates
   filename   = "${path.root}/${each.value.k8s_manifest}"
-  depends_on = ["null_resource.download_k8s_delegate_manifest"]
+  depends_on = [null_resource.download_k8s_delegate_manifest]
 }
 
 output "manifests" {
