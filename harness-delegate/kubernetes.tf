@@ -12,11 +12,17 @@ resource "null_resource" "download_k8s_delegate_manifest" {
         --header 'x-api-key: ${var.harness_platform_api_key}' --data-raw '${each.value.body}'
         EOT
   }
+}
 
-  provisioner "local-exec" {
-    interpreter = ["/bin/bash", "-c"]
-    working_dir = path.root
-    command     = "cat ${each.value.k8s_manifest}"
+data "local_file" "k8s_manifests" {
+  for_each   = local.k8s_delegates
+  filename   = "${path.root}/${each.value.k8s_manifest}"
+  depends_on = ["null_resource.download_k8s_delegate_manifest"]
+}
+
+output "manifests" {
+  value = {
+    k8s = { for key, delegate in data.local_file.k8s_manifests : key => delegate.content }
   }
 }
 
