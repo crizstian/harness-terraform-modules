@@ -1,4 +1,3 @@
-variable "harness_platform" {}
 variable "harness_platform_connectors" {}
 
 locals {
