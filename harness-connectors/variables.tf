@@ -2,13 +2,13 @@ variable "harness_platform_connectors" {}
 
 locals {
   github_connectors = { for name, details in var.harness_platform_connectors.github : "${name}_github_connector" => {
-    description        = details.description
-    connection_type    = details.connection_type
-    url                = details.url
-    delegate_selectors = details.delegate_selectors
-    validation_repo    = details.validation_repo
-    org_id             = try(details.org_id, "")
-    project_id         = try(details.project_id, "")
+    description     = details.description
+    connection_type = details.connection_type
+    url             = details.url
+    # delegate_selectors = details.delegate_selectors
+    validation_repo = details.validation_repo
+    org_id          = try(details.org_id, "")
+    project_id      = try(details.project_id, "")
     credentials = {
       http = {
         username = details.credentials.http.username
