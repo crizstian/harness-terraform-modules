@@ -44,3 +44,7 @@ locals {
     })
   } if delegate.enable }
 }
+
+output "delegates" {
+  value = concat(keys(local.k8s_delegates), keys(local.docker_delegates))
+}
