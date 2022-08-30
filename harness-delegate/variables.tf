@@ -12,7 +12,7 @@ locals {
   harness_download_k8s_delegate_endpoint    = "${var.harness_api_endpoint}/download-delegates/kubernetes"
   harness_download_docker_delegate_endpoint = "${var.harness_api_endpoint}/download-delegates/docker"
 
-  docker_delegates = { for name, delegate in var.harness_platform_delegates.docker : name => {
+  docker_delegates = { for name, delegate in try(var.harness_platform_delegates.docker, {}) : name => {
     docker_manifest = "${name}-${var.delegate_manifest}"
     remote          = try(delegate.remote, {})
     org_id          = delegate.org_id
@@ -30,7 +30,7 @@ locals {
   local_docker_delegates  = { for name, delegate in local.docker_delegates : name => delegate if !can(delegate.remote.host) }
   remote_docker_delegates = { for name, delegate in local.docker_delegates : name => delegate if can(delegate.remote.host) }
 
-  k8s_delegates = { for name, delegate in var.harness_delegate.k8s : name => {
+  k8s_delegates = { for name, delegate in try(var.harness_platform_delegates.k8s, try) : name => {
     k8s_manifest = "${name}-${var.delegate_manifest}"
     org_id       = delegate.org_id
     body = jsonencode({
