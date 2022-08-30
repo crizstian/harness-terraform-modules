@@ -14,11 +14,9 @@ resource "harness_platform_project" "project" {
 }
 
 output "project" {
-  value = {
-    details = { for key, details in harness_platform_project.project : key => {
-      identifier = details.identifier
-      org_id     = details.org_id
-      }
+  value = { for key, details in harness_platform_project.project : key => {
+    identifier = details.identifier
+    org_id     = details.org_id
     }
   }
 }
