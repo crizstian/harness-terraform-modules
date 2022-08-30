@@ -2,14 +2,14 @@ resource "harness_platform_organization" "org" {
   for_each    = local.orgs
   identifier  = each.value.identifier
   name        = each.key
-  description = each.value.description
+  description = "${each.key} - ${each.value.description}"
 }
 
 resource "harness_platform_project" "project" {
   for_each    = local.projs
   identifier  = each.value.identifier
   name        = each.key
-  description = each.value.description
+  description = "${each.key} - ${each.value.description}"
   org_id      = each.value.org_id
 }
 

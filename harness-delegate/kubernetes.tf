@@ -10,9 +10,13 @@ resource "null_resource" "download_k8s_delegate_manifest" {
         --request POST '${local.harness_download_k8s_delegate_endpoint}?orgIdentifier=${each.value.org_id}' \
         --header 'Content-Type: application/json' \
         --header 'x-api-key: ${var.harness_platform_api_key}' --data-raw '${each.value.body}'
-
-        cat ${each.value.k8s_manifest}
         EOT
+  }
+
+  provisioner "local-exec" {
+    interpreter = ["/bin/bash", "-c"]
+    working_dir = path.root
+    command     = "cat ${each.value.k8s_manifest}"
   }
 }
 
