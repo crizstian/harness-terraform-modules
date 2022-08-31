@@ -15,7 +15,7 @@ locals {
   docker_delegates = { for name, delegate in try(var.harness_platform_delegates.docker, {}) : name => {
     docker_manifest = "${name}-${var.delegate_manifest}"
     remote          = try(delegate.remote, {})
-    org_id          = delegate.org_id
+    url_args        = can(delegate.org_id) ? "accountIdentifier=${delegate.account_id}" : can(delegate.proj_id) ? "accountIdentifier=${delegate.account_id}&orgIdentifier=${delegate.org_id}&projectIdentifier=${delegate.proj_id}" : "accountIdentifier=${delegate.account_id}&orgIdentifier=${delegate.org_id}"
     body = jsonencode({
       name                   = name
       description            = delegate.description
@@ -33,7 +33,7 @@ locals {
 
   k8s_delegates = { for name, delegate in try(var.harness_platform_delegates.k8s, {}) : name => {
     k8s_manifest = "${name}-${var.delegate_manifest}"
-    org_id       = delegate.org_id
+    url_args     = can(delegate.org_id) ? "accountIdentifier=${delegate.account_id}" : can(delegate.proj_id) ? "accountIdentifier=${delegate.account_id}&orgIdentifier=${delegate.org_id}&projectIdentifier=${delegate.proj_id}" : "accountIdentifier=${delegate.account_id}&orgIdentifier=${delegate.org_id}"
     body = jsonencode({
       name                   = name
       description            = delegate.description

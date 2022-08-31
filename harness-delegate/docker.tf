@@ -7,7 +7,7 @@ resource "null_resource" "download_docker_delegate_manifest" {
     command     = <<-EOT
         curl -o ${each.value.docker_manifest} \
         --location \
-        --request POST '${local.harness_download_docker_delegate_endpoint}?orgIdentifier=${each.value.org_id}' \
+        --request POST '${local.harness_download_docker_delegate_endpoint}?${each.value.url_args}' \
         --header 'Content-Type: application/json' \
         --header 'x-api-key: ${var.harness_platform_api_key}' --data-raw '${each.value.body}'
 
