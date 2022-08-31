@@ -16,18 +16,6 @@ resource "null_resource" "download_docker_delegate_manifest" {
   }
 }
 
-
-
-# resource "null_resource" "deploy_docker_delegate" {
-#     for_each   = local.local_docker_delegates
-#     depends_on = [null_resource.download_docker_delegate_manifest]
-
-#     provisioner "local-exec" {
-#         working_dir = path.root
-#         command     = "docker-compose -f ../contrib/manifests/${each.value.docker_manifest} up -d"
-#     }
-# }
-
 resource "null_resource" "modify_anka_docker_delegate" {
   for_each   = local.anka_remote_docker_delegates
   depends_on = [null_resource.download_docker_delegate_manifest]
@@ -48,27 +36,3 @@ data "local_file" "docker_manifests" {
   filename   = "${path.root}/${each.value.k8s_manifest}"
   depends_on = [null_resource.download_k8s_delegate_manifest]
 }
-
-# resource "null_resource" "remote_deploy_docker_delegate" {
-#     for_each   = local.remote_docker_delegates
-#     depends_on = [null_resource.download_docker_delegate_manifest]
-
-#     connection {
-#         type        = "ssh"
-#         user        = each.value.remote.user
-#         host        = each.value.remote.host
-#         private_key = file("../contrib/cert/${each.value.remote.private_key}")
-#     }
-
-#     provisioner "file" {
-#         source      = "../contrib/manifests/${each.value.docker_manifest}"
-#         destination = "/tmp/${each.value.docker_manifest}"
-#     }
-
-#     provisioner "remote-exec" {
-#         inline = [
-#             "export PATH=$PATH:/usr/local/bin/",
-#             "docker-compose -f /tmp/${each.value.docker_manifest} up -d"
-#         ]
-#     }
-# }
