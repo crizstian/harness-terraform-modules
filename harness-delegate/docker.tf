@@ -36,15 +36,15 @@ resource "null_resource" "modify_anka_docker_delegate" {
     working_dir = path.root
     interpreter = ["/bin/bash", "-c"]
     command     = <<-EOT
-            yq -i '.services.harness-ng-delegate.environment[17] = "RUNNER_URL=http://host.docker.internal:3000/"' ../contrib/manifests/${each.value.docker_manifest}
-            yq -i '.services.harness-ng-delegate.extra_hosts[0] = "host.docker.internal:host-gateway"' ../contrib/manifests/${each.value.docker_manifest}
+            yq -i '.services.harness-ng-delegate.environment[17] = "RUNNER_URL=http://host.docker.internal:3000/"' ${each.value.docker_manifest}
+            yq -i '.services.harness-ng-delegate.extra_hosts[0] = "host.docker.internal:host-gateway"' ${each.value.docker_manifest}
         EOT
   }
 }
 
 
-data "local_file" "k8s_manifests" {
-  for_each   = local.k8s_delegates
+data "local_file" "docker_manifests" {
+  for_each   = merge(local.local_docker_delegates, local.remote_docker_delegates)
   filename   = "${path.root}/${each.value.k8s_manifest}"
   depends_on = [null_resource.download_k8s_delegate_manifest]
 }
