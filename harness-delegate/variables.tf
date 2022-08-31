@@ -21,7 +21,7 @@ locals {
       description            = delegate.description
       size                   = delegate.size
       tags                   = delegate.tags
-      tokenName              = can(delegate.tokenName) ? delegate.tokenName : "default_token_${delegate.org_id}"
+      tokenName              = can(delegate.tokenName) ? delegate.tokenName : can(delegate.org_id) ? "default_token_${delegate.org_id}" : "default_token_default"
       clusterPermissionType  = delegate.clusterPermissionType
       customClusterNamespace = delegate.customClusterNamespace
     })
@@ -39,7 +39,7 @@ locals {
       description            = delegate.description
       size                   = delegate.size
       tags                   = delegate.tags
-      tokenName              = can(delegate.tokenName) ? delegate.tokenName : "default_token_${delegate.org_id}"
+      tokenName              = can(delegate.tokenName) ? delegate.tokenName : can(delegate.org_id) ? "default_token_${delegate.org_id}" : "default_token_default"
       clusterPermissionType  = delegate.clusterPermissionType
       customClusterNamespace = delegate.customClusterNamespace
     })
