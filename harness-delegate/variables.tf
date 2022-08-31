@@ -49,3 +49,9 @@ locals {
 output "delegates" {
   value = concat(keys(local.k8s_delegates), keys(local.docker_delegates))
 }
+output "manifests" {
+  value = {
+    k8s    = { for key, delegate in data.local_file.k8s_manifests : key => delegate.content }
+    docker = { for key, delegate in data.local_file.docker_manifests : key => delegate.content }
+  }
+}
