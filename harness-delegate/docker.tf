@@ -34,5 +34,5 @@ resource "null_resource" "modify_anka_docker_delegate" {
 data "local_file" "docker_manifests" {
   for_each   = merge(local.local_docker_delegates, local.remote_docker_delegates)
   filename   = "${path.root}/${each.value.docker_manifest}"
-  depends_on = [null_resource.download_k8s_delegate_manifest]
+  depends_on = [null_resource.download_docker_delegate_manifest]
 }
