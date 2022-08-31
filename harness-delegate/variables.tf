@@ -27,8 +27,9 @@ locals {
     })
   } if delegate.enable }
 
-  local_docker_delegates  = { for name, delegate in local.docker_delegates : name => delegate if !can(delegate.remote.host) }
-  remote_docker_delegates = { for name, delegate in local.docker_delegates : name => delegate if can(delegate.remote.host) }
+  local_docker_delegates       = { for name, delegate in local.docker_delegates : name => delegate if !can(delegate.remote.host) }
+  remote_docker_delegates      = { for name, delegate in local.docker_delegates : name => delegate if can(delegate.remote.host) }
+  anka_remote_docker_delegates = { for name, delegate in local.remote_docker_delegates : name => delegate if delegate.remote.type == "anka" }
 
   k8s_delegates = { for name, delegate in try(var.harness_platform_delegates.k8s, {}) : name => {
     k8s_manifest = "${name}-${var.delegate_manifest}"
