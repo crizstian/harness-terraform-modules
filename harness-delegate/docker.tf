@@ -1,10 +1,6 @@
 resource "null_resource" "download_docker_delegate_manifest" {
   for_each = merge(local.local_docker_delegates, local.remote_docker_delegates)
 
-  triggers = {
-    always_run = "${timestamp()}"
-  }
-
   provisioner "local-exec" {
     interpreter = ["/bin/bash", "-c"]
     working_dir = path.root
@@ -23,10 +19,6 @@ resource "null_resource" "download_docker_delegate_manifest" {
 resource "null_resource" "modify_anka_docker_delegate" {
   for_each   = local.anka_remote_docker_delegates
   depends_on = [null_resource.download_docker_delegate_manifest]
-
-  triggers = {
-    always_run = "${timestamp()}"
-  }
 
   provisioner "local-exec" {
     working_dir = path.root

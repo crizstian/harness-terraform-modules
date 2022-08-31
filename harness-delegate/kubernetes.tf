@@ -1,10 +1,6 @@
 resource "null_resource" "download_k8s_delegate_manifest" {
   for_each = local.k8s_delegates
 
-  triggers = {
-    always_run = "${timestamp()}"
-  }
-
   provisioner "local-exec" {
     interpreter = ["/bin/bash", "-c"]
     working_dir = path.root
