@@ -15,6 +15,9 @@ locals {
         token_ref_id = try(details.credentials.http.token_ref_id, "")
       }
     }
+    api_authentication = {
+      token_ref = try(details.credentials.http.token_ref_id, "")
+    }
   } if details.enable }
 
   # k8s_connectors = { for name, details in var.harness_connectors.k8s : "${name}_k8s_connector" => {
