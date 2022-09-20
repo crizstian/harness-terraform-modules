@@ -1,5 +1,5 @@
 resource "local_file" "template" {
-  for_each = local.templates
+  for_each = var.harness_templates
   content  = templatefile(each.value.file, each.value.vars)
   filename = "${path.module}/${each.key}.yml"
 }
@@ -8,7 +8,7 @@ data "local_file" "template" {
   depends_on = [
     local_file.template,
   ]
-  for_each = local.templates
+  for_each = var.harness_templates
   filename = "${path.module}/${each.key}.yml"
 }
 
@@ -19,7 +19,7 @@ resource "null_resource" "template" {
   triggers = {
     always_run = "${timestamp()}"
   }
-  for_each = local.templates
+  for_each = var.harness_templates
 
   provisioner "local-exec" {
     interpreter = ["/bin/bash", "-c"]
@@ -41,7 +41,7 @@ resource "null_resource" "template-update" {
   triggers = {
     always_run = "${timestamp()}"
   }
-  for_each = local.templates
+  for_each = var.harness_templates
 
   provisioner "local-exec" {
     interpreter = ["/bin/bash", "-c"]
