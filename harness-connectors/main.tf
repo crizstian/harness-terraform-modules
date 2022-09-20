@@ -57,23 +57,23 @@ resource "harness_platform_connector_github" "connector" {
   }
 }
 
-# resource "harness_platform_connector_docker" "registry" {
-#   for_each           = local.docker_connectors
-#   identifier         = lower(replace(name, "/[\\s-.]/", "_"))
-#   name               = each.key
-#   description        = each.value.description
-#   tags               = each.value.tags
-#   delegate_selectors = each.value.delegate_selectors
-#   project_id         = each.value.project_id
-#   org_id             = each.value.org_id
-#   type               = each.value.type
-#   url                = each.value.url
+resource "harness_platform_connector_docker" "registry" {
+  for_each           = local.docker_connectors
+  identifier         = lower(replace(name, "/[\\s-.]/", "_"))
+  name               = each.key
+  description        = each.value.description
+  tags               = each.value.tags
+  delegate_selectors = each.value.delegate_selectors
+  project_id         = each.value.project_id
+  org_id             = each.value.org_id
+  type               = each.value.type
+  url                = each.value.url
 
-#   credentials {
-#     username     = each.value.credentials.username
-#     password_ref = harness_platform_secret_text.harness_secrets["${each.key}_secret"].id
-#   }
-# }
+  credentials {
+    username     = each.value.credentials.username
+    password_ref = each.value.credentials.http.password_ref_id != "" ? each.value.credentials.http.password_ref_id : each.value.project_id != "" ? harness_platform_secret_text.harness_secrets["${each.key}_secret"].id : "org.${harness_platform_secret_text.harness_secrets["${each.key}_secret"].id}"
+  }
+}
 
 # resource "harness_platform_connector_kubernetes" "inheritFromDelegate" {
 #   for_each    = local.k8s_connectors
@@ -93,6 +93,6 @@ output "connectors" {
   value = {
     github_connectors = local.github_connectors
     # k8s_connectors    = local.k8s_connectors
-    # docker_connectors = local.docker_connectors
+    docker_connectors = local.docker_connectors
   }
 }
