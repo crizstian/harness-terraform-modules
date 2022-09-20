@@ -25,7 +25,7 @@ resource "null_resource" "template" {
     interpreter = ["/bin/bash", "-c"]
     working_dir = path.root
     command     = <<-EOT
-        curl  -i -X POST '${var.harness_template_endpoint}${local.harness_template_endpoint_account_args}' \
+        curl  -i -X POST '${var.harness_template_endpoint}${var.harness_template_endpoint_account_args}' \
         --header 'Content-Type: application/yaml' \
         --header 'x-api-key: ${var.harness_platform_api_key}' -d '
         ${data.local_file.template[each.key].content}
