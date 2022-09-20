@@ -59,7 +59,7 @@ resource "harness_platform_connector_github" "connector" {
 
 resource "harness_platform_connector_docker" "registry" {
   for_each           = local.docker_connectors
-  identifier         = lower(replace(name, "/[\\s-.]/", "_"))
+  identifier         = lower(replace(each.key, "/[\\s-.]/", "_"))
   name               = each.key
   description        = each.value.description
   tags               = each.value.tags
