@@ -21,5 +21,5 @@ resource "null_resource" "download_delegate_manifest" {
 data "local_file" "delegate_manifests" {
   for_each   = local.delegates
   filename   = "${path.root}/${each.value.manifest}"
-  depends_on = [null_resource.download_docker_delegate_manifest, null_resource.download_k8s_delegate_manifest]
+  depends_on = [null_resource.download_delegate_manifest]
 }
