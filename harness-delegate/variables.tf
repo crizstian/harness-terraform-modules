@@ -16,7 +16,7 @@ locals {
     manifest          = "${name}-${var.delegate_manifest}"
     remote            = try(delegate.remote, {})
     delegate_endpoint = "${var.harness_api_endpoint}/download-delegates/docker"
-    url_args          = can(delegate.org_id) ? can(delegate.proj_id) ? "${account_args}&orgIdentifier=${delegate.org_id}&projectIdentifier=${delegate.proj_id}" : "${account_args}&orgIdentifier=${delegate.org_id}" : "${account_args}"
+    url_args          = can(delegate.org_id) ? can(delegate.proj_id) ? "${local.account_args}&orgIdentifier=${delegate.org_id}&projectIdentifier=${delegate.proj_id}" : "${local.account_args}&orgIdentifier=${delegate.org_id}" : "${local.account_args}"
 
     body = jsonencode({
       name                   = name
@@ -31,7 +31,7 @@ locals {
 
   k8s_delegates = { for name, delegate in try(var.harness_platform_delegates.k8s, {}) : name => {
     manifest          = "${name}-${var.delegate_manifest}"
-    url_args          = can(delegate.org_id) ? can(delegate.proj_id) ? "${account_args}&orgIdentifier=${delegate.org_id}&projectIdentifier=${delegate.proj_id}" : "${account_args}&orgIdentifier=${delegate.org_id}" : "${account_args}"
+    url_args          = can(delegate.org_id) ? can(delegate.proj_id) ? "${local.account_args}&orgIdentifier=${delegate.org_id}&projectIdentifier=${delegate.proj_id}" : "${local.account_args}&orgIdentifier=${delegate.org_id}" : "${local.account_args}"
     delegate_endpoint = "${var.harness_api_endpoint}/download-delegates/kubernetes"
 
     body = jsonencode({
@@ -57,6 +57,6 @@ output "delegates" {
 
 output "manifests" {
   value = {
-    yaml = { for key, delegate in data.local_file.manifests : key => delegate.content }
+    yaml = { for key, delegate in data.local_file.delegate_manifests : key => delegate.content }
   }
 }
