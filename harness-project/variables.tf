@@ -1,16 +1,3 @@
-# organizations = {
-#     org-A = {
-#         enable      = true
-#         name        = ""
-#         description = ""
-#         projects = {
-#         project-A = {
-#           enable      = true
-#           description = ""
-#         }
-#     }
-# }
-
 variable "harness_platform_organizations" {
   description = "Harness Organizations to be created in the given Harness account"
   default     = {}
