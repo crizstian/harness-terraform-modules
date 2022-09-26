@@ -2,7 +2,7 @@
     "dockerComposeFile": [
         "docker-compose.devcontainer.yml"
     ],
-    "service": "harness_tf",
+    "service": "harness_module_tf",
     "shutdownAction": "stopCompose",
     "workspaceFolder": "/workspace",
     "settings": {

@@ -11,14 +11,18 @@
 #     }
 # }
 
+variable "harness_platform_organizations" {
+  description = "Harness Organizations to be created in the given Harness account"
+  default     = {}
+}
+
 variable "harness_platform_projects" {
-  description = "Harness Organizations/Projects to be created in the given Harness account"
-  type        = map(any)
+  description = "Harness Projects to be created in the given Harness account"
   default     = {}
 }
 
 locals {
-  orgs = { for name, organization in var.harness_platform_projects : name =>
+  orgs = { for name, organization in var.harness_platform_organizations : name =>
     {
       identifier  = lower(replace(name, "/[\\s-.]/", "_"))
       description = organization.description
@@ -26,12 +30,12 @@ locals {
     if organization.enable && name != "default"
   }
 
-  projs = merge([for name, organization in var.harness_platform_projects : { for p_name, project in organization.projects : p_name =>
+  projs = { for name, project in var.harness_platform_projects : name =>
     {
-      identifier  = lower(replace(p_name, "/[\\s-.]/", "_"))
+      identifier  = lower(replace(name, "/[\\s-.]/", "_"))
       description = project.description
-      org_id      = try(harness_platform_organization.org[name].identifier, "default")
+      org_id      = try(project.org_id, "default")
     }
-    } if organization.enable
-  ]...)
+    if organization.enable
+  }
 }

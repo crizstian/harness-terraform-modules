@@ -24,7 +24,7 @@ services:
   #     - ../contrib/runner/:/workspace:cached
   #   depends_on:
   #     - server
-  harness_tf:
+  harness_module_tf:
     # environment:
       # VAULT_ADDR: http://vault:8200
       # VAULT_TOKEN: root
@@ -40,4 +40,4 @@ services:
       - ../:/workspace:cached
       - ~/.kube:/workspace/.kube:cached
     command: /bin/sh -c "while sleep 1000; do :; done"
-    container_name: harness_tf
+    container_name: harness_module_tf
