@@ -36,6 +36,6 @@ locals {
       description = project.description
       org_id      = try(project.org_id, "default")
     }
-    if organization.enable
+    if project.enable
   }
 }
