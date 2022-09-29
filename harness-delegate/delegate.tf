@@ -12,7 +12,7 @@ resource "null_resource" "download_delegate_manifest" {
 
       request=$(curl -s '${var.harness_api_endpoint}/delegate-token-ng/delegate-groups?${each.value.url_args}&delegateTokenName=${each.value.tokenName}' -H 'x-api-key: ${var.harness_platform_api_key}')
 
-      result=$(echo $request | jq '.resource.delegateGroupDetails[].groupName | contains("cristian-delegate-tf")')
+      result=$(echo $request | jq '.resource.delegateGroupDetails[].groupName | contains("${each.key}")')
 
       if [[ $(echo $result) != *true* ]]; then
 
@@ -21,6 +21,8 @@ resource "null_resource" "download_delegate_manifest" {
           --request POST '${each.value.delegate_endpoint}?${each.value.url_args}' \
           --header 'Content-Type: application/json' \
           --header 'x-api-key: ${var.harness_platform_api_key}' --data-raw '${each.value.body}'
+      else
+        echo "delegate ${each.key} already exists"
       fi
       EOT
   }
