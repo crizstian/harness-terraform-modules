@@ -22,7 +22,7 @@ resource "null_resource" "download_delegate_manifest" {
           --header 'Content-Type: application/json' \
           --header 'x-api-key: ${var.harness_platform_api_key}' --data-raw '${each.value.body}'
       else
-        echo "delegate ${each.key} already exists"
+        echo "delegate ${each.key} already exists" > ${each.value.manifest}
       fi
       EOT
   }
