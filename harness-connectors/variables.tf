@@ -3,39 +3,15 @@ variable "harness_platform_connectors" {}
 locals {
   github = merge({
     "test_github_connector" = {
-      enable          = false
-      description     = ""
-      connection_type = ""
-      url             = ""
-      validation_repo = ""
-      org_id          = ""
-      project_id      = ""
-      credentials = {
-        http = {
-          username     = ""
-          token_ref_id = ""
-        }
-      }
-      api_authentication = {
-        token_ref = ""
-      }
+      enable = false
     }
-  }, try(var.harness_platform_connectors.github, {})...)
+  }, try(var.harness_platform_connectors.github, {}))
+
   docker = merge({
     "test_docker_connector" = {
-      enable             = false
-      description        = ""
-      tags               = ""
-      delegate_selectors = ""
-      type               = ""
-      url                = ""
-      org_id             = ""
-      project_id         = ""
-      credentials = {
-        username = ""
-      }
+      enable = false
     }
-  }, try(var.harness_platform_connectors.docker, {})...)
+  }, try(var.harness_platform_connectors.docker, {}))
 
   github_connectors = { for name, details in local.github : "${name}_github_connector" => {
     description     = details.description
