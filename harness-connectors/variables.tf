@@ -59,6 +59,7 @@ locals {
   } if details.enable }
 
   secrets = merge(
+    {},
     local.github_secrets,
     local.docker_secrets
   )
