@@ -3,6 +3,7 @@ variable "harness_platform_connectors" {}
 locals {
   github = merge({
     "test_github_connector" = {
+      enable          = false
       description     = ""
       connection_type = ""
       url             = ""
@@ -22,7 +23,7 @@ locals {
   }, try(var.harness_platform_connectors.github, {})...)
   docker = merge({
     "test_docker_connector" = {
-      enable             = ""
+      enable             = false
       description        = ""
       tags               = ""
       delegate_selectors = ""
