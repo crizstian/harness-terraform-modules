@@ -19,7 +19,7 @@ resource "harness_platform_project" "seed_org_project" {
 
 resource "harness_platform_project" "project" {
   for_each    = local.projs
-  identifier  = "${each.value.identifier}_${random_id.suffix.id}"
+  identifier  = "${each.value.identifier}_seed_${random_id.suffix.id}"
   name        = each.key
   description = "${each.key} - ${each.value.description}"
   org_id      = each.value.org_id
