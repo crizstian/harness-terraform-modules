@@ -1,8 +1,8 @@
 variable "harness_platform_github_connectors" {
-  default = ""
+  default = {}
 }
 variable "harness_platform_docker_connectors" {
-  default = ""
+  default = {}
 }
 
 locals {
