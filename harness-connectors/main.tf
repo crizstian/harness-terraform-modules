@@ -1,6 +1,10 @@
+resource "random_id" "suffix" {
+  byte_length = 4
+}
+
 resource "harness_platform_secret_text" "harness_secrets" {
   for_each                  = local.secrets
-  identifier                = lower(replace(each.key, "/[\\s-.]/", "_"))
+  identifier                = "${lower(replace(each.key, "/[\\s-.]/", "_"))}_${random_id.suffix.id}"
   name                      = each.key
   description               = "${each.key} - ${each.value.description}"
   secret_manager_identifier = "harnessSecretManager"
@@ -18,7 +22,7 @@ resource "harness_platform_secret_text" "harness_secrets" {
 
 # resource "harness_platform_connector_artifactory" "connector" {
 #   for_each           = local.artifactory_connectors
-#   identifier         = lower(replace(name, "/[\\s-.]/", "_"))
+#   identifier         = "${lower(replace(name, "/[\\s-.]/", "_"))}_${random_id.suffix.id}"
 #   name               = each.key
 #   description        = each.value.description
 #   url                = each.value.url
@@ -37,7 +41,7 @@ resource "harness_platform_secret_text" "harness_secrets" {
 
 resource "harness_platform_connector_github" "connector" {
   for_each        = local.github_connectors
-  identifier      = lower(replace(each.key, "/[\\s-.]/", "_"))
+  identifier      = "${lower(replace(each.key, "/[\\s-.]/", "_"))}_${random_id.suffix.id}"
   name            = each.key
   description     = each.value.description
   url             = each.value.url
@@ -60,7 +64,7 @@ resource "harness_platform_connector_github" "connector" {
 
 resource "harness_platform_connector_docker" "registry" {
   for_each           = local.docker_connectors
-  identifier         = lower(replace(each.key, "/[\\s-.]/", "_"))
+  identifier         = "${lower(replace(each.key, "/[\\s-.]/", "_"))}_${random_id.suffix.id}"
   name               = each.key
   description        = each.value.description
   tags               = each.value.tags
@@ -78,7 +82,7 @@ resource "harness_platform_connector_docker" "registry" {
 
 # resource "harness_platform_connector_kubernetes" "inheritFromDelegate" {
 #   for_each    = local.k8s_connectors
-#   identifier  = lower(replace(name, "/[\\s-.]/", "_"))
+#   identifier  = "${lower(replace(name, "/[\\s-.]/", "_"))}_${random_id.suffix.id}"
 #   name        = each.key
 #   description = each.value.description
 #   tags        = each.value.tags
