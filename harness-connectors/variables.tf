@@ -1,5 +1,9 @@
-variable "harness_platform_github_connectors" {}
-variable "harness_platform_docker_connectors" {}
+variable "harness_platform_github_connectors" {
+  default = ""
+}
+variable "harness_platform_docker_connectors" {
+  default = ""
+}
 
 locals {
   github_connectors = { for name, details in var.harness_platform_github_connectors : "${name}_github_connector" => {
