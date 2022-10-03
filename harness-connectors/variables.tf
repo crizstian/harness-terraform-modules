@@ -1,7 +1,10 @@
 variable "harness_platform_connectors" {}
 
 locals {
-  github_connectors = { for name, details in try(var.harness_platform_connectors.github, {}) : "${name}_github_connector" => {
+  github = try(var.harness_platform_connectors.github, {})
+  docker = try(var.harness_platform_connectors.docker, {})
+
+  github_connectors = { for name, details in local.github : "${name}_github_connector" => {
     description     = details.description
     connection_type = details.connection_type
     url             = details.url
@@ -29,7 +32,7 @@ locals {
   #   project_id         = var.harness_platform_project.id
   # } if details.enable }
 
-  docker_connectors = { for name, details in try(var.harness_platform_connectors.docker, {}) : "${name}_docker_connector" => {
+  docker_connectors = { for name, details in local.docker : "${name}_docker_connector" => {
     enable             = details.enable
     description        = details.description
     tags               = details.tags
@@ -44,23 +47,22 @@ locals {
 
   } if details.enable }
 
-  github_secrets = { for name, details in try(var.harness_platform_connectors.github, {}) : "${name}_github_connector_secret" => {
+  github_secrets = { for name, details in local.github : "${name}_github_connector_secret" => {
     secret      = details.credentials.http.token_ref
     description = details.description
     org_id      = try(details.org_id, "")
     project_id  = try(details.project_id, "")
   } if details.enable && !can(details.credentials.http.token_ref_id) }
 
-  docker_secrets = { for name, details in try(var.harness_platform_connectors.docker, {}) : "${name}_docker_connector_secret" => {
+  docker_secrets = { for name, details in local.docker : "${name}_docker_connector_secret" => {
     secret      = details.credentials.password_ref
     description = details.description
     org_id      = try(details.org_id, "")
     project_id  = try(details.project_id, "")
   } if details.enable }
 
-  secrets = {}
-  # merge(
-  #   local.github_secrets,
-  #   local.docker_secrets
-  # )
+  secrets = merge(
+    local.github_secrets,
+    local.docker_secrets
+  )
 }
