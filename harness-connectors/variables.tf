@@ -6,9 +6,9 @@ locals {
     connection_type = details.connection_type
     url             = details.url
     # delegate_selectors = details.delegate_selectors
-    validation_repo = each.value.connection_type == "Repo" ? "" : details.validation_repo
-    org_id          = each.value.connection_type == "Repo" ? details.org_id : try(details.org_id, "")
-    project_id      = each.value.connection_type == "Repo" ? details.project_id : try(details.project_id, "")
+    validation_repo = details.connection_type == "Repo" ? "" : details.validation_repo
+    org_id          = details.connection_type == "Repo" ? details.org_id : try(details.org_id, "")
+    project_id      = details.connection_type == "Repo" ? details.project_id : try(details.project_id, "")
     credentials = {
       http = {
         username     = details.credentials.http.username
