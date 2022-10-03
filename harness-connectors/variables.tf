@@ -58,9 +58,9 @@ locals {
     project_id  = try(details.project_id, "")
   } if details.enable }
 
-  secrets = merge(
-    {},
-    local.github_secrets,
-    local.docker_secrets
-  )
+  secrets = {}
+  # merge(
+  #   local.github_secrets,
+  #   local.docker_secrets
+  # )
 }
