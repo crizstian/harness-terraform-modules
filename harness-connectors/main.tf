@@ -26,7 +26,7 @@ resource "harness_platform_connector_github" "connector" {
   }
 }
 
-resource "harness_platform_connector_docker" "registry" {
+resource "harness_platform_connector_docker" "connector" {
   for_each           = local.docker_connectors
   identifier         = "${lower(replace(each.key, "/[\\s-.]/", "_"))}_${random_string.suffix.id}"
   name               = each.key
@@ -79,8 +79,8 @@ resource "harness_platform_connector_docker" "registry" {
 
 output "connectors" {
   value = {
-    github_connectors = local.github_connectors
+    github_connectors = { for key, value in harness_platform_connector_github.connector : key => value.identifier }
+    docker_connectors = { for key, value in harness_platform_connector_docker.connector : key => value.identifier }
     # k8s_connectors    = local.k8s_connectors
-    docker_connectors = local.docker_connectors
   }
 }
