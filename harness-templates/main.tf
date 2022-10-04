@@ -19,7 +19,7 @@ resource "null_resource" "template" {
   triggers = {
     always_run = "${timestamp()}"
   }
-  for_each = var.harness_templates
+  for_each = local.crafted_templates
 
   provisioner "local-exec" {
     interpreter = ["/bin/bash", "-c"]
@@ -41,7 +41,7 @@ resource "null_resource" "template-update" {
   triggers = {
     always_run = "${timestamp()}"
   }
-  for_each = var.harness_templates
+  for_each = local.crafted_templates
 
   provisioner "local-exec" {
     interpreter = ["/bin/bash", "-c"]
