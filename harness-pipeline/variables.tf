@@ -17,7 +17,7 @@ locals {
       org_id      = pipeline.org_id
       project_id  = pipeline.project_id
       yaml        = pipeline.yaml
-      description = pipeline.value.description
+      description = pipeline.description
 
     }
     if pipeline.enable
