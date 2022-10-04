@@ -16,7 +16,7 @@ locals {
       org_id      = pipeline.org_id
       project_id  = pipeline.project_id
     }
-    if pipeline.enable && name != "default"
+    if pipeline.enable
   }
   inputsets = { for name, inputset in var.harness_platform_inputsets : name =>
     {
@@ -26,6 +26,6 @@ locals {
       project_id  = inputset.project_id
       pipeline_id = inputset.pipeline_id
     }
-    if inputset.enable && name != "default"
+    if inputset.enable
   }
 }
