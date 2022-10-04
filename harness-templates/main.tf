@@ -55,3 +55,7 @@ resource "null_resource" "template-update" {
         EOT
   }
 }
+
+output "files" {
+  value = { for name, value in data.local_file.template : name => "${path.module}/${name}.yml" }
+}
