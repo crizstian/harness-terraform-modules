@@ -11,10 +11,14 @@ variable "harness_platform_inputsets" {
 locals {
   pipelines = { for name, pipeline in var.harness_platform_pipelines : name =>
     {
+
       identifier  = lower(replace(name, "/[\\s-.]/", "_"))
-      description = pipeline.description
+      name        = pipeline.key
       org_id      = pipeline.org_id
       project_id  = pipeline.project_id
+      yaml        = pipeline.yml
+      description = pipeline.value.description
+
     }
     if pipeline.enable
   }
@@ -25,6 +29,7 @@ locals {
       org_id      = inputset.org_id
       project_id  = inputset.project_id
       pipeline_id = inputset.pipeline_id
+      yaml        = inputset.yml
     }
     if inputset.enable
   }
