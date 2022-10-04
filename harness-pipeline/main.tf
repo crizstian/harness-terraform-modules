@@ -29,5 +29,5 @@ output "pipelines" {
   value = { for key, details in harness_platform_pipeline.pipeline : key => { pipeline_id = details.identifier } }
 }
 output "inputsets" {
-  value = { for key, details in harness_platform_inputset.inputset : key => { inputset_id = details.identifier } }
+  value = { for key, details in harness_platform_input_set.inputset : key => { inputset_id = details.identifier } }
 }
