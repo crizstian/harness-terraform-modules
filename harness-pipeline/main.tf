@@ -25,9 +25,9 @@ resource "harness_platform_pipeline" "inputset" {
   yaml        = file(each.value.yaml)
 }
 
-output "pipeline" {
+output "pipelines" {
   value = { for key, details in harness_platform_pipeline.pipeline : key => { pipeline_id = details.identifier } }
 }
-output "inputset" {
+output "inputsets" {
   value = { for key, details in harness_platform_inputset.inputset : key => { inputset_id = details.identifier } }
 }
