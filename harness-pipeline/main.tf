@@ -11,7 +11,7 @@ resource "harness_platform_pipeline" "pipeline" {
   name        = each.key
   org_id      = each.value.org_id
   project_id  = each.value.project_id
-  yaml        = file(each.value.yaml)
+  yaml        = each.value.yaml
 }
 
 resource "harness_platform_input_set" "inputset" {
@@ -22,7 +22,7 @@ resource "harness_platform_input_set" "inputset" {
   org_id      = each.value.org_id
   project_id  = each.value.project_id
   pipeline_id = each.value.pipeline_id
-  yaml        = file(each.value.yaml)
+  yaml        = each.value.yaml
 }
 
 output "pipelines" {
