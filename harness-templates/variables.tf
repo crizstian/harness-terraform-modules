@@ -3,7 +3,9 @@ variable "harness_template_endpoint" {
 }
 variable "harness_platform_api_key" {}
 variable "harness_templates" {}
-variable "harness_template_endpoint_account_args" {}
+variable "harness_template_endpoint_account_args" {
+  default = ""
+}
 
 locals {
   crafted_templates = { for key, value in var.harness_templates : key => value if value.craft_request }
