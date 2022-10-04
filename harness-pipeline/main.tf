@@ -14,7 +14,7 @@ resource "harness_platform_pipeline" "pipeline" {
   yaml        = file(each.value.yaml)
 }
 
-resource "harness_platform_pipeline" "inputset" {
+resource "harness_platform_input_set" "inputset" {
   for_each    = local.inputsets
   description = each.value.description
   identifier  = "${each.value.identifier}_${random_string.suffix.id}"
