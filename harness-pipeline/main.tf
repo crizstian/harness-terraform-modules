@@ -25,9 +25,6 @@ resource "harness_platform_input_set" "inputset" {
   yaml        = each.value.yaml
 }
 
-output "suffix" {
-  value = random_string.suffix.id
-}
 output "pipelines" {
   value = { for key, details in harness_platform_pipeline.pipeline : key => { pipeline_id = details.identifier } }
 }

@@ -39,5 +39,6 @@ output "organization" {
   value = { for key, details in harness_platform_organization.org : key => {
     org_id          = details.identifier
     seed_project_id = harness_platform_project.seed_org_project[key].identifier
+    suffix          = random_string.suffix.id
   } }
 }
