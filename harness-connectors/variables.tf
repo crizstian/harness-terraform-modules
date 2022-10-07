@@ -5,14 +5,9 @@ variable "harness_platform_docker_connectors" {
   default = {}
 }
 
-variable "suffix" {
-  default = ""
-}
+variable "suffix" {}
 
 locals {
-  enable_suffix = var.suffix != "" ? 0 : 1
-  suffix        = local.enable_suffix ? var.suffix : random_string.suffix.0.id
-
   github_connectors = { for name, details in var.harness_platform_github_connectors : "${name}_github_connector" => {
     description     = details.description
     connection_type = details.connection_type
