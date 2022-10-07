@@ -1,5 +1,5 @@
 resource "random_string" "suffix" {
-  count   = var.suffix != "" ? 0 : 1
+  count   = local.enable_suffix
   length  = 4
   special = false
   lower   = true
