@@ -1,4 +1,5 @@
 resource "random_string" "suffix" {
+  count   = var.suffix != "" ? 0 : 1
   length  = 4
   special = false
   lower   = true
@@ -6,7 +7,7 @@ resource "random_string" "suffix" {
 
 resource "harness_platform_connector_github" "connector" {
   for_each        = local.github_connectors
-  identifier      = "${lower(replace(each.key, "/[\\s-.]/", "_"))}_${random_string.suffix.id}"
+  identifier      = "${lower(replace(each.key, "/[\\s-.]/", "_"))}_${local.suffix}"
   name            = each.key
   description     = each.value.description
   url             = each.value.url
@@ -28,7 +29,7 @@ resource "harness_platform_connector_github" "connector" {
 
 resource "harness_platform_connector_docker" "connector" {
   for_each           = local.docker_connectors
-  identifier         = "${lower(replace(each.key, "/[\\s-.]/", "_"))}_${random_string.suffix.id}"
+  identifier         = "${lower(replace(each.key, "/[\\s-.]/", "_"))}_${local.suffix}"
   name               = each.key
   description        = each.value.description
   tags               = each.value.tags
@@ -46,7 +47,7 @@ resource "harness_platform_connector_docker" "connector" {
 
 # resource "harness_platform_connector_artifactory" "connector" {
 #   for_each           = local.artifactory_connectors
-#   identifier         = "${lower(replace(name, "/[\\s-.]/", "_"))}_${random_string.suffix.id}"
+#   identifier         = "${lower(replace(name, "/[\\s-.]/", "_"))}_${local.suffix}"
 #   name               = each.key
 #   description        = each.value.description
 #   url                = each.value.url
@@ -65,7 +66,7 @@ resource "harness_platform_connector_docker" "connector" {
 
 # resource "harness_platform_connector_kubernetes" "inheritFromDelegate" {
 #   for_each    = local.k8s_connectors
-#   identifier  = "${lower(replace(name, "/[\\s-.]/", "_"))}_${random_string.suffix.id}"
+#   identifier  = "${lower(replace(name, "/[\\s-.]/", "_"))}_${local.suffix}"
 #   name        = each.key
 #   description = each.value.description
 #   tags        = each.value.tags

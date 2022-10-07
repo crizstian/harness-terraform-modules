@@ -8,6 +8,10 @@ variable "harness_platform_inputsets" {
   default     = {}
 }
 
+variable "suffix" {
+  default = ""
+}
+
 locals {
   pipelines = { for name, pipeline in var.harness_platform_pipelines : name =>
     {
@@ -34,4 +38,6 @@ locals {
     }
     if inputset.enable
   }
+
+  suffix = var.suffix != "" ? var.suffix : random_string.suffix.0.id
 }

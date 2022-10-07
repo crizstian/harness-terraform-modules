@@ -8,6 +8,10 @@ variable "harness_platform_projects" {
   default     = {}
 }
 
+variable "suffix" {
+  default = ""
+}
+
 locals {
   orgs = { for name, organization in var.harness_platform_organizations : name =>
     {
@@ -25,4 +29,7 @@ locals {
     }
     if project.enable
   }
+
+  suffix = var.suffix != "" ? var.suffix : random_string.suffix.0.id
+
 }
