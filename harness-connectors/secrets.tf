@@ -1,6 +1,6 @@
 resource "harness_platform_secret_text" "harness_secrets" {
   for_each                  = local.secrets
-  identifier                = "${lower(replace(each.key, "/[\\s-.]/", "_"))}_${random_string.suffix.id}"
+  identifier                = "${lower(replace(each.key, "/[\\s-.]/", "_"))}_${local.suffix}"
   name                      = each.key
   description               = "${each.key} - ${each.value.description}"
   secret_manager_identifier = "harnessSecretManager"
