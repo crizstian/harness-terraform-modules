@@ -13,9 +13,13 @@ variable "harness_platform_inputsets" {
 locals {
 
   pipeline_templates = { for name, details in var.harness_platform_pipelines : name => merge(
-    details.custom_template.pipeline, {
+    details.custom_template.pipeline,
+    {
       identifier = "${lower(replace(name, "/[\\s-.]/", "_"))}_${var.suffix}"
-      vars       = merge(details.custom_template.pipeline.vars, details.common_schema)
+      vars = merge(
+        details.custom_template.pipeline.vars,
+        details.common_schema
+      )
     })
     if details.enable && can(details.custom_template.pipeline)
   }
