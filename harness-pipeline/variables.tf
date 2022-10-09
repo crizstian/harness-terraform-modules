@@ -40,10 +40,10 @@ locals {
   pipelines = { for name, details in local.all_pipelines : name => details }
 
   inputset_templates = merge([for name, details in var.harness_platform_pipelines : {
-    for key, value in details.custom_template.inputset : "${name}_inpuset_${key}" => merge(
+    for key, value in details.custom_template.inputset : "${name}_inputset_${key}" => merge(
       value,
       {
-        identifier = "${lower(replace(name, "/[\\s-.]/", "_"))}_inpuset_${lower(replace(key, "/[\\s-.]/", "_"))}_${var.suffix}"
+        identifier = "${lower(replace(name, "/[\\s-.]/", "_"))}_inputset_${lower(replace(key, "/[\\s-.]/", "_"))}_${var.suffix}"
         vars = merge(value.vars, details.common_schema, {
           pipeline_id = harness_platform_pipeline.pipeline[name].identifier
         })
