@@ -15,6 +15,7 @@ locals {
   pipeline_templates = { for name, details in var.harness_platform_pipelines : name => merge(
     details.custom_template.pipeline, {
       identifier = "${lower(replace(name, "/[\\s-.]/", "_"))}_${var.suffix}"
+      vars       = merge(details.custom_template.pipeline.vars, details.common_schema)
     })
     if details.enable && can(details.custom_template.pipeline)
   }
@@ -38,11 +39,10 @@ locals {
       value,
       {
         identifier = "${lower(replace(name, "/[\\s-.]/", "_"))}_${var.suffix}"
-      },
-      merge(value.vars, {
-        pipeline_id = harness_platform_pipeline.pipeline[name].identifier
-      })
-    ) if value.enable
+        vars = merge(value.vars, details.common_schema, {
+          pipeline_id = harness_platform_pipeline.pipeline[name].identifier
+        })
+    }) if value.enable
     } if details.enable && can(details.custom_template.inputset)
   ]...)
 
