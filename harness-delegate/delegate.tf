@@ -2,7 +2,7 @@ resource "null_resource" "download_delegate_manifest" {
   for_each = local.delegates
 
   triggers = {
-    always_run = "${timestamp()}"
+    delegates = "${each.key}"
   }
 
   provisioner "local-exec" {
