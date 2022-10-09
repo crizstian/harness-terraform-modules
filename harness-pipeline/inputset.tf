@@ -18,8 +18,8 @@ resource "harness_platform_input_set" "inputset" {
   description = each.value.description
   identifier  = each.identifier
   name        = each.key
-  org_id      = each.value.org_id
-  project_id  = each.value.project_id
+  org_id      = each.value.vars.org_id
+  project_id  = each.value.vars.project_id
   pipeline_id = each.value.vars.pipeline_id
   yaml        = each.value.yaml
 }

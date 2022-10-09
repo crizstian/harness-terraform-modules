@@ -52,9 +52,5 @@ locals {
     })
   }
 
-  inputsets = { for name, details in local.inputset_rendered : name => merge(
-    details, {
-      yaml = data.local_file.inputset_template[name].content
-    })
-  }
+  inputsets = { for name, details in local.inputset_rendered : name => details }
 }

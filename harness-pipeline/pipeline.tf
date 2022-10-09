@@ -18,8 +18,8 @@ resource "harness_platform_pipeline" "pipeline" {
   description = each.value.description
   identifier  = each.identifier
   name        = each.key
-  org_id      = each.value.org_id
-  project_id  = each.value.project_id
+  org_id      = each.value.vars.org_id
+  project_id  = each.value.vars.project_id
   yaml        = each.value.yaml
 }
 
