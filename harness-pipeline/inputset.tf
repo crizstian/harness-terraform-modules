@@ -1,6 +1,6 @@
 # Renders InputSet files in order to provision it with terraform
 module "render_inputset_template_files" {
-  source            = "git::https://github.com/crizstian/harness-terraform-modules.git//harness-templates?ref=main"
+  source            = "../harness-templates"
   harness_templates = local.inputset_templates
 }
 
