@@ -1,13 +1,6 @@
-# resource "random_string" "suffix" {
-#   count   = local.enable_suffix
-#   length  = 4
-#   special = false
-#   lower   = true
-# }
-
 resource "harness_platform_connector_github" "connector" {
   for_each        = local.github_connectors
-  identifier      = "${lower(replace(each.key, "/[\\s-.]/", "_"))}_${var.suffix}"
+  identifier      = each.identifier
   name            = each.key
   description     = each.value.description
   url             = each.value.url
@@ -29,7 +22,7 @@ resource "harness_platform_connector_github" "connector" {
 
 resource "harness_platform_connector_docker" "connector" {
   for_each           = local.docker_connectors
-  identifier         = "${lower(replace(each.key, "/[\\s-.]/", "_"))}_${var.suffix}"
+  identifier         = each.identifier
   name               = each.key
   description        = each.value.description
   tags               = each.value.tags

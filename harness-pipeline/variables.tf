@@ -1,3 +1,5 @@
+variable "suffix" {}
+
 variable "harness_platform_pipelines" {
   description = "Harness Pipelines to be created in the given Harness account"
   default     = {}
@@ -8,32 +10,51 @@ variable "harness_platform_inputsets" {
   default     = {}
 }
 
-variable "suffix" {}
-
 locals {
-  pipelines = { for name, pipeline in var.harness_platform_pipelines : name =>
-    {
 
-      identifier  = lower(replace(name, "/[\\s-.]/", "_"))
-      name        = name
-      org_id      = pipeline.org_id
-      project_id  = pipeline.project_id
-      yaml        = pipeline.yaml
-      description = pipeline.description
-
-    }
-    if pipeline.enable
+  pipeline_templates = { for name, details in var.harness_platform_pipelines : name => merge(
+    details.custom_template.pipeline, {
+      identifier = "${lower(replace(name, "/[\\s-.]/", "_"))}_${var.suffix}"
+    })
+    if details.enable && can(details.custom_template.pipeline)
   }
-  inputsets = { for name, inputset in var.harness_platform_inputsets : name =>
-    {
-      identifier  = lower(replace(name, "/[\\s-.]/", "_"))
-      name        = name
-      description = inputset.description
-      org_id      = inputset.org_id
-      project_id  = inputset.project_id
-      pipeline_id = inputset.pipeline_id
-      yaml        = inputset.yaml
-    }
-    if inputset.enable
+
+  pipeline_rendered = { for name, details in local.pipeline_templates : name => merge(
+    details, {
+      yaml = data.local_file.pipeline_template[name].content
+    })
+  }
+
+  pipeline_non_templatized = { for name, details in var.harness_platform_pipelines : name => details
+    if details.enable && !can(details.custom_template.pipeline)
+  }
+
+  all_pipelines = merge(local.pipeline_rendered, local.pipeline_non_templatized)
+
+  pipelines = { for name, details in local.all_pipelines : name => details }
+
+  inputset_templates = merge([for name, details in var.harness_platform_pipelines : {
+    for key, value in details.custom_template.inputset : "${name}_${key}" => merge(
+      value,
+      {
+        identifier = "${lower(replace(name, "/[\\s-.]/", "_"))}_${var.suffix}"
+      },
+      merge(value.vars, {
+        pipeline_id = harness_platform_pipeline.pipeline[name].identifier
+      })
+    ) if value.enable
+    } if details.enable && can(details.custom_template.inputset)
+  ]...)
+
+  inputset_rendered = { for name, details in local.inputset_templates : name => merge(
+    details, {
+      yaml = data.local_file.inputset_template[name].content
+    })
+  }
+
+  inputsets = { for name, details in local.inputset_rendered : name => merge(
+    details, {
+      yaml = data.local_file.inputset_template[name].content
+    })
   }
 }

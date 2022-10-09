@@ -1,6 +1,6 @@
 resource "local_file" "template" {
   for_each = var.harness_templates
-  content  = templatefile(each.value.file, each.value.vars)
+  content  = templatefile(each.value.file, merge(each.value.vars, { name = each.key }))
   filename = "${path.module}/${each.key}.yml"
 }
 
