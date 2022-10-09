@@ -11,7 +11,7 @@ locals {
   github_connectors = { for name, details in var.harness_platform_github_connectors : "${name}_github_connector" => merge(
     details,
     {
-      identifier      = "${lower(replace(name, "/[\\s-.]/", "_"))}_${var.suffix}"
+      identifier      = "${lower(replace(name, "/[\\s-.]/", "_"))}_github_connector_${var.suffix}"
       validation_repo = details.connection_type == "Repo" ? "" : details.validation_repo
       org_id          = details.connection_type == "Repo" ? details.org_id : try(details.org_id, "")
       project_id      = details.connection_type == "Repo" ? details.project_id : try(details.project_id, "")
@@ -29,7 +29,7 @@ locals {
   docker_connectors = { for name, details in var.harness_platform_docker_connectors : "${name}_docker_connector" => merge(
     details,
     {
-      identifier = "${lower(replace(name, "/[\\s-.]/", "_"))}_${var.suffix}"
+      identifier = "${lower(replace(name, "/[\\s-.]/", "_"))}_docker_connector_${var.suffix}"
       org_id     = try(details.org_id, "")
       project_id = try(details.project_id, "")
       credentials = {
