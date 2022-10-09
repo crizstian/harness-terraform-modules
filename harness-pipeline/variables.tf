@@ -13,6 +13,7 @@ variable "harness_platform_inputsets" {
 locals {
 
   pipeline_templates = { for name, details in var.harness_platform_pipelines : name => merge(
+    details,
     details.custom_template.pipeline,
     {
       identifier = "${lower(replace(name, "/[\\s-.]/", "_"))}_${var.suffix}"
