@@ -16,7 +16,7 @@ data "local_file" "inputset_template" {
 resource "harness_platform_input_set" "inputset" {
   for_each    = local.inputsets
   description = each.value.description
-  identifier  = each.identifier
+  identifier  = each.value.identifier
   name        = each.key
   org_id      = each.value.vars.org_id
   project_id  = each.value.vars.project_id

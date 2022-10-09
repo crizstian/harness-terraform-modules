@@ -1,6 +1,6 @@
 resource "harness_platform_connector_github" "connector" {
   for_each        = local.github_connectors
-  identifier      = each.identifier
+  identifier      = each.value.identifier
   name            = each.key
   description     = each.value.description
   url             = each.value.url
@@ -22,7 +22,7 @@ resource "harness_platform_connector_github" "connector" {
 
 resource "harness_platform_connector_docker" "connector" {
   for_each           = local.docker_connectors
-  identifier         = each.identifier
+  identifier         = each.value.identifier
   name               = each.key
   description        = each.value.description
   tags               = each.value.tags
