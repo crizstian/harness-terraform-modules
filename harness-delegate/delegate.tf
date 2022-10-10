@@ -10,6 +10,7 @@ resource "null_resource" "sanity_delegate_check" {
     working_dir = path.root
     command     = <<-EOT
 
+      echo "curl -s -X GET '${local.harness_filestore_api}/${each.key}_${var.suffix}?${each.value.url_args}' -H 'x-api-key: ${var.harness_platform_api_key}'"
       request=$(curl -s -X GET '${local.harness_filestore_api}/${each.key}_${var.suffix}?${each.value.url_args}' -H 'x-api-key: ${var.harness_platform_api_key}')
 
       result=$(echo $request | jq .code)
@@ -40,6 +41,7 @@ resource "null_resource" "harness_folder" {
     working_dir = path.root
     command     = <<-EOT
 
+      echo "curl -s -X GET '${local.harness_filestore_api}/${var.harness_organization_id}?${local.account_args}' -H 'x-api-key: ${var.harness_platform_api_key}'"
       request=$(curl -s -X GET '${local.harness_filestore_api}/${var.harness_organization_id}?${local.account_args}' -H 'x-api-key: ${var.harness_platform_api_key}')
 
       result=$(echo $request | jq '.code')
@@ -79,6 +81,7 @@ resource "null_resource" "harness_file" {
     working_dir = path.root
     command     = <<-EOT
 
+      echo "curl -s -X GET '${local.harness_filestore_api}/${each.key}_${var.suffix}?${local.account_args}' -H 'x-api-key: ${var.harness_platform_api_key}'"
       request=$(curl -s -X GET '${local.harness_filestore_api}/${each.key}_${var.suffix}?${local.account_args}' -H 'x-api-key: ${var.harness_platform_api_key}')
 
       result=$(echo $request | jq '.code')
