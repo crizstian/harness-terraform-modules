@@ -4,6 +4,9 @@ variable "harness_platform_github_connectors" {
 variable "harness_platform_docker_connectors" {
   default = {}
 }
+variable "harness_platform_k8s_connectors" {
+  default = {}
+}
 
 variable "suffix" {}
 
@@ -37,14 +40,13 @@ locals {
       }
   }) if details.enable }
 
-  # k8s_connectors = { for name, details in var.harness_connectors.k8s : "${name}_k8s_connector" => {
-  #   enable             = details.enable
-  #   description        = details.description
-  #   tags               = details.tags
-  #   delegate_selectors = details.delegate_selectors
-  #   org_id             = details.org_id == "" ? var.harness_platform_project.organization_id : details.org_id
-  #   project_id         = var.harness_platform_project.id
-  # } if details.enable }
+  k8s_connectors = { for name, details in var.harness_platform_k8s_connectors : "${name}_k8s_connector" => merge(
+    details,
+    {
+      identifier = "${lower(replace(name, "/[\\s-.]/", "_"))}_k8s_connector_${var.suffix}"
+      org_id     = try(details.org_id, "")
+      project_id = try(details.project_id, "")
+  }) if details.enable }
 
   github_secrets = { for name, details in var.harness_platform_github_connectors : "${name}_github_connector_secret" => {
     secret      = details.credentials.http.token_ref

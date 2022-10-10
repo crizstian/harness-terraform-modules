@@ -38,6 +38,20 @@ resource "harness_platform_connector_docker" "connector" {
   }
 }
 
+resource "harness_platform_connector_kubernetes" "connector" {
+  for_each    = local.k8s_connectors
+  identifier  = each.value.identifier
+  name        = each.key
+  description = each.value.description
+  tags        = each.value.tags
+  project_id  = each.value.project_id
+  org_id      = each.value.org_id
+
+  inherit_from_delegate {
+    delegate_selectors = [each.value.delegate_selectors]
+  }
+}
+
 # resource "harness_platform_connector_artifactory" "connector" {
 #   for_each           = local.artifactory_connectors
 #   identifier         = "${lower(replace(name, "/[\\s-.]/", "_"))}_${var.suffix}"
@@ -57,24 +71,11 @@ resource "harness_platform_connector_docker" "connector" {
 #   }
 # }
 
-# resource "harness_platform_connector_kubernetes" "inheritFromDelegate" {
-#   for_each    = local.k8s_connectors
-#   identifier  = "${lower(replace(name, "/[\\s-.]/", "_"))}_${var.suffix}"
-#   name        = each.key
-#   description = each.value.description
-#   tags        = each.value.tags
-#   org_id      = each.value.org_id
-#   project_id  = each.value.project_id
-
-#   inherit_from_delegate {
-#     delegate_selectors = each.value.delegate_selectors
-#   }
-# }
 
 output "connectors" {
   value = {
     github_connectors = { for key, value in harness_platform_connector_github.connector : key => value.identifier }
     docker_connectors = { for key, value in harness_platform_connector_docker.connector : key => value.identifier }
-    # k8s_connectors    = local.k8s_connectors
+    k8s_connectors    = { for key, value in harness_platform_connector_kubernetes.connector : key => value.identifier }
   }
 }
