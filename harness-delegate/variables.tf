@@ -12,9 +12,8 @@ variable "delegate_manifest" {
 }
 
 locals {
-  harness_organization_id = lower(replace(var.harness_organization_id, "/[\\s-.]/", "_"))
-  harness_filestore_api   = "${var.harness_api_endpoint}/file-store"
-  account_args            = "accountIdentifier=${var.harness_account_id}"
+  harness_filestore_api = "${var.harness_api_endpoint}/file-store"
+  account_args          = "accountIdentifier=${var.harness_account_id}"
 
   docker_delegates = { for name, delegate in try(var.harness_platform_delegates.docker, {}) : name => {
     manifest          = "${name}-${var.delegate_manifest}"
