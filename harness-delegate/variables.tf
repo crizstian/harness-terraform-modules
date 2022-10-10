@@ -66,3 +66,7 @@ locals {
 output "delegates" {
   value = concat(keys(local.delegates))
 }
+
+output "delegates-verbose" {
+  value = local.delegates
+}
