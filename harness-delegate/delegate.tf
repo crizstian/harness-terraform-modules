@@ -10,21 +10,21 @@ resource "null_resource" "sanity_delegate_check" {
     working_dir = path.root
     command     = <<-EOT
 
-      request=$(curl -s '${var.harness_api_endpoint}/delegate-token-ng/delegate-groups?${each.value.url_args}&delegateTokenName=${each.value.tokenName}' -H 'x-api-key: ${var.harness_platform_api_key}')
+      request=$(curl -s -X GET '${local.harness_filestore_api}/${each.key}_${var.suffix}?${each.value.url_args}' -H 'x-api-key: ${var.harness_platform_api_key}')
 
-      result=$(echo $request | jq '.resource.delegateGroupDetails[].groupName | contains("${each.key}")')
+      result=$(echo $request | jq .code)
 
       echo "###### RESULT #######"
       echo "$result"
 
-      if [[ $result != *true* ]]; then
+      if [[ $result != *ENTITY_NOT_FOUND* ]]; then
         # pull delegate file
-        curl -X GET \
+        curl -s -X GET \
             '${local.harness_filestore_api}/files/${each.key}_${var.suffix}/download?${each.value.url_args}' \
              -H 'x-api-key: ${var.harness_platform_api_key}' > ${each.value.manifest}
       else
         # generate delegate file
-        curl -o ${each.value.manifest} \
+        curl -s -o ${each.value.manifest} \
           --location \
           --request POST '${each.value.delegate_endpoint}?${each.value.url_args}' \
           --header 'Content-Type: application/json' \
@@ -47,9 +47,9 @@ resource "null_resource" "harness_folder" {
       echo "###### RESULT #######"
       echo "$result"
 
-      if [[ $result != *ENTITY_NOT_FOUND* ]]; then
+      if [[ $result == *ENTITY_NOT_FOUND* ]]; then
         # create folder
-        curl -i -X POST \
+        curl -i -s -X POST \
         '${local.harness_filestore_api}?${local.account_args}' \
         -H 'Content-Type: multipart/form-data' \
         -H 'x-api-key: ${var.harness_platform_api_key}' \
@@ -86,8 +86,8 @@ resource "null_resource" "harness_file" {
       echo "###### RESULT #######"
       echo "$result"
 
-      if [[ $result != *ENTITY_NOT_FOUND* ]]; then
-      curl -i -X POST \
+      if [[ $result == *ENTITY_NOT_FOUND* ]]; then
+      curl -i -s -X POST \
         '${local.harness_filestore_api}?${local.account_args}' \
         -H 'Content-Type: multipart/form-data' \
         -H 'x-api-key: ${var.harness_platform_api_key}' \
@@ -101,7 +101,7 @@ resource "null_resource" "harness_file" {
         -F mimeType="txt" \
         -F content=''
 
-      curl -i -X PUT \
+      curl -i -s -X PUT \
         '${local.harness_filestore_api}/${each.key}_${var.suffix}?${local.account_args}' \
         -H 'Content-Type: multipart/form-data' \
         -H 'x-api-key: ${var.harness_platform_api_key}' \
