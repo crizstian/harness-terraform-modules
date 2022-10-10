@@ -9,9 +9,8 @@ resource "null_resource" "sanity_delegate_check" {
     interpreter = ["/bin/bash", "-c"]
     working_dir = path.root
     command     = <<-EOT
-
-      echo "curl -s -X GET '${local.harness_filestore_api}/${each.key}_${var.suffix}?${each.value.url_args}' -H 'x-api-key: ${var.harness_platform_api_key}'"
-      request=$(curl -s -X GET '${local.harness_filestore_api}/${each.key}_${var.suffix}?${each.value.url_args}' -H 'x-api-key: ${var.harness_platform_api_key}')
+      echo "curl -s -X GET '${local.harness_filestore_api}/${each.value.identifier}?${each.value.url_args}' -H 'x-api-key: ${var.harness_platform_api_key}'"
+      request=$(curl -s -X GET '${local.harness_filestore_api}/${each.value.identifier}?${each.value.url_args}' -H 'x-api-key: ${var.harness_platform_api_key}')
 
       result=$(echo $request | jq .code)
 
@@ -21,7 +20,7 @@ resource "null_resource" "sanity_delegate_check" {
       if [[ $result != *ENTITY_NOT_FOUND* ]]; then
         # pull delegate file
         curl -s -X GET \
-            '${local.harness_filestore_api}/files/${each.key}_${var.suffix}/download?${each.value.url_args}' \
+            '${local.harness_filestore_api}/files/${each.value.identifier}/download?${each.value.url_args}' \
              -H 'x-api-key: ${var.harness_platform_api_key}' > ${each.value.manifest}
       else
         # generate delegate file
@@ -40,7 +39,6 @@ resource "null_resource" "harness_folder" {
     interpreter = ["/bin/bash", "-c"]
     working_dir = path.root
     command     = <<-EOT
-
       echo "curl -s -X GET '${local.harness_filestore_api}/${var.harness_organization_id}?${local.account_args}' -H 'x-api-key: ${var.harness_platform_api_key}'"
       request=$(curl -s -X GET '${local.harness_filestore_api}/${var.harness_organization_id}?${local.account_args}' -H 'x-api-key: ${var.harness_platform_api_key}')
 
@@ -80,9 +78,8 @@ resource "null_resource" "harness_file" {
     interpreter = ["/bin/bash", "-c"]
     working_dir = path.root
     command     = <<-EOT
-
-      echo "curl -s -X GET '${local.harness_filestore_api}/${each.key}_${var.suffix}?${local.account_args}' -H 'x-api-key: ${var.harness_platform_api_key}'"
-      request=$(curl -s -X GET '${local.harness_filestore_api}/${each.key}_${var.suffix}?${local.account_args}' -H 'x-api-key: ${var.harness_platform_api_key}')
+      echo "curl -s -X GET '${local.harness_filestore_api}/${each.value.identifier}?${local.account_args}' -H 'x-api-key: ${var.harness_platform_api_key}'"
+      request=$(curl -s -X GET '${local.harness_filestore_api}/${each.value.identifier}?${local.account_args}' -H 'x-api-key: ${var.harness_platform_api_key}')
 
       result=$(echo $request | jq '.code')
 
@@ -94,7 +91,7 @@ resource "null_resource" "harness_file" {
         '${local.harness_filestore_api}?${local.account_args}' \
         -H 'Content-Type: multipart/form-data' \
         -H 'x-api-key: ${var.harness_platform_api_key}' \
-        -F identifier="${lower(replace(each.key, "/[\\s-.]/", "_"))}_${var.suffix}" \
+        -F identifier="${each.value.identifier}" \
         -F name="${each.key}" \
         -F type="FILE" \
         -F parentIdentifier="${var.harness_organization_id}" \
@@ -105,10 +102,10 @@ resource "null_resource" "harness_file" {
         -F content=''
 
       curl -i -s -X PUT \
-        '${local.harness_filestore_api}/${each.key}_${var.suffix}?${local.account_args}' \
+        '${local.harness_filestore_api}/${each.value.identifier}?${local.account_args}' \
         -H 'Content-Type: multipart/form-data' \
         -H 'x-api-key: ${var.harness_platform_api_key}' \
-        -F identifier="${lower(replace(each.key, "/[\\s-.]/", "_"))}_${var.suffix}" \
+        -F identifier="${each.value.identifier}" \
         -F name="${each.key}" \
         -F type="FILE" \
         -F parentIdentifier="${var.harness_organization_id}" \

@@ -21,6 +21,7 @@ locals {
     delegate_endpoint = "${var.harness_api_endpoint}/download-delegates/docker"
     url_args          = can(delegate.org_id) ? can(delegate.proj_id) ? "${local.account_args}&orgIdentifier=${delegate.org_id}&projectIdentifier=${delegate.proj_id}" : "${local.account_args}&orgIdentifier=${delegate.org_id}" : "${local.account_args}"
     tokenName         = can(delegate.tokenName) ? delegate.tokenName : can(delegate.org_id) ? "default_token_${delegate.org_id}" : "default_token"
+    identifier        = "${lower(replace(name, "/[\\s-.]/", "_"))}_${var.suffix}"
 
     body = jsonencode({
       name                   = name
@@ -38,6 +39,7 @@ locals {
     url_args          = can(delegate.org_id) ? can(delegate.proj_id) ? "${local.account_args}&orgIdentifier=${delegate.org_id}&projectIdentifier=${delegate.proj_id}" : "${local.account_args}&orgIdentifier=${delegate.org_id}" : "${local.account_args}"
     delegate_endpoint = "${var.harness_api_endpoint}/download-delegates/kubernetes"
     tokenName         = can(delegate.tokenName) ? delegate.tokenName : can(delegate.org_id) ? "default_token_${delegate.org_id}" : "default_token"
+    identifier        = "${lower(replace(name, "/[\\s-.]/", "_"))}_${var.suffix}"
 
     body = jsonencode({
       name                   = name
