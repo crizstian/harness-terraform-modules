@@ -1,4 +1,6 @@
-variable "harness_templates" {}
+variable "harness_templates" {
+  default = {}
+}
 
 variable "harness_template_endpoint" {
   default = "https://app.harness.io/gateway/template/api/templates"
