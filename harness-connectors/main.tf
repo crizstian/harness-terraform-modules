@@ -74,8 +74,8 @@ resource "harness_platform_connector_kubernetes" "connector" {
 
 output "connectors" {
   value = {
-    github_connectors = { for key, value in harness_platform_connector_github.connector : key => value.identifier }
-    docker_connectors = { for key, value in harness_platform_connector_docker.connector : key => value.identifier }
-    k8s_connectors    = { for key, value in harness_platform_connector_kubernetes.connector : key => value.identifier }
+    github_connectors = { for key, value in harness_platform_connector_github.connector : key => value.project_id != "" ? value.identifier : value.org_id != "" ? "org.${value.identifier}" : "account.${value.identifier}" }
+    docker_connectors = { for key, value in harness_platform_connector_docker.connector : key => value.project_id != "" ? value.identifier : value.org_id != "" ? "org.${value.identifier}" : "account.${value.identifier}" }
+    k8s_connectors    = { for key, value in harness_platform_connector_kubernetes.connector : key => value.project_id != "" ? value.identifier : value.org_id != "" ? "org.${value.identifier}" : "account.${value.identifier}" }
   }
 }
