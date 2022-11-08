@@ -17,11 +17,12 @@ locals {
 
   docker_delegates = { for name, delegate in try(var.harness_platform_delegates.docker, {}) : name => {
     manifest          = "${name}-${var.delegate_manifest}"
-    remote            = try(delegate.remote, {})
     delegate_endpoint = "${var.harness_api_endpoint}/download-delegates/docker"
     url_args          = can(delegate.org_id) ? can(delegate.proj_id) ? "${local.account_args}&orgIdentifier=${delegate.org_id}&projectIdentifier=${delegate.proj_id}" : "${local.account_args}&orgIdentifier=${delegate.org_id}" : "${local.account_args}"
     tokenName         = can(delegate.tokenName) ? delegate.tokenName : can(delegate.org_id) ? "default_token_${delegate.org_id}" : "default_token"
     identifier        = "${lower(replace(name, "/[\\s-.]/", "_"))}_${var.suffix}"
+    auto_install      = try(delegate.auto_install, false)
+    connection        = try(delegate.connection, {})
 
     body = jsonencode({
       name                   = name
@@ -40,6 +41,8 @@ locals {
     delegate_endpoint = "${var.harness_api_endpoint}/download-delegates/kubernetes"
     tokenName         = can(delegate.tokenName) ? delegate.tokenName : can(delegate.org_id) ? "default_token_${delegate.org_id}" : "default_token"
     identifier        = "${lower(replace(name, "/[\\s-.]/", "_"))}_${var.suffix}"
+    auto_install      = try(delegate.auto_install, false)
+    connection        = try(delegate.connection, {})
 
     body = jsonencode({
       name                   = name
@@ -52,15 +55,18 @@ locals {
     })
   } if delegate.enable }
 
-  local_docker_delegates       = { for name, delegate in local.docker_delegates : name => delegate if !can(delegate.remote.host) }
-  remote_docker_delegates      = { for name, delegate in local.docker_delegates : name => delegate if can(delegate.remote.host) }
-  anka_remote_docker_delegates = { for name, delegate in local.remote_docker_delegates : name => delegate if delegate.remote.type == "anka" }
+  install_docker_delegates = { for name, delegate in local.docker_delegates : name => delegate if delegate.auto_install && length(delegate.connection) > 0 }
+  install_on_linux         = { for name, delegate in local.install_docker_delegates : name => delegate if delegate.os == "linux" }
+
+  install_k8s_delegates = { for name, delegate in local.k8s_delegates : name => delegate if delegate.auto_install && length(delegate.connection) > 0 }
+
+  # remote_docker_delegates = { for name, delegate in local.docker_delegates : name => delegate if can(delegate.remote.host) }
+  # anka_remote_docker_delegates = { for name, delegate in local.remote_docker_delegates : name => delegate if delegate.remote.type == "anka" }
 
   delegates = merge(
-    local.local_docker_delegates,
-    local.remote_docker_delegates,
-    local.anka_remote_docker_delegates,
+    local.docker_delegates,
     local.k8s_delegates
+    # local.anka_remote_docker_delegates,
   )
 }
 
