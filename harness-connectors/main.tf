@@ -52,6 +52,22 @@ resource "harness_platform_connector_kubernetes" "connector" {
   }
 }
 
+resource "harness_platform_connector_aws" "connector" {
+  for_each    = local.aws_connectors
+  identifier  = each.value.identifier
+  name        = each.key
+  description = each.value.description
+  tags        = each.value.tags
+  project_id  = each.value.project_id
+  org_id      = each.value.org_id
+
+  manual {
+    access_key_ref     = each.value.access_key_ref
+    secret_key_ref     = each.value.secret_key_ref
+    delegate_selectors = [each.value.delegate_selectors]
+  }
+}
+
 # resource "harness_platform_connector_artifactory" "connector" {
 #   for_each           = local.artifactory_connectors
 #   identifier         = "${lower(replace(name, "/[\\s-.]/", "_"))}_${var.suffix}"
