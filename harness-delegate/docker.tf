@@ -16,6 +16,11 @@
 #   }
 # }
 
+data "harness_platform_secret_text" "private_key" {
+  for_each   = local.install_docker_delegates
+  identifier = each.value.connection.private_key
+}
+
 resource "null_resource" "install_docker_linux_delegate" {
   for_each   = local.install_docker_delegates
   depends_on = [null_resource.harness_file]
@@ -28,7 +33,7 @@ resource "null_resource" "install_docker_linux_delegate" {
     type        = "ssh"
     user        = each.value.connection.user
     host        = each.value.connection.host
-    private_key = each.value.connection.private_key
+    private_key = data.harness_platform_secret_text.private_key.value
   }
 
   provisioner "file" {
