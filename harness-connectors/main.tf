@@ -99,5 +99,8 @@ output "connectors" {
     k8s_connectors = { for key, value in harness_platform_connector_kubernetes.connector : key => {
       identifier = value.project_id != "" ? value.identifier : value.org_id != "" ? "org.${value.identifier}" : "account.${value.identifier}"
     } }
+    aws_connectors = { for key, value in harness_platform_connector_aws.connector : key => {
+      identifier = value.project_id != "" ? value.identifier : value.org_id != "" ? "org.${value.identifier}" : "account.${value.identifier}"
+    } }
   }
 }
