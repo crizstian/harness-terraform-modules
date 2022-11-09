@@ -7,10 +7,21 @@ variable "harness_platform_docker_connectors" {
 variable "harness_platform_k8s_connectors" {
   default = {}
 }
+variable "harness_platform_aws_connectors" {
+  default = {}
+}
 
 variable "suffix" {}
 
 locals {
+  aws_connectors = { for name, details in var.harness_platform_aws_connectors : "${name}_aws_connector" => merge(
+    details,
+    {
+      identifier = "${lower(replace(name, "/[\\s-.]/", "_"))}_aws_connector_${var.suffix}"
+      org_id     = try(details.org_id, "")
+      project_id = try(details.project_id, "")
+  }) if details.enable }
+
   github_connectors = { for name, details in var.harness_platform_github_connectors : "${name}_github_connector" => merge(
     details,
     {

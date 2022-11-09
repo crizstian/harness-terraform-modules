@@ -62,9 +62,9 @@ resource "harness_platform_connector_aws" "connector" {
   org_id      = each.value.org_id
 
   manual {
-    access_key_ref     = each.value.access_key_ref
-    secret_key_ref     = each.value.secret_key_ref
-    delegate_selectors = [each.value.delegate_selectors]
+    access_key_ref     = each.value.manual.access_key_ref
+    secret_key_ref     = each.value.manual.secret_key_ref
+    delegate_selectors = [each.value.manual.delegate_selectors]
   }
 }
 
