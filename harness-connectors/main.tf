@@ -12,11 +12,11 @@ resource "harness_platform_connector_github" "connector" {
   credentials {
     http {
       username  = each.value.credentials.http.username
-      token_ref = each.value.credentials.http.token_ref_id != "" ? each.value.project_id != "" ? each.value.credentials.http.token_ref_id : each.value.org_id != "" ? "org.${each.value.credentials.http.token_ref_id}" : "account.${each.value.credentials.http.token_ref_id}" : harness_platform_secret_text.harness_secrets["${each.key}_secret"].id
+      token_ref = each.value.credentials.http.token_ref_id #!= "" ? each.value.project_id != "" ? each.value.credentials.http.token_ref_id : each.value.org_id != "" ? "org.${each.value.credentials.http.token_ref_id}" : "account.${each.value.credentials.http.token_ref_id}" : harness_platform_secret_text.harness_secrets["${each.key}_secret"].id
     }
   }
   api_authentication {
-    token_ref = each.value.credentials.http.token_ref_id != "" ? each.value.project_id != "" ? each.value.credentials.http.token_ref_id : each.value.org_id != "" ? "org.${each.value.credentials.http.token_ref_id}" : "account.${each.value.credentials.http.token_ref_id}" : harness_platform_secret_text.harness_secrets["${each.key}_secret"].id
+    token_ref = each.value.credentials.http.token_ref_id #!= "" ? each.value.project_id != "" ? each.value.credentials.http.token_ref_id : each.value.org_id != "" ? "org.${each.value.credentials.http.token_ref_id}" : "account.${each.value.credentials.http.token_ref_id}" : harness_platform_secret_text.harness_secrets["${each.key}_secret"].id
   }
 }
 
@@ -34,7 +34,7 @@ resource "harness_platform_connector_docker" "connector" {
 
   credentials {
     username     = each.value.credentials.username
-    password_ref = each.value.credentials.password_ref_id != "" ? each.value.project_id != "" ? each.value.credentials.password_ref_id : each.value.org_id != "" ? "org.${each.value.credentials.password_ref_id}" : "account.${each.value.credentials.password_ref_id}" : harness_platform_secret_text.harness_secrets["${each.key}_secret"].id
+    password_ref = each.value.credentials.password_ref_id #!= "" ? each.value.project_id != "" ? each.value.credentials.password_ref_id : each.value.org_id != "" ? "org.${each.value.credentials.password_ref_id}" : "account.${each.value.credentials.password_ref_id}" : harness_platform_secret_text.harness_secrets["${each.key}_secret"].id
   }
 }
 
@@ -62,8 +62,8 @@ resource "harness_platform_connector_aws" "connector" {
   org_id      = each.value.org_id
 
   manual {
-    access_key_ref     = each.value.manual.access_key_ref != "" ? each.value.project_id != "" ? each.value.manual.access_key_ref : each.value.org_id != "" ? "org.${each.value.manual.access_key_ref}" : "account.${each.value.manual.access_key_ref}" : harness_platform_secret_text.harness_secrets["${each.key}_secret"].id
-    secret_key_ref     = each.value.manual.secret_key_ref != "" ? each.value.project_id != "" ? each.value.manual.secret_key_ref : each.value.org_id != "" ? "org.${each.value.manual.secret_key_ref}" : "account.${each.value.manual.secret_key_ref}" : harness_platform_secret_text.harness_secrets["${each.key}_secret"].id
+    access_key_ref     = each.value.manual.access_key_ref #!= "" ? each.value.project_id != "" ? each.value.manual.access_key_ref : each.value.org_id != "" ? "org.${each.value.manual.access_key_ref}" : "account.${each.value.manual.access_key_ref}" : harness_platform_secret_text.harness_secrets["${each.key}_secret"].id
+    secret_key_ref     = each.value.manual.secret_key_ref #!= "" ? each.value.project_id != "" ? each.value.manual.secret_key_ref : each.value.org_id != "" ? "org.${each.value.manual.secret_key_ref}" : "account.${each.value.manual.secret_key_ref}" : harness_platform_secret_text.harness_secrets["${each.key}_secret"].id
     delegate_selectors = each.value.manual.delegate_selectors
   }
 }
