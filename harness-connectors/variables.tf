@@ -47,8 +47,8 @@ locals {
       org_id     = try(details.org_id, "")
       project_id = try(details.project_id, "")
       credentials = {
-        username     = details.credentials.username
-        token_ref_id = try(details.credentials.token_ref_id, "")
+        username        = details.credentials.username
+        password_ref_id = try(details.credentials.password_ref_id, "")
       }
   }) if details.enable }
 
