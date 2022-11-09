@@ -62,8 +62,8 @@ resource "harness_platform_connector_aws" "connector" {
   org_id      = each.value.org_id
 
   manual {
-    access_key_ref     = each.value.manual.access_key_ref
-    secret_key_ref     = each.value.manual.secret_key_ref
+    access_key_ref     = each.value.manual.access_key_ref != "" ? each.value.project_id != "" ? each.value.manual.access_key_ref : each.value.org_id != "" ? "org.${each.value.manual.access_key_ref}" : "account.${each.value.manual.access_key_ref}" : harness_platform_secret_text.harness_secrets["${each.key}_secret"].id
+    secret_key_ref     = each.value.manual.secret_key_ref != "" ? each.value.project_id != "" ? each.value.manual.secret_key_ref : each.value.org_id != "" ? "org.${each.value.manual.secret_key_ref}" : "account.${each.value.manual.secret_key_ref}" : harness_platform_secret_text.harness_secrets["${each.key}_secret"].id
     delegate_selectors = each.value.manual.delegate_selectors
   }
 }
