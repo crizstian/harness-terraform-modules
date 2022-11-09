@@ -1,7 +1,7 @@
-terraform {
-  required_providers {
-    harness = {
-      source = "harness/harness"
-    }
-  }
-}
+# terraform {
+#   required_providers {
+#     harness = {
+#       source = "harness/harness"
+#     }
+#   }
+# }
