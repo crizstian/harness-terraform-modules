@@ -33,7 +33,7 @@ resource "null_resource" "install_docker_linux_delegate" {
     type        = "ssh"
     user        = each.value.connection.user
     host        = each.value.connection.host
-    private_key = data.harness_platform_secret_text.private_key.value
+    private_key = data.harness_platform_secret_text.private_key[each.key].value
   }
 
   provisioner "file" {
