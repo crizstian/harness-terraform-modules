@@ -48,7 +48,7 @@ resource "harness_platform_connector_kubernetes" "connector" {
   org_id      = each.value.org_id
 
   inherit_from_delegate {
-    delegate_selectors = [each.value.delegate_selectors]
+    delegate_selectors = each.value.delegate_selectors
   }
 }
 
@@ -64,7 +64,7 @@ resource "harness_platform_connector_aws" "connector" {
   manual {
     access_key_ref     = each.value.manual.access_key_ref
     secret_key_ref     = each.value.manual.secret_key_ref
-    delegate_selectors = [each.value.manual.delegate_selectors]
+    delegate_selectors = each.value.manual.delegate_selectors
   }
 }
 
