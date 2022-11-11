@@ -3,6 +3,7 @@ variable "harness_platform_delegates" {}
 variable "harness_account_id" {}
 variable "harness_organization_id" {}
 variable "suffix" {}
+variable "enable_delegate_pipeline_init" {}
 
 variable "harness_api_endpoint" {
   default = "https://app.harness.io/gateway/ng/api"

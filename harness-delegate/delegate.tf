@@ -118,3 +118,22 @@ resource "null_resource" "harness_file" {
       EOT
   }
 }
+
+resource "harness_platform_service" "service" {
+  count       = enable_delegate_pipeline_init ? 1 : 0
+  identifier  = "delegate_${random_string.suffix.id}"
+  name        = "delegate"
+  org_id      = module.bootstrap_harness_account.organization[var.organization_prefix].org_id
+  project_id  = module.bootstrap_harness_account.organization[var.organization_prefix].seed_project_id
+  description = "Install packages to the delegate selected; Service registred by terraform harness provider"
+}
+
+resource "harness_platform_environment" "environment" {
+  count       = enable_delegate_pipeline_init ? 1 : 0
+  identifier  = "harness_${random_string.suffix.id}"
+  name        = "harness"
+  type        = "PreProduction"
+  org_id      = module.bootstrap_harness_account.organization[var.organization_prefix].org_id
+  project_id  = module.bootstrap_harness_account.organization[var.organization_prefix].seed_project_id
+  description = "Environment registred by terraform harness provider"
+}
