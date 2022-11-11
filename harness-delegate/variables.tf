@@ -76,7 +76,7 @@ locals {
 
 output "manifests" {
   value = {
-    "${var.harness_organization_id}" = { for key, value in local.delegates : key => {
+    "${local.harness_organization_id}" = { for key, value in local.delegates : key => {
       identifier = value.identifier
       manifest   = "${local.harness_filestore_api}/files/${value.identifier}/download?${value.url_args}"
     } }
