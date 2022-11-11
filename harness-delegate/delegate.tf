@@ -120,8 +120,8 @@ resource "null_resource" "harness_file" {
 }
 
 resource "harness_platform_service" "service" {
-  count       = enable_delegate_pipeline_init ? 1 : 0
-  identifier  = "delegate_${random_string.suffix.id}"
+  count       = var.enable_delegate_pipeline_init ? 1 : 0
+  identifier  = "delegate_${var.suffix}"
   name        = "delegate"
   org_id      = local.harness_organization_id
   project_id  = local.harness_organization_project_id
@@ -129,8 +129,8 @@ resource "harness_platform_service" "service" {
 }
 
 resource "harness_platform_environment" "environment" {
-  count       = enable_delegate_pipeline_init ? 1 : 0
-  identifier  = "harness_${random_string.suffix.id}"
+  count       = var.enable_delegate_pipeline_init ? 1 : 0
+  identifier  = "harness_${var.suffix}"
   name        = "harness"
   type        = "PreProduction"
   org_id      = local.harness_organization_id
