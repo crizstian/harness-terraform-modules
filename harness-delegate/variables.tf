@@ -13,6 +13,9 @@ variable "delegate_manifest" {
 }
 
 locals {
+  harness_organization_id         = var.harness_organization.org_id
+  harness_organization_project_id = var.harness_organization.seed_project_id
+
   harness_filestore_api = "${var.harness_api_endpoint}/file-store"
   account_args          = "accountIdentifier=${var.harness_account_id}"
 
