@@ -1,7 +1,7 @@
 variable "harness_platform_api_key" {}
 variable "harness_platform_delegates" {}
 variable "harness_account_id" {}
-variable "harness_organization_id" {}
+variable "harness_organization" {}
 variable "suffix" {}
 variable "enable_delegate_pipeline_init" {}
 
