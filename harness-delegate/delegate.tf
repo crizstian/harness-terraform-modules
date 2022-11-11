@@ -140,7 +140,7 @@ resource "harness_platform_environment" "environment" {
 
 output "delegate_init" {
   value = {
-    service_ref     = harness_platform_service.service.identifier
-    environment_ref = harness_platform_environment.environment.identifier
+    service_ref     = var.enable_delegate_pipeline_init ? harness_platform_service.service[0].identifier : ""
+    environment_ref = var.enable_delegate_pipeline_init ? harness_platform_environment.environment[0].identifier : ""
   }
 }
