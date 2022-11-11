@@ -137,3 +137,10 @@ resource "harness_platform_environment" "environment" {
   project_id  = local.harness_organization_project_id
   description = "Environment registred by terraform harness provider"
 }
+
+output "delegate_init" {
+  value = {
+    service_ref     = harness_platform_service.service.identifier
+    environment_ref = harness_platform_environment.environment.identifier
+  }
+}
