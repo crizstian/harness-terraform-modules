@@ -13,7 +13,7 @@ variable "suffix" {}
 locals {
   orgs = { for name, organization in var.harness_platform_organizations : name =>
     {
-      identifier  = lower(replace(name, "/[\\s-.]/", "_"))
+      identifier  = "${lower(replace(name, "/[\\s-.]/", "_"))}_${var.suffix}"
       description = organization.description
     }
     if organization.enable && name != "default"
@@ -21,7 +21,7 @@ locals {
 
   projs = { for name, project in var.harness_platform_projects : name =>
     {
-      identifier  = lower(replace(name, "/[\\s-.]/", "_"))
+      identifier  = "${lower(replace(name, "/[\\s-.]/", "_"))}_${var.suffix}"
       description = project.description
       org_id      = try(project.org_id, "default")
     }
