@@ -17,10 +17,6 @@ locals {
     details.custom_template.pipeline,
     {
       identifier = "${lower(replace(name, "/[\\s-.]/", "_"))}_${var.suffix}"
-      vars = merge(
-        details.custom_template.pipeline.vars,
-        details.common_schema
-      )
     })
     if details.enable && can(details.custom_template.pipeline)
   }
@@ -44,7 +40,7 @@ locals {
       value,
       {
         identifier = "${lower(replace(name, "/[\\s-.]/", "_"))}_inputset_${lower(replace(key, "/[\\s-.]/", "_"))}_${var.suffix}"
-        vars = merge(value.vars, details.common_schema, {
+        vars = merge(value.vars, {
           pipeline_id = harness_platform_pipeline.pipeline[name].identifier
         })
     }) if value.enable
