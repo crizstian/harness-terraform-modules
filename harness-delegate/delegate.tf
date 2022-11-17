@@ -120,7 +120,7 @@ resource "null_resource" "harness_file" {
 }
 
 resource "harness_platform_service" "service" {
-  count       = var.enable_delegate_pipeline_init ? 1 : 0
+  count       = var.enable_delegate_init_service ? 1 : 0
   identifier  = "delegate_${var.suffix}"
   name        = "delegate"
   org_id      = local.harness_organization_id
@@ -129,7 +129,7 @@ resource "harness_platform_service" "service" {
 }
 
 resource "harness_platform_environment" "environment" {
-  count       = var.enable_delegate_pipeline_init ? 1 : 0
+  count       = var.enable_delegate_init_service ? 1 : 0
   identifier  = "harness_${var.suffix}"
   name        = "harness"
   type        = "PreProduction"
@@ -140,7 +140,7 @@ resource "harness_platform_environment" "environment" {
 
 output "delegate_init" {
   value = {
-    service_ref     = var.enable_delegate_pipeline_init ? harness_platform_service.service[0].identifier : ""
-    environment_ref = var.enable_delegate_pipeline_init ? harness_platform_environment.environment[0].identifier : ""
+    service_ref     = var.enable_delegate_init_service ? harness_platform_service.service[0].identifier : ""
+    environment_ref = var.enable_delegate_init_service ? harness_platform_environment.environment[0].identifier : ""
   }
 }
