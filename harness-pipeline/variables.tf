@@ -40,7 +40,9 @@ locals {
         identifier = "${lower(replace(name, "/[\\s-.]/", "_"))}_inputset_${lower(replace(key, "/[\\s-.]/", "_"))}_${var.suffix}"
         vars = merge(value.vars,
           {
-            suffix      = var.suffix
+            org_id      = details.pipeline.org_id
+            project_id  = details.pipeline.seed_project_id
+            suffix      = details.pipeline.suffix
             pipeline_id = harness_platform_pipeline.pipeline[name].identifier
           }
         )
