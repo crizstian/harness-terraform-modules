@@ -11,18 +11,16 @@ variable "harness_platform_inputsets" {
 }
 
 locals {
-
   pipeline_templates = { for name, details in var.harness_platform_pipelines : name => merge(
     details,
-    details.custom_template.pipeline,
     {
       identifier = "${lower(replace(name, "/[\\s-.]/", "_"))}_${var.suffix}"
     })
-    if details.enable && can(details.custom_template.pipeline)
   }
 
   pipeline_rendered = { for name, details in local.pipeline_templates : name => merge(
-    details, {
+    details,
+    {
       yaml = data.local_file.pipeline_template[name].content
     })
   }
@@ -40,15 +38,18 @@ locals {
       value,
       {
         identifier = "${lower(replace(name, "/[\\s-.]/", "_"))}_inputset_${lower(replace(key, "/[\\s-.]/", "_"))}_${var.suffix}"
-        vars = merge(value.vars, {
-          pipeline_id = harness_platform_pipeline.pipeline[name].identifier
-        })
+        vars = merge(value.vars,
+          {
+            pipeline_id = harness_platform_pipeline.pipeline[name].identifier
+          }
+        )
     }) if value.enable
     } if details.enable && can(details.custom_template.inputset)
   ]...)
 
   inputset_rendered = { for name, details in local.inputset_templates : name => merge(
-    details, {
+    details,
+    {
       yaml = data.local_file.inputset_template[name].content
     })
   }
