@@ -43,8 +43,7 @@ locals {
             pipeline_id = harness_platform_pipeline.pipeline[name].identifier
           }
         )
-    }) if value.enable
-    } if can(details.inputset)
+    }) }
   ]...)
 
   inputset_rendered = { for name, details in local.inputset_templates : name => merge(
