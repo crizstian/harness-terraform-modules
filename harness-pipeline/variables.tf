@@ -26,7 +26,7 @@ locals {
   }
 
   pipeline_non_templatized = { for name, details in var.harness_platform_pipelines : name => details
-    if details.enable && !can(details.custom_template.pipeline)
+    if !can(details.custom_template.pipeline)
   }
 
   all_pipelines = merge(local.pipeline_rendered, local.pipeline_non_templatized)
@@ -44,7 +44,7 @@ locals {
           }
         )
     }) if value.enable
-    } if details.enable && can(details.custom_template.inputset)
+    } if can(details.custom_template.inputset)
   ]...)
 
   inputset_rendered = { for name, details in local.inputset_templates : name => merge(
