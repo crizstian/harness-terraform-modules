@@ -16,6 +16,7 @@ locals {
     {
       identifier = "${lower(replace(name, "/[\\s-.]/", "_"))}_${var.suffix}"
       name       = try(organization.short_name, "terraform")
+      tags       = try(organization.tags, [])
     })
     if organization.enable && name != "default"
   }
@@ -26,6 +27,7 @@ locals {
       identifier = "${lower(replace(name, "/[\\s-.]/", "_"))}_${var.suffix}"
       name       = try(project.short_name, "terraform")
       org_id     = try(project.org_id, "default")
+      tags       = try(project.tags, [])
     })
     if project.enable
   }
