@@ -14,7 +14,7 @@ locals {
   pipeline_templates = { for name, details in var.harness_platform_pipelines : name => merge(
     details.pipeline,
     {
-      identifier = "${lower(replace(name, "/[\\s-.]/", "_"))}_${var.suffix}"
+      identifier = "${lower(replace(name, "-", "_"))}_${var.suffix}"
     })
   }
 
@@ -37,7 +37,7 @@ locals {
     for key, value in details.inputset : "${name}_inputset_${key}" => merge(
       value,
       {
-        identifier = "${lower(replace(name, "/[\\s-.]/", "_"))}_inputset_${lower(replace(key, "/[\\s-.]/", "_"))}_${var.suffix}"
+        identifier = "${lower(replace(name, "-", "_"))}_inputset_${lower(replace(key, "-", "_"))}_${var.suffix}"
         vars = merge(details.pipeline.vars, value.vars,
           {
             pipeline_id = harness_platform_pipeline.pipeline[name].identifier
