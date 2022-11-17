@@ -8,6 +8,7 @@ resource "harness_platform_connector_github" "connector" {
   validation_repo = each.value.validation_repo
   org_id          = each.value.org_id
   project_id      = each.value.project_id
+  tags            = each.value.tags
 
   credentials {
     http {
