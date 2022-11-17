@@ -18,20 +18,20 @@ locals {
     })
   }
 
-  pipeline_rendered = { for name, details in local.pipeline_templates : name => merge(
+  pipelines = { for name, details in local.pipeline_templates : name => merge(
     details,
     {
       yaml = data.local_file.pipeline_template[name].content
     })
   }
 
-  pipeline_non_templatized = { for name, details in var.harness_platform_pipelines : name => details
-    if !can(details.custom_template.pipeline)
-  }
+  # pipeline_non_templatized = { for name, details in var.harness_platform_pipelines : name => details
+  #   if !can(details.custom_template.pipeline)
+  # }
 
-  all_pipelines = merge(local.pipeline_rendered, local.pipeline_non_templatized)
+  # all_pipelines = merge(local.pipeline_rendered, local.pipeline_non_templatized)
 
-  pipelines = { for name, details in local.all_pipelines : name => details }
+  # pipelines = { for name, details in local.all_pipelines : name => details }
 
   inputset_templates = merge([for name, details in var.harness_platform_pipelines : {
     for key, value in details.custom_template.inputset : "${name}_inputset_${key}" => merge(
