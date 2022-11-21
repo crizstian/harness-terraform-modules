@@ -91,9 +91,9 @@ resource "harness_platform_connector_aws" "connector" {
 
 output "connectors" {
   value = {
-    github_connectors = length(local.github_connectors_id) > 0 ? local.github_connectors_id : { for key, value in harness_platform_connector_github.connector : key => {
+    github_connectors = length(local.github_connectors_id) > 0 ? local.github_connectors_id : merge(local.github_connectors_id, { for key, value in harness_platform_connector_github.connector : key => {
       identifier = value.project_id != "" ? value.identifier : value.org_id != "" ? "org.${value.identifier}" : "account.${value.identifier}"
-    } }
+    } })
     docker_connectors = { for key, value in harness_platform_connector_docker.connector : key => {
       identifier = value.project_id != "" ? value.identifier : value.org_id != "" ? "org.${value.identifier}" : "account.${value.identifier}"
     } }
