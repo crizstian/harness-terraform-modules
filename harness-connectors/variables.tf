@@ -40,7 +40,7 @@ locals {
       }
   }) if details.enable }
 
-  github_connectors_id = { for name, details in var.harness_platform_github_connectors : "${name}_github_connector" => { identifier = details.id } if !details.enable }
+  github_connectors_id = { for name, details in var.harness_platform_github_connectors : "${name}_github_connector" => { identifier = details.id } if !details.enable && can(details.id) }
 
   docker_connectors = { for name, details in var.harness_platform_docker_connectors : "${name}_docker_connector" => merge(
     details,
