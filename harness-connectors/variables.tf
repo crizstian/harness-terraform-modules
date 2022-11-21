@@ -40,7 +40,6 @@ locals {
       }
   }) if details.enable }
 
-  github_connectors_id = { for name, details in var.harness_platform_github_connectors : "${name}_github_connector" => { identifier = details.id } if !details.enable && can(details.id) }
 
   docker_connectors = { for name, details in var.harness_platform_docker_connectors : "${name}_docker_connector" => merge(
     details,
@@ -80,4 +79,8 @@ locals {
     local.github_secrets,
     # local.docker_secrets
   )
+
+  github_connectors_id      = { for name, details in var.harness_platform_github_connectors : "${name}_github_connector" => { identifier = details.id } if !details.enable && can(details.id) }
+  github_connectors_created = { for key, value in harness_platform_connector_github.connector : key => { identifier = value.project_id != "" ? value.identifier : value.org_id != "" ? "org.${value.identifier}" : "account.${value.identifier}" } }
+  github_connectors_output  = merge(local.github_connectors_id, local.github_connectors_created)
 }
