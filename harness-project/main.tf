@@ -1,10 +1,3 @@
-# resource "random_string" "suffix" {
-#   count   = var.suffix != "" ? 0 : 1
-#   length  = 4
-#   special = false
-#   lower   = true
-# }
-
 resource "harness_platform_organization" "org" {
   for_each    = local.orgs
   tags        = each.value.tags

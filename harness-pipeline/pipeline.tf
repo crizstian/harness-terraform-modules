@@ -15,13 +15,13 @@ data "local_file" "pipeline_template" {
 }
 
 resource "harness_platform_pipeline" "pipeline" {
-  for_each    = local.pipelines
+  for_each    = local.pipeline_templates
   description = each.value.description
   identifier  = each.value.identifier
   name        = each.key
   org_id      = each.value.vars.org_id
   project_id  = each.value.vars.project_id
-  yaml        = each.value.yaml
+  yaml        = data.local_file.pipeline_template[each.key].content
 }
 
 output "pipelines" {

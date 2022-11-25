@@ -9,15 +9,10 @@ resource "null_resource" "sanity_delegate_check" {
     interpreter = ["/bin/bash", "-c"]
     working_dir = path.root
     command     = <<-EOT
-      echo "curl -s -X GET '${local.harness_filestore_api}/${each.value.identifier}?${each.value.url_args}' -H 'x-api-key: ${var.harness_platform_api_key}'"
       request=$(curl -s -X GET '${local.harness_filestore_api}/${each.value.identifier}?${each.value.url_args}' -H 'x-api-key: ${var.harness_platform_api_key}')
+      response=$(echo $request | jq .code)
 
-      result=$(echo $request | jq .code)
-
-      echo "###### RESULT #######"
-      echo "$result"
-
-      if [[ $result != *ENTITY_NOT_FOUND* ]]; then
+      if [[ $response != *ENTITY_NOT_FOUND* ]]; then
         # pull delegate file
         curl -s -X GET \
             '${local.harness_filestore_api}/files/${each.value.identifier}/download?${each.value.url_args}' \
@@ -39,15 +34,10 @@ resource "null_resource" "harness_folder" {
     interpreter = ["/bin/bash", "-c"]
     working_dir = path.root
     command     = <<-EOT
-      echo "curl -s -X GET '${local.harness_filestore_api}/${local.harness_organization_id}?${local.account_args}' -H 'x-api-key: ${var.harness_platform_api_key}'"
       request=$(curl -s -X GET '${local.harness_filestore_api}/${local.harness_organization_id}?${local.account_args}' -H 'x-api-key: ${var.harness_platform_api_key}')
+      response=$(echo $request | jq '.code')
 
-      result=$(echo $request | jq '.code')
-
-      echo "###### RESULT #######"
-      echo "$result"
-
-      if [[ $result == *ENTITY_NOT_FOUND* ]]; then
+      if [[ $response == *ENTITY_NOT_FOUND* ]]; then
         # create folder
         curl -i -s -X POST \
         '${local.harness_filestore_api}?${local.account_args}' \
@@ -78,15 +68,10 @@ resource "null_resource" "harness_file" {
     interpreter = ["/bin/bash", "-c"]
     working_dir = path.root
     command     = <<-EOT
-      echo "curl -s -X GET '${local.harness_filestore_api}/${each.value.identifier}?${local.account_args}' -H 'x-api-key: ${var.harness_platform_api_key}'"
       request=$(curl -s -X GET '${local.harness_filestore_api}/${each.value.identifier}?${local.account_args}' -H 'x-api-key: ${var.harness_platform_api_key}')
+      response=$(echo $request | jq '.code')
 
-      result=$(echo $request | jq '.code')
-
-      echo "###### RESULT #######"
-      echo "$result"
-
-      if [[ $result == *ENTITY_NOT_FOUND* ]]; then
+      if [[ $response == *ENTITY_NOT_FOUND* ]]; then
       curl -i -s -X POST \
         '${local.harness_filestore_api}?${local.account_args}' \
         -H 'Content-Type: multipart/form-data' \
@@ -116,31 +101,5 @@ resource "null_resource" "harness_file" {
         -F content="$(cat ${each.value.manifest})"
       fi
       EOT
-  }
-}
-
-resource "harness_platform_service" "service" {
-  count       = var.enable_delegate_init_service ? 1 : 0
-  identifier  = "delegate_${var.suffix}"
-  name        = "delegate"
-  org_id      = local.harness_organization_id
-  project_id  = local.harness_organization_project_id
-  description = "Install packages to the delegate selected; Service registred by terraform harness provider"
-}
-
-resource "harness_platform_environment" "environment" {
-  count       = var.enable_delegate_init_service ? 1 : 0
-  identifier  = "harness_${var.suffix}"
-  name        = "harness"
-  type        = "PreProduction"
-  org_id      = local.harness_organization_id
-  project_id  = local.harness_organization_project_id
-  description = "Environment registred by terraform harness provider"
-}
-
-output "delegate_init" {
-  value = {
-    service_ref     = var.enable_delegate_init_service ? harness_platform_service.service[0].identifier : ""
-    environment_ref = var.enable_delegate_init_service ? harness_platform_environment.environment[0].identifier : ""
   }
 }

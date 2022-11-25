@@ -21,7 +21,7 @@ data "harness_platform_secret_text" "private_key" {
   identifier = each.value.connection.private_key
 }
 
-resource "null_resource" "install_docker_linux_delegate" {
+resource "null_resource" "install_docker_unix_delegate" {
   for_each   = local.install_docker_delegates
   depends_on = [null_resource.harness_file]
 
@@ -49,7 +49,7 @@ resource "null_resource" "install_docker_linux_delegate" {
   provisioner "remote-exec" {
     inline = [
       "export PATH=$PATH:/usr/local/bin/",
-      "curl -o drone-docker-runner-linux https://github.com/harness/drone-docker-runner/releases/download/v0.1.0/drone-docker-runner-linux-amd64",
+      "curl -o drone-docker-runner-linux ${var.harness_docker_drone_runner_endpoint}",
       "chmod +x drone-docker-runner-linux",
       "mv drone-docker-runner-linux /usr/bin",
       "docker-compose -f /tmp/${each.value.docker_manifest} up -d",

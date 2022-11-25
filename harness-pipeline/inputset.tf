@@ -14,14 +14,14 @@ data "local_file" "inputset_template" {
 }
 
 resource "harness_platform_input_set" "inputset" {
-  for_each    = local.inputsets
+  for_each    = local.inputset_templates
   description = each.value.description
   identifier  = each.value.identifier
   name        = each.key
   org_id      = each.value.vars.org_id
   project_id  = each.value.vars.project_id
   pipeline_id = each.value.vars.pipeline_id
-  yaml        = each.value.yaml
+  yaml        = data.local_file.inputset_template[each.key].content
 }
 
 output "inputsets" {

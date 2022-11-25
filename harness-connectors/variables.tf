@@ -10,7 +10,6 @@ variable "harness_platform_k8s_connectors" {
 variable "harness_platform_aws_connectors" {
   default = {}
 }
-
 variable "suffix" {}
 
 locals {
@@ -79,8 +78,35 @@ locals {
     local.github_secrets,
     # local.docker_secrets
   )
+}
 
-  github_connectors_id      = { for name, details in var.harness_platform_github_connectors : "${name}_github_connector" => { identifier = details.id } if !details.enable && can(details.id) }
-  github_connectors_created = { for key, value in harness_platform_connector_github.connector : key => { identifier = value.project_id != "" ? value.identifier : value.org_id != "" ? "org.${value.identifier}" : "account.${value.identifier}" } }
-  github_connectors_output  = merge(local.github_connectors_id, local.github_connectors_created)
+# Outputs
+locals {
+  github_connectors_output = merge(
+    { for name, details in var.harness_platform_github_connectors : "${name}_github_connector" =>
+      {
+        identifier = details.id
+      } if !details.enable && can(details.id)
+    },
+    { for key, value in harness_platform_connector_github.connector : key =>
+      {
+        identifier = value.project_id != "" ? value.identifier : value.org_id != "" ? "org.${value.identifier}" : "account.${value.identifier}"
+      }
+    }
+  )
+  docker_connectors_output = { for key, value in harness_platform_connector_docker.connector : key =>
+    {
+      identifier = value.project_id != "" ? value.identifier : value.org_id != "" ? "org.${value.identifier}" : "account.${value.identifier}"
+    }
+  }
+  k8s_connectors_output = { for key, value in harness_platform_connector_kubernetes.connector : key =>
+    {
+      identifier = value.project_id != "" ? value.identifier : value.org_id != "" ? "org.${value.identifier}" : "account.${value.identifier}"
+    }
+  }
+  aws_connectors_output = { for key, value in harness_platform_connector_aws.connector : key =>
+    {
+      identifier = value.project_id != "" ? value.identifier : value.org_id != "" ? "org.${value.identifier}" : "account.${value.identifier}"
+    }
+  }
 }

@@ -1,5 +1,4 @@
 variable "suffix" {}
-
 variable "harness_platform_pipelines" {
   description = "Harness Pipelines to be created in the given Harness account"
   default     = {}
@@ -18,40 +17,24 @@ locals {
     })
   }
 
-  pipelines = { for name, details in local.pipeline_templates : name => merge(
-    details,
-    {
-      yaml = data.local_file.pipeline_template[name].content
-    })
-  }
-
-  # pipeline_non_templatized = { for name, details in var.harness_platform_pipelines : name => details
-  #   if !can(details.custom_template.pipeline)
-  # }
-
-  # all_pipelines = merge(local.pipeline_rendered, local.pipeline_non_templatized)
-
-  # pipelines = { for name, details in local.all_pipelines : name => details }
-
-  inputset_templates = merge([for name, details in var.harness_platform_pipelines : {
-    for key, value in details.inputset : "${name}_inputset_${key}" => merge(
+  inputset_templates = merge([for name, details in harness_platform_pipeline.pipeline : {
+    for key, value in var.harness_platform_pipelines[name].inputset : "${name}_inputset_${key}" =>
+    merge(
       value,
       {
         identifier = "${lower(replace(name, "-", "_"))}_inputset_${lower(replace(key, "-", "_"))}_${var.suffix}"
-        vars = merge(details.pipeline.vars, value.vars,
-          {
-            pipeline_id = harness_platform_pipeline.pipeline[name].identifier
-          }
-        )
-    }) }
+        vars       = merge(details.pipeline.vars, value.vars, { pipeline_id = details.identifier })
+      }
+    ) }
   ]...)
-
-  inputset_rendered = { for name, details in local.inputset_templates : name => merge(
-    details,
-    {
-      yaml = data.local_file.inputset_template[name].content
-    })
-  }
-
-  inputsets = { for name, details in local.inputset_rendered : name => details }
 }
+
+# locals {
+#   # pipeline_non_templatized = { for name, details in var.harness_platform_pipelines : name => details
+#   #   if !can(details.custom_template.pipeline)
+#   # }
+
+#   # all_pipelines = merge(local.pipeline_rendered, local.pipeline_non_templatized)
+
+#   # pipelines = { for name, details in local.all_pipelines : name => details }
+# }

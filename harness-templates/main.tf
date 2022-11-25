@@ -12,50 +12,6 @@ data "local_file" "template" {
   filename = "${path.module}/${each.key}.yml"
 }
 
-resource "null_resource" "template" {
-  depends_on = [
-    data.local_file.template,
-  ]
-  triggers = {
-    always_run = "${timestamp()}"
-  }
-  for_each = local.crafted_templates
-
-  provisioner "local-exec" {
-    interpreter = ["/bin/bash", "-c"]
-    working_dir = path.root
-    command     = <<-EOT
-        curl  -i -X POST '${var.harness_template_endpoint}${var.harness_template_endpoint_account_args}' \
-        --header 'Content-Type: application/yaml' \
-        --header 'x-api-key: ${var.harness_platform_api_key}' -d '
-        ${data.local_file.template[each.key].content}
-        '
-        EOT
-  }
-}
-
-resource "null_resource" "template-update" {
-  depends_on = [
-    null_resource.template
-  ]
-  triggers = {
-    always_run = "${timestamp()}"
-  }
-  for_each = local.crafted_templates
-
-  provisioner "local-exec" {
-    interpreter = ["/bin/bash", "-c"]
-    working_dir = path.root
-    command     = <<-EOT
-        curl  -i -X PUT '${var.harness_template_endpoint}${each.value.update_endpoint}' \
-        --header 'Content-Type: application/yaml' \
-        --header 'x-api-key: ${var.harness_platform_api_key}' -d '
-        ${data.local_file.template[each.key].content}
-        '
-        EOT
-  }
-}
-
 output "files" {
   value = { for name, value in data.local_file.template : name => "${path.module}/${name}.yml" }
 }

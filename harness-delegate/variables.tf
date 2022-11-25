@@ -4,21 +4,26 @@ variable "harness_account_id" {}
 variable "harness_organization" {}
 variable "suffix" {}
 variable "enable_delegate_init_service" {}
-
 variable "harness_api_endpoint" {
   default = "https://app.harness.io/gateway/ng/api"
+}
+variable "harness_docker_drone_runner_endpoint" {
+  default = "https://github.com/harness/drone-docker-runner/releases/download/v0.1.0/drone-docker-runner-linux-amd64"
 }
 variable "delegate_manifest" {
   default = "harness-delegate.yml"
 }
 
+# Common Vars
 locals {
   harness_organization_id         = var.harness_organization.org_id
   harness_organization_project_id = var.harness_organization.seed_project_id
+  harness_filestore_api           = "${var.harness_api_endpoint}/file-store"
+  account_args                    = "accountIdentifier=${var.harness_account_id}"
+}
 
-  harness_filestore_api = "${var.harness_api_endpoint}/file-store"
-  account_args          = "accountIdentifier=${var.harness_account_id}"
-
+# Delegate Setup
+locals {
   docker_delegates = { for name, delegate in try(var.harness_platform_delegates.docker, {}) : name => {
     manifest          = "${name}-${var.delegate_manifest}"
     delegate_endpoint = "${var.harness_api_endpoint}/download-delegates/docker"
@@ -37,7 +42,7 @@ locals {
       clusterPermissionType  = delegate.clusterPermissionType
       customClusterNamespace = delegate.customClusterNamespace
     })
-  } if delegate.enable }
+  } }
 
   k8s_delegates = { for name, delegate in try(var.harness_platform_delegates.k8s, {}) : name => {
     manifest          = "${name}-${var.delegate_manifest}"
@@ -57,13 +62,15 @@ locals {
       clusterPermissionType  = delegate.clusterPermissionType
       customClusterNamespace = delegate.customClusterNamespace
     })
-  } if delegate.enable }
+  } }
+}
 
+# install setup
+locals {
   install_docker_delegates = { for name, delegate in local.docker_delegates : name => delegate if delegate.auto_install && length(delegate.connection) > 0 }
   install_on_linux         = { for name, delegate in local.install_docker_delegates : name => delegate if delegate.os == "linux" }
 
-  install_k8s_delegates = { for name, delegate in local.k8s_delegates : name => delegate if delegate.auto_install && length(delegate.connection) > 0 }
-
+  # install_k8s_delegates = { for name, delegate in local.k8s_delegates : name => delegate if delegate.auto_install && length(delegate.connection) > 0 }
   # remote_docker_delegates = { for name, delegate in local.docker_delegates : name => delegate if can(delegate.remote.host) }
   # anka_remote_docker_delegates = { for name, delegate in local.remote_docker_delegates : name => delegate if delegate.remote.type == "anka" }
 
@@ -74,11 +81,19 @@ locals {
   )
 }
 
+output "delegate_init" {
+  value = {
+    service_ref     = var.enable_delegate_init_service ? harness_platform_service.service[0].identifier : ""
+    environment_ref = var.enable_delegate_init_service ? harness_platform_environment.environment[0].identifier : ""
+  }
+}
+
 output "manifests" {
   value = {
     "${local.harness_organization_id}" = { for key, value in local.delegates : key => {
       identifier = value.identifier
       manifest   = "${local.harness_filestore_api}/files/${value.identifier}/download?${value.url_args}"
+      file_store = "https://app.harness.io/ng/#/account/${var.harness_account_id}/settings/resources/file-store"
     } }
   }
 }
