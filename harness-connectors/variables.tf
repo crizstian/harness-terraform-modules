@@ -10,6 +10,9 @@ variable "harness_platform_k8s_connectors" {
 variable "harness_platform_aws_connectors" {
   default = {}
 }
+variable "harness_platform_gcp_connectors" {
+  default = {}
+}
 variable "suffix" {}
 
 locals {
@@ -17,6 +20,14 @@ locals {
     details,
     {
       identifier = "${lower(replace(name, "/[\\s-.]/", "_"))}_aws_connector_${var.suffix}"
+      org_id     = try(details.org_id, "")
+      project_id = try(details.project_id, "")
+  }) if details.enable }
+
+  gcp_connectors = { for name, details in var.harness_platform_gcp_connectors : "${name}_gcp_connector" => merge(
+    details,
+    {
+      identifier = "${lower(replace(name, "/[\\s-.]/", "_"))}_gcp_connector_${var.suffix}"
       org_id     = try(details.org_id, "")
       project_id = try(details.project_id, "")
   }) if details.enable }
@@ -105,6 +116,11 @@ locals {
     }
   }
   aws_connectors_output = { for key, value in harness_platform_connector_aws.connector : key =>
+    {
+      identifier = value.project_id != "" ? value.identifier : value.org_id != "" ? "org.${value.identifier}" : "account.${value.identifier}"
+    }
+  }
+  gcp_connectors_output = { for key, value in harness_platform_connector_gcp.connector : key =>
     {
       identifier = value.project_id != "" ? value.identifier : value.org_id != "" ? "org.${value.identifier}" : "account.${value.identifier}"
     }

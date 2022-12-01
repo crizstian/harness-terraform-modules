@@ -69,6 +69,21 @@ resource "harness_platform_connector_aws" "connector" {
   }
 }
 
+resource "harness_platform_connector_gcp" "connector" {
+  for_each    = local.gcp_connectors
+  identifier  = each.value.identifier
+  name        = each.key
+  description = each.value.description
+  tags        = each.value.tags
+  project_id  = each.value.project_id
+  org_id      = each.value.org_id
+
+  manual {
+    secret_key_ref     = each.value.manual.secret_key_ref
+    delegate_selectors = each.value.manual.delegate_selectors
+  }
+}
+
 # resource "harness_platform_connector_artifactory" "connector" {
 #   for_each           = local.artifactory_connectors
 #   identifier         = "${lower(replace(name, "/[\\s-.]/", "_"))}_${var.suffix}"
@@ -94,5 +109,6 @@ output "connectors" {
     docker_connectors = local.docker_connectors_output
     k8s_connectors    = local.k8s_connectors_output
     aws_connectors    = local.aws_connectors_output
+    aws_connectors    = local.gcp_connectors_output
   }
 }
