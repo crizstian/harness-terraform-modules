@@ -23,7 +23,7 @@ locals {
       value,
       {
         identifier = "${lower(replace(name, "-", "_"))}_inputset_${lower(replace(key, "-", "_"))}_${var.suffix}"
-        vars       = merge(details.custom_template.pipeline.vars, value.vars, { pipeline_id = details.identifier })
+        vars       = merge(details.pipeline.vars, value.vars, { pipeline_id = details.identifier })
       }
     ) }
   ]...)
