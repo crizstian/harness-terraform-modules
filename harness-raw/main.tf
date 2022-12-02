@@ -10,9 +10,7 @@ resource "null_resource" "raw_request" {
     command     = <<-EOT
         curl  -i -X ${each.value.request_type} '${each.value.endpoint}' \
         --header 'Content-Type: application/${each.value.content_type}' \
-        --header 'x-api-key: ${var.harness_platform_api_key}' -d '
-        ${each.value.content}
-        '
+        --header 'x-api-key: ${var.harness_platform_api_key}' -d @${each.value.content}
         EOT
   }
 }
