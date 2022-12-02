@@ -17,13 +17,13 @@ locals {
     })
   }
 
-  inputset_templates = merge([for name, details in harness_platform_pipeline.pipeline : {
+  inputset_templates = merge([for name, details in var.harness_platform_pipelines : {
     for key, value in var.harness_platform_pipelines[name].inputset : "${name}_inputset_${key}" =>
     merge(
       value,
       {
         identifier = "${lower(replace(name, "-", "_"))}_inputset_${lower(replace(key, "-", "_"))}_${var.suffix}"
-        vars       = merge(var.harness_platform_pipelines[name].custom_template.pipeline.vars, value.vars, { pipeline_id = details.identifier })
+        vars       = merge(details.custom_template.pipeline.vars, value.vars, { pipeline_id = details.identifier })
       }
     ) }
   ]...)
