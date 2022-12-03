@@ -103,12 +103,3 @@ resource "harness_platform_connector_gcp" "connector" {
 #   }
 # }
 
-output "connectors" {
-  value = {
-    github_connectors = local.github_connectors_output
-    docker_connectors = local.docker_connectors_output
-    k8s_connectors    = local.k8s_connectors_output
-    aws_connectors    = local.aws_connectors_output
-    aws_connectors    = local.gcp_connectors_output
-  }
-}
