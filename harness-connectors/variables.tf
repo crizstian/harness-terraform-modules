@@ -31,7 +31,7 @@ locals {
       identifier      = "${lower(replace(name, "/[\\s-.]/", "_"))}_github_connector_${var.suffix}"
       validation_repo = details.connection_type == "Repo" ? "" : details.validation_repo
       org_id          = details.connection_type == "Repo" ? try(details.org_id, var.org_id) : try(details.org_id, "")
-      project_id      = details.connection_type == "Repo" ? try(details.project_id, var.seed_project_id) : try(details.project_id, "")
+      project_id      = details.connection_type == "Repo" ? try(details.project_id, var.project_id) : try(details.project_id, "")
     }
   ) if details.enable }
 }
