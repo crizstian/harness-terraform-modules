@@ -40,6 +40,7 @@ locals {
 
   aws_connectors = { for name, details in var.harness_platform_aws_connectors : "${name}_aws_connector" => merge(
     details,
+    var.tags,
     {
       identifier = "${lower(replace(name, "/[\\s-.]/", "_"))}_aws_connector_${var.suffix}"
       org_id     = try(details.org_id, "")
@@ -48,6 +49,7 @@ locals {
 
   gcp_connectors = { for name, details in var.harness_platform_gcp_connectors : "${name}_gcp_connector" => merge(
     details,
+    var.tags,
     {
       identifier = "${lower(replace(name, "/[\\s-.]/", "_"))}_gcp_connector_${var.suffix}"
       org_id     = try(details.org_id, "")
@@ -56,6 +58,7 @@ locals {
 
   docker_connectors = { for name, details in var.harness_platform_docker_connectors : "${name}_docker_connector" => merge(
     details,
+    var.tags,
     {
       identifier = "${lower(replace(name, "/[\\s-.]/", "_"))}_docker_connector_${var.suffix}"
       org_id     = try(details.org_id, "")
