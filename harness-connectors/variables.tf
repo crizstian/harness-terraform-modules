@@ -27,7 +27,7 @@ variable "tags" {
 
 # github connectors
 locals {
-  github_connectors = { for name, details in var.harness_platform_github_connectors : name => merge(
+  github_connectors = { for name, details in var.harness_platform_github_connectors : "${name}_github_connector" => merge(
     details,
     var.tags,
     {
