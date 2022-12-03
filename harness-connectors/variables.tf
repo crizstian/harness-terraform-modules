@@ -37,9 +37,7 @@ locals {
       project_id      = details.connection_type == "Repo" ? try(details.project_id, var.project_id) : try(details.project_id, "")
     }
   ) if details.enable }
-}
 
-locals {
   aws_connectors = { for name, details in var.harness_platform_aws_connectors : "${name}_aws_connector" => merge(
     details,
     {
