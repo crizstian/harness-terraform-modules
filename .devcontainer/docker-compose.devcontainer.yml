@@ -26,8 +26,8 @@ services:
   #     - server
   harness_module_tf:
     # environment:
-      # VAULT_ADDR: http://vault:8200
-      # VAULT_TOKEN: root
+    # VAULT_ADDR: http://vault:8200
+    # VAULT_TOKEN: root
     build:
       context: ../contrib/docker
       dockerfile: devcontainer.Dockerfile
@@ -38,6 +38,5 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - ../:/workspace:cached
-      - ~/.kube:/workspace/.kube:cached
     command: /bin/sh -c "while sleep 1000; do :; done"
     container_name: harness_module_tf
