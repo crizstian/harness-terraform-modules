@@ -20,13 +20,16 @@ variable "org_id" {
 variable "project_id" {
   default = ""
 }
+variable "tags" {
+  default = ""
+}
 
 
 # github connectors
 locals {
   github_connectors = { for name, details in var.harness_platform_github_connectors : name => merge(
     details,
-    local.common_tags,
+    var.tags,
     {
       identifier      = "${lower(replace(name, "/[\\s-.]/", "_"))}_github_connector_${var.suffix}"
       validation_repo = details.connection_type == "Repo" ? "" : details.validation_repo
