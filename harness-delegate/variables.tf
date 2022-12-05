@@ -5,7 +5,13 @@ variable "harness_organization" {
   default = {}
 }
 variable "suffix" {}
-variable "enable_delegate_init_service" {}
+variable "delegate_init_service" {
+  default = {
+    enable     = false
+    org_id     = ""
+    project_id = ""
+  }
+}
 variable "harness_api_endpoint" {
   default = "https://app.harness.io/gateway/ng/api"
 }
