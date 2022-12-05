@@ -49,11 +49,11 @@ locals {
 }
 
 output "connectors" {
-  value = {
-    github_connectors = local.github_connectors_output
-    docker_connectors = local.docker_connectors_output
-    k8s_connectors    = local.k8s_connectors_output
-    aws_connectors    = local.aws_connectors_output
-    aws_connectors    = local.gcp_connectors_output
-  }
+  value = merge(
+    can(length(github_connectors) > 0) ? { github_connectors = local.github_connectors_output } : {},
+    can(length(docker_connectors) > 0) ? { docker_connectors = local.docker_connectors_output } : {},
+    can(length(aws_connectors) > 0) ? { aws_connectors = local.aws_connectors_output } : {},
+    can(length(gcp_connectors) > 0) ? { gcp_connectors = local.gcp_connectors_output } : {},
+    can(length(k8s_connectors) > 0) ? { k8s_connectors = local.k8s_connectors_output } : {}
+  )
 }
