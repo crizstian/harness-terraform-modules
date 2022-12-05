@@ -1,7 +1,7 @@
 output "delegate_init" {
   value = {
-    service_ref     = var.enable_delegate_init_service ? harness_platform_service.service[0].identifier : ""
-    environment_ref = var.enable_delegate_init_service ? harness_platform_environment.environment[0].identifier : ""
+    service_ref     = var.delegate_init_service.enable ? harness_platform_service.service[0].identifier : ""
+    environment_ref = var.delegate_init_service.enable ? harness_platform_environment.environment[0].identifier : ""
   }
 }
 
