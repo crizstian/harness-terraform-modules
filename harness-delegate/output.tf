@@ -8,9 +8,10 @@ output "delegate_init" {
 output "manifests" {
   value = {
     "${local.harness_organization_id}" = { for key, value in local.delegates : key => {
-      identifier = value.identifier
-      manifest   = "${local.harness_filestore_api}/files/${value.identifier}/download?${value.url_args}"
-      file_store = "https://app.harness.io/ng/#/account/${var.harness_account_id}/settings/resources/file-store"
+      identifier     = value.identifier
+      manifest       = "${local.harness_filestore_api}/files/${value.identifier}/download?${value.url_args}"
+      file_store     = "https://app.harness.io/ng/#/account/${var.harness_account_id}/settings/resources/file-store"
+      k8s_connectors = { for key, value in local.k8s_connectors : key => module.bootstrap_harness_connectors[key].connectors.k8s_connectors if value.org_id == local.harness_organization_id }
     } }
   }
 }
@@ -18,8 +19,3 @@ output "manifests" {
 output "delegates-verbose" {
   value = local.delegates
 }
-
-output "k8s_connectors" {
-  value = module.bootstrap_harness_connectors.connectors.k8s_connectors
-}
-

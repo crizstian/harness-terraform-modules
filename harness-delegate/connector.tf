@@ -1,7 +1,9 @@
 module "bootstrap_harness_connectors" {
   source                          = "../harness-connectors"
+  for_each                        = local.k8s_connectors
   suffix                          = var.suffix
-  org_id                          = var.harness_organization_id
   tags                            = var.tags
-  harness_platform_k8s_connectors = local.k8s_connectors
+  org_id                          = each.org_id
+  project_id                      = each.project_id
+  harness_platform_k8s_connectors = { "${each.key}" = each.value }
 }
