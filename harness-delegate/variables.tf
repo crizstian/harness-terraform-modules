@@ -39,7 +39,7 @@ locals {
 
   enabled_delegates = { for type, delegates in var.harness_platform_delegates : type =>
     {
-      for key, value in delegates : key => merge(value, merge(local.common_schema_delegate, var.tags)) if value.enable
+      for key, value in delegates : key => merge(value, merge(local.common_schema_delegate, { tags = var.tags })) if value.enable
     }
   }
 }
