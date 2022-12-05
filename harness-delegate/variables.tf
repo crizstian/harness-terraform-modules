@@ -87,6 +87,11 @@ locals {
   } }
 }
 
+# k8s connectors
+locals {
+  k8s_connectors = merge([for type, delegates in var.harness_platform_delegates : { for key, value in delegates : key => value } if type == "k8s"]...)
+}
+
 # Delegate Setup
 locals {
   install_docker_delegates = { for name, delegate in local.docker_delegates : name => delegate if delegate.auto_install && length(delegate.connection) > 0 }
