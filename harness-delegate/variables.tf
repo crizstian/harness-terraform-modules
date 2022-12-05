@@ -90,8 +90,8 @@ locals {
 # k8s connectors
 locals {
   k8s_connectors = { for key, value in local.k8s_delegates : key => merge(value, {
-    org_id  = try(delegate.org_id, "")
-    proj_id = try(delegate.proj_id, "")
+    org_id  = try(value.org_id, "")
+    proj_id = try(value.proj_id, "")
   }) }
 }
 
