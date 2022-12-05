@@ -90,6 +90,7 @@ locals {
 # k8s connectors
 locals {
   k8s_connectors = { for key, value in local.k8s_delegates : key => merge(value, {
+    enable  = true
     org_id  = try(value.org_id, "")
     proj_id = try(value.proj_id, "")
   }) }
