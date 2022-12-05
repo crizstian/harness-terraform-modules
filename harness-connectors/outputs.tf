@@ -12,16 +12,30 @@ locals {
       }
     }
   )
-  docker_connectors_output = { for key, value in harness_platform_connector_docker.connector : key =>
-    {
-      identifier = value.project_id != "" ? value.identifier : value.org_id != "" ? "org.${value.identifier}" : "account.${value.identifier}"
+  docker_connectors_output = merge(
+    { for name, details in var.harness_platform_docker_connectors : "${name}_docker_connector" =>
+      {
+        identifier = details.id
+      } if !details.enable && can(details.id)
+    },
+    { for key, value in harness_platform_connector_docker.connector : key =>
+      {
+        identifier = value.project_id != "" ? value.identifier : value.org_id != "" ? "org.${value.identifier}" : "account.${value.identifier}"
+      }
     }
-  }
-  k8s_connectors_output = { for key, value in harness_platform_connector_kubernetes.connector : key =>
-    {
-      identifier = value.project_id != "" ? value.identifier : value.org_id != "" ? "org.${value.identifier}" : "account.${value.identifier}"
+  )
+  k8s_connectors_output = merge(
+    { for name, details in var.harness_platform_k8s_connectors : "${name}_k8s_connector" =>
+      {
+        identifier = details.id
+      } if !details.enable && can(details.id)
+    },
+    { for key, value in harness_platform_connector_kubernetes.connector : key =>
+      {
+        identifier = value.project_id != "" ? value.identifier : value.org_id != "" ? "org.${value.identifier}" : "account.${value.identifier}"
+      }
     }
-  }
+  )
   aws_connectors_output = { for key, value in harness_platform_connector_aws.connector : key =>
     {
       identifier = value.project_id != "" ? value.identifier : value.org_id != "" ? "org.${value.identifier}" : "account.${value.identifier}"
