@@ -33,8 +33,8 @@ locals {
       tags            = concat(try(details.tags, []), var.tags)
       identifier      = "${lower(replace(name, "/[\\s-.]/", "_"))}_github_connector_${var.suffix}"
       validation_repo = details.connection_type == "Repo" ? "" : details.validation_repo
-      org_id          = details.connection_type == "Repo" ? try(details.org_id, var.org_id) : try(details.org_id, "")
-      project_id      = details.connection_type == "Repo" ? try(details.project_id, var.project_id) : try(details.project_id, "")
+      org_id          = details.connection_type == "Repo" ? details.org_id : var.org_id
+      project_id      = details.connection_type == "Repo" ? details.project_id : var.project_id
     }
   ) if details.enable }
 
@@ -43,8 +43,8 @@ locals {
     {
       tags       = concat(try(details.tags, []), var.tags)
       identifier = "${lower(replace(name, "/[\\s-.]/", "_"))}_aws_connector_${var.suffix}"
-      org_id     = try(details.org_id, "")
-      project_id = try(details.project_id, "")
+      org_id     = can(details.org_id) ? details.org_id : var.org_id == "" ? "default" : var.org_id
+      project_id = try(details.project_id, var.project_id)
   }) if details.enable }
 
   gcp_connectors = { for name, details in var.harness_platform_gcp_connectors : "${name}_gcp_connector" => merge(
@@ -52,8 +52,8 @@ locals {
     {
       tags       = concat(try(details.tags, []), var.tags)
       identifier = "${lower(replace(name, "/[\\s-.]/", "_"))}_gcp_connector_${var.suffix}"
-      org_id     = try(details.org_id, "")
-      project_id = try(details.project_id, "")
+      org_id     = can(details.org_id) ? details.org_id : var.org_id == "" ? "default" : var.org_id
+      project_id = try(details.project_id, var.project_id)
   }) if details.enable }
 
   docker_connectors = { for name, details in var.harness_platform_docker_connectors : "${name}_docker_connector" => merge(
@@ -61,8 +61,8 @@ locals {
     {
       tags       = concat(try(details.tags, []), var.tags)
       identifier = "${lower(replace(name, "/[\\s-.]/", "_"))}_docker_connector_${var.suffix}"
-      org_id     = try(details.org_id, "")
-      project_id = try(details.project_id, "")
+      org_id     = can(details.org_id) ? details.org_id : var.org_id == "" ? "default" : var.org_id
+      project_id = try(details.project_id, var.project_id)
   }) if details.enable }
 
   k8s_connectors = { for name, details in var.harness_platform_k8s_connectors : "${name}_k8s_connector" => merge(
@@ -72,22 +72,22 @@ locals {
       delegate_selectors = [name]
       tags               = concat(try(details.tags, []), var.tags)
       identifier         = "${lower(replace(name, "/[\\s-.]/", "_"))}_k8s_connector_${var.suffix}"
-      org_id             = try(details.org_id, "")
-      project_id         = try(details.project_id, "")
+      org_id             = can(details.org_id) ? details.org_id : var.org_id == "" ? "default" : var.org_id
+      project_id         = try(details.project_id, var.project_id)
   }) if details.enable }
 
   # github_secrets = { for name, details in var.harness_platform_github_connectors : "${name}_github_connector_secret" => {
   #   secret      = details.credentials.http.token_ref
   #   description = details.description
-  #   org_id      = try(details.org_id, "")
-  #   project_id  = try(details.project_id, "")
+  #   org_id      = can(details.org_id) ? details.org_id : var.org_id == "" ? "default" : var.org_id
+  #   project_id  = try(details.project_id, var.project_id)
   # } if details.enable && !can(details.credentials.http.token_ref_id) }
 
   # docker_secrets = { for name, details in var.harness_platform_docker_connectors : "${name}_docker_connector_secret" => {
   #   secret      = details.credentials.password_ref
   #   description = details.description
-  #   org_id      = try(details.org_id, "")
-  #   project_id  = try(details.project_id, "")
+  #   org_id      = can(details.org_id) ? details.org_id : var.org_id == "" ? "default" : var.org_id
+  #   project_id  = try(details.project_id, var.project_id)
   # } if details.enable }
 
   # secrets = merge(
