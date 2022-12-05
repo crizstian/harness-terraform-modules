@@ -50,10 +50,10 @@ locals {
 
 output "connectors" {
   value = merge(tomap(
-    can(length(github_connectors) > 0) ? { github_connectors = local.github_connectors_output } : {},
-    can(length(docker_connectors) > 0) ? { docker_connectors = local.docker_connectors_output } : {},
-    can(length(aws_connectors) > 0) ? { aws_connectors = local.aws_connectors_output } : {},
-    can(length(gcp_connectors) > 0) ? { gcp_connectors = local.gcp_connectors_output } : {},
-    can(length(k8s_connectors) > 0) ? { k8s_connectors = local.k8s_connectors_output } : {}
+    can(length(local.github_connectors_output) > 0) ? { github_connectors = local.github_connectors_output } : {},
+    can(length(local.docker_connectors_output) > 0) ? { docker_connectors = local.docker_connectors_output } : {},
+    can(length(local.aws_connectors_output) > 0) ? { aws_connectors = local.aws_connectors_output } : {},
+    can(length(local.gcp_connectors_output) > 0) ? { gcp_connectors = local.gcp_connectors_output } : {},
+    can(length(local.k8s_connectors_output) > 0) ? { k8s_connectors = local.k8s_connectors_output } : {}
   ))
 }
