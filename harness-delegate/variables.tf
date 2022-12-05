@@ -89,11 +89,7 @@ locals {
 
 # k8s connectors
 locals {
-  k8s_connectors = { for key, value in local.k8s_delegates : key => merge(value, {
-    enable     = true
-    org_id     = try(value.org_id, "")
-    project_id = try(value.proj_id, "")
-  }) }
+  k8s_connectors = merge([for type, delegates in var.harness_platform_delegates : { for key, value in delegates : key => merge(value, { org_id = try(delegate.org_id, ""), project_id = try(delegate.project_id, "") }) } if type == "k8s"]...)
 }
 
 # Delegate Setup
