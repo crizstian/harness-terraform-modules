@@ -27,8 +27,8 @@ locals {
   k8s_connectors_output = merge(
     { for name, details in var.harness_platform_k8s_connectors : "${name}_k8s_connector" =>
       {
-        identifier = details.id
-      } if !details.enable && can(details.id)
+        identifier = details.connector_id
+      } if !details.enable && can(details.connector_id)
     },
     { for key, value in harness_platform_connector_kubernetes.connector : key =>
       {
