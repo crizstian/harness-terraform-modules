@@ -18,3 +18,8 @@ output "manifests" {
 output "delegates-verbose" {
   value = local.delegates
 }
+
+output "k8s_connectors" {
+  value = module.bootstrap_harness_connectors.connectors.k8s_connectors
+}
+
