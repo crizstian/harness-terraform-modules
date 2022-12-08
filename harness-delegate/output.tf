@@ -11,7 +11,7 @@ output "manifests" {
       identifier    = value.identifier
       manifest      = "${local.harness_filestore_api}/files/${value.identifier}/download?${value.url_args}"
       file_store    = "https://app.harness.io/ng/#/account/${var.harness_account_id}/settings/resources/file-store"
-      k8s_connector = { identifier = try(module.bootstrap_harness_connectors[key].connectors.k8s_connectors["${key}_k8s_connector"].identifier, "none") }
+      k8s_connector = { identifier = try(module.bootstrap_harness_connectors[key].connectors.k8s_connectors[key].identifier, "none") }
     } }
   }
 }
