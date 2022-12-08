@@ -38,7 +38,7 @@ locals {
       value,
       {
         identifier = "${lower(replace(name, "-", "_"))}_trigger_${lower(replace(key, "-", "_"))}_${var.suffix}"
-        vars       = merge(details.pipeline.vars, details.inputset.vars, value.vars, { pipeline_id = harness_platform_pipeline.pipeline[name].identifier })
+        vars       = merge(details.pipeline.vars, details.inputset[value.inputset_ref].vars, value.vars, { pipeline_id = harness_platform_pipeline.pipeline[name].identifier })
       }
     ) }
   ]...)
