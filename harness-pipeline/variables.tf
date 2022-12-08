@@ -31,6 +31,17 @@ locals {
       }
     ) }
   ]...)
+
+  trigger_templates = merge([for name, details in var.harness_platform_pipelines : {
+    for key, value in var.harness_platform_pipelines[name].trigger : "${name}_trigger_${key}" =>
+    merge(
+      value,
+      {
+        identifier = "${lower(replace(name, "-", "_"))}_trigger_${lower(replace(key, "-", "_"))}_${var.suffix}"
+        vars       = merge(details.pipeline.vars, details.inputset.vars, value.vars, { pipeline_id = harness_platform_pipeline.pipeline[name].identifier })
+      }
+    ) }
+  ]...)
 }
 
 # locals {
