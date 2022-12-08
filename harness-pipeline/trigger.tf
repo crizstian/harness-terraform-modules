@@ -25,5 +25,5 @@ resource "harness_platform_triggers" "trigger" {
 }
 
 output "triggers" {
-  value = { for key, details in harness_platform_input_set.trigger : key => { identifier = details.identifier } }
+  value = { for key, details in harness_platform_triggers.trigger : key => { identifier = details.identifier } }
 }
