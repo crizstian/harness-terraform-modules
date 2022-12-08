@@ -9,6 +9,9 @@ variable "harness_platform_projects" {
 }
 
 variable "suffix" {}
+variable "tags" {
+  default = []
+}
 
 locals {
   orgs = { for name, organization in var.harness_platform_organizations : name => merge(
@@ -16,7 +19,7 @@ locals {
     {
       identifier = "${lower(replace(name, "/[\\s-.]/", "_"))}_${var.suffix}"
       name       = try(organization.short_name, "terraform")
-      tags       = try(organization.tags, [])
+      tags       = try(organization.tags, var.tags)
     })
     if organization.enable && name != "default"
   }
@@ -27,7 +30,7 @@ locals {
       identifier = "${lower(replace(name, "/[\\s-.]/", "_"))}_${var.suffix}"
       name       = try(project.short_name, "terraform")
       org_id     = try(project.org_id, "default")
-      tags       = try(project.tags, [])
+      tags       = try(project.tags, var.tags)
     })
     if project.enable
   }
