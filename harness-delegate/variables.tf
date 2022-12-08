@@ -101,7 +101,7 @@ locals {
     for key, value in delegates : key => merge(
       value,
       {
-        org_id     = try(value.org_id, local.harness_organization_id)
+        org_id     = try(value.org_id, local.harness_organization_id == "default" ? "" : local.harness_organization_id)
         project_id = try(value.project_id, "")
         enable     = value.create_connector
     })

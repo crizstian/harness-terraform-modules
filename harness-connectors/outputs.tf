@@ -32,7 +32,7 @@ locals {
     },
     { for key, value in harness_platform_connector_kubernetes.connector : key =>
       {
-        identifier = value.project_id != "" ? value.identifier : value.org_id != "default" ? "org.${value.identifier}" : "account.${value.identifier}"
+        identifier = value.project_id != "" ? value.identifier : value.org_id != "" ? "org.${value.identifier}" : "account.${value.identifier}"
       }
     }
   )
