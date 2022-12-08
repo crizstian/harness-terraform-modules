@@ -20,7 +20,7 @@ locals {
     },
     { for key, value in harness_platform_connector_docker.connector : key =>
       {
-        identifier = value.project_id != "" ? value.identifier : value.org_id != "default" ? "${value.org_id}.${value.identifier}" : "account.${value.identifier}"
+        identifier = value.project_id != "" ? value.identifier : value.org_id != "default" ? "org.${value.identifier}" : "account.${value.identifier}"
       }
     }
   )

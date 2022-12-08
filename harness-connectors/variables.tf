@@ -15,7 +15,7 @@ variable "harness_platform_gcp_connectors" {
 }
 variable "suffix" {}
 variable "org_id" {
-  default = ""
+  default = "default"
 }
 variable "project_id" {
   default = ""
