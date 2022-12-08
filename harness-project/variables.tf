@@ -14,25 +14,25 @@ variable "tags" {
 }
 
 locals {
-  orgs = { for name, organization in var.harness_platform_organizations : name => merge(
-    organization,
+  orgs = { for name, details in var.harness_platform_organizations : name => merge(
+    details,
     {
       identifier = "${lower(replace(name, "/[\\s-.]/", "_"))}_${var.suffix}"
-      name       = try(organization.short_name, "terraform")
-      tags       = try(organization.tags, var.tags)
+      name       = try(details.short_name, "terraform")
+      tags       = concat(try(details.tags, []), var.tags)
     })
-    if organization.enable && name != "default"
+    if details.enable && name != "default"
   }
 
-  projs = { for name, project in var.harness_platform_projects : name => merge(
-    project,
+  projs = { for name, details in var.harness_platform_projects : name => merge(
+    details,
     {
       identifier = "${lower(replace(name, "/[\\s-.]/", "_"))}_${var.suffix}"
-      name       = try(project.short_name, "terraform")
-      org_id     = try(project.org_id, "default")
-      tags       = try(project.tags, var.tags)
+      name       = try(details.short_name, "terraform")
+      org_id     = try(details.org_id, "default")
+      tags       = concat(try(details.tags, []), var.tags)
     })
-    if project.enable
+    if details.enable
   }
 
 }
