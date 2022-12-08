@@ -43,7 +43,7 @@ locals {
   }
   gcp_connectors_output = { for key, value in harness_platform_connector_gcp.connector : key =>
     {
-      identifier = value.project_id != "" ? value.identifier : value.org_id != "" ? value.org_id != "default" ? "org.${value.identifier}" : "account.${value.identifier}" : "org.${value.identifier}"
+      identifier = value.project_id != "" ? value.identifier : value.org_id != "" ? value.org_id != "default" ? "org.${value.identifier}" : "account.${value.identifier}" : "account.${value.identifier}"
     }
   }
 }
