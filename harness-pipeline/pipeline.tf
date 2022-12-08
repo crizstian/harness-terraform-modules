@@ -21,6 +21,7 @@ resource "harness_platform_pipeline" "pipeline" {
   name        = each.key
   org_id      = each.value.vars.org_id
   project_id  = each.value.vars.project_id
+  tags        = each.value.vars.tags
   yaml        = data.local_file.pipeline_template[each.key].content
 }
 

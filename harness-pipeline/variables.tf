@@ -1,4 +1,7 @@
 variable "suffix" {}
+variable "tags" {
+  default = []
+}
 variable "harness_platform_pipelines" {
   description = "Harness Pipelines to be created in the given Harness account"
   default     = {}
@@ -13,6 +16,7 @@ locals {
   pipeline_templates = { for name, details in var.harness_platform_pipelines : name => merge(
     details.pipeline,
     {
+      tags       = concat(details.tags, var.tags)
       identifier = "${lower(replace(name, "-", "_"))}_${var.suffix}"
     })
   }
