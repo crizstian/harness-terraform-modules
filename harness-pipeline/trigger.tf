@@ -1,5 +1,5 @@
-# Renders InputSet files in order to provision it with terraform
-module "render_inputset_template_files" {
+# Renders trigger files in order to provision it with terraform
+module "render_trigger_template_files" {
   source            = "../harness-templates"
   harness_templates = local.trigger_templates
 }
