@@ -1,7 +1,7 @@
 # Outputs
 locals {
   github_connectors_output = merge(
-    { for name, details in var.harness_platform_github_connectors : "${name}_github_connector" =>
+    { for name, details in var.harness_platform_github_connectors : name =>
       {
         identifier = details.id
       } if !details.enable && can(details.id)
@@ -13,7 +13,7 @@ locals {
     }
   )
   docker_connectors_output = merge(
-    { for name, details in var.harness_platform_docker_connectors : "${name}_docker_connector" =>
+    { for name, details in var.harness_platform_docker_connectors : name =>
       {
         identifier = details.id
       } if !details.enable && can(details.id)
@@ -25,7 +25,7 @@ locals {
     }
   )
   k8s_connectors_output = merge(
-    { for name, details in var.harness_platform_k8s_connectors : "${name}_k8s_connector" =>
+    { for name, details in var.harness_platform_k8s_connectors : name =>
       {
         identifier = details.connector_id
       } if !details.enable && can(details.connector_id)
