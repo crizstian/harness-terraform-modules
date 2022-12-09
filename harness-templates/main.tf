@@ -1,10 +1,19 @@
-resource "local_file" "template" {
+data "local_file" "read_template" {
   for_each = var.harness_templates
-  triggers = {
-    template = each.key
-  }
+  filename = each.value.file
+}
+
+resource "local_file" "template" {
+  depends_on = [
+    data.local_file.read_template,
+  ]
+  for_each = var.harness_templates
   content  = templatefile(each.value.file, merge(each.value.vars, { name = each.key }))
   filename = "${path.module}/${each.key}.yml"
+
+  lifecycle {
+    replace_triggered_by = [data.local_file.read_template.content]
+  }
 }
 
 data "local_file" "template" {
@@ -12,10 +21,11 @@ data "local_file" "template" {
     local_file.template,
   ]
   for_each = var.harness_templates
-  triggers = {
-    template = each.key
-  }
   filename = "${path.module}/${each.key}.yml"
+
+  lifecycle {
+    replace_triggered_by = [data.local_file.read_template.content]
+  }
 }
 
 output "files" {
