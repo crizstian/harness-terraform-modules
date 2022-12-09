@@ -43,7 +43,7 @@ locals {
           details.inputset[value.inputset_ref].vars, value.vars,
           {
             pipeline_id = harness_platform_pipeline.pipeline[name].identifier
-            enabled     = details.enable
+            enabled     = value.enable
           }
         )
       }
