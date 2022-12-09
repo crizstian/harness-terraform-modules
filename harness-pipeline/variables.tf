@@ -42,6 +42,7 @@ locals {
           details.pipeline.vars,
           details.inputset[value.inputset_ref].vars, value.vars,
           {
+            description = value.description
             pipeline_id = harness_platform_pipeline.pipeline[name].identifier
             enabled     = value.enable
           }
