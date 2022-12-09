@@ -1,5 +1,8 @@
 resource "local_file" "template" {
   for_each = var.harness_templates
+  triggers = {
+    template = each.key
+  }
   content  = templatefile(each.value.file, merge(each.value.vars, { name = each.key }))
   filename = "${path.module}/${each.key}.yml"
 }
@@ -9,6 +12,9 @@ data "local_file" "template" {
     local_file.template,
   ]
   for_each = var.harness_templates
+  triggers = {
+    template = each.key
+  }
   filename = "${path.module}/${each.key}.yml"
 }
 
