@@ -23,6 +23,9 @@ variable "project_id" {
 variable "tags" {
   default = ""
 }
+variable "delegate_selectors" {
+  default = []
+}
 
 
 # github connectors
@@ -31,39 +34,43 @@ locals {
   github_connectors = { for name, details in var.harness_platform_github_connectors : name => merge(
     details,
     {
-      tags            = concat(try(details.tags, []), var.tags)
-      identifier      = "${lower(replace(name, "/[\\s-.]/", "_"))}_github_connector_${var.suffix}"
-      validation_repo = details.connection_type == "Repo" ? "" : details.validation_repo
-      org_id          = details.connection_type == "Repo" ? details.org_id : var.org_id
-      project_id      = details.connection_type == "Repo" ? details.project_id : var.project_id
+      delegate_selectors = try(details.delegate_selectors, var.delegate_selectors)
+      tags               = concat(try(details.tags, []), var.tags)
+      identifier         = "${lower(replace(name, "/[\\s-.]/", "_"))}_github_connector_${var.suffix}"
+      validation_repo    = details.connection_type == "Repo" ? "" : details.validation_repo
+      org_id             = details.connection_type == "Repo" ? details.org_id : var.org_id
+      project_id         = details.connection_type == "Repo" ? details.project_id : var.project_id
     }
   ) if details.enable }
 
   aws_connectors = { for name, details in var.harness_platform_aws_connectors : name => merge(
     details,
     {
-      tags       = concat(try(details.tags, []), var.tags)
-      identifier = "${lower(replace(name, "/[\\s-.]/", "_"))}_aws_connector_${var.suffix}"
-      org_id     = try(details.org_id, var.org_id)
-      project_id = try(details.project_id, var.project_id)
+      delegate_selectors = try(details.delegate_selectors, var.delegate_selectors)
+      tags               = concat(try(details.tags, []), var.tags)
+      identifier         = "${lower(replace(name, "/[\\s-.]/", "_"))}_aws_connector_${var.suffix}"
+      org_id             = try(details.org_id, var.org_id)
+      project_id         = try(details.project_id, var.project_id)
   }) if details.enable }
 
   gcp_connectors = { for name, details in var.harness_platform_gcp_connectors : name => merge(
     details,
     {
-      tags       = concat(try(details.tags, []), var.tags)
-      identifier = "${lower(replace(name, "/[\\s-.]/", "_"))}_gcp_connector_${var.suffix}"
-      org_id     = try(details.org_id, var.org_id)
-      project_id = try(details.project_id, var.project_id)
+      delegate_selectors = try(details.delegate_selectors, var.delegate_selectors)
+      tags               = concat(try(details.tags, []), var.tags)
+      identifier         = "${lower(replace(name, "/[\\s-.]/", "_"))}_gcp_connector_${var.suffix}"
+      org_id             = try(details.org_id, var.org_id)
+      project_id         = try(details.project_id, var.project_id)
   }) if details.enable }
 
   docker_connectors = { for name, details in var.harness_platform_docker_connectors : name => merge(
     details,
     {
-      tags       = concat(try(details.tags, []), var.tags)
-      identifier = "${lower(replace(name, "/[\\s-.]/", "_"))}_docker_connector_${var.suffix}"
-      org_id     = try(details.org_id, var.org_id)
-      project_id = try(details.project_id, var.project_id)
+      delegate_selectors = try(details.delegate_selectors, var.delegate_selectors)
+      tags               = concat(try(details.tags, []), var.tags)
+      identifier         = "${lower(replace(name, "/[\\s-.]/", "_"))}_docker_connector_${var.suffix}"
+      org_id             = try(details.org_id, var.org_id)
+      project_id         = try(details.project_id, var.project_id)
   }) if details.enable }
 
   k8s_connectors = { for name, details in var.harness_platform_k8s_connectors : name => merge(
