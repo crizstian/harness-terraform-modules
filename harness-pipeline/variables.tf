@@ -27,7 +27,7 @@ locals {
   }
 
   inputset_templates = merge([for name, details in var.harness_platform_pipelines : {
-    for key, value in var.harness_platform_pipelines[name].inputset : "${key}_inputset" =>
+    for key, value in details.inputset : "${key}_inputset" =>
     merge(
       value,
       {
@@ -44,13 +44,14 @@ locals {
   ]...)
 
   trigger_templates = merge([for name, details in var.harness_platform_pipelines : {
-    for key, value in var.harness_platform_pipelines[name].trigger : "${key}_trigger" =>
+    for key, value in details.trigger : "${key}_trigger" =>
     merge(
       value,
       {
         vars = merge(
           details.pipeline.vars,
-          details.inputset.vars,
+          details.inputset[value.inputset_ref].vars,
+          value.vars,
           {
             identifier  = "${lower(replace(key, "-", "_"))}_trigger_${var.suffix}"
             description = value.description
