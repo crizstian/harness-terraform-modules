@@ -22,7 +22,7 @@ locals {
   }
 
   inputset_templates = merge([for name, details in var.harness_platform_pipelines : {
-    for key, value in var.harness_platform_pipelines[name].inputset : "${name}_inputset_${key}" =>
+    for key, value in var.harness_platform_pipelines[name].inputset : "${key}_inputset" =>
     merge(
       value,
       {
@@ -30,7 +30,7 @@ locals {
           details.pipeline.vars,
           value.vars,
           {
-            identifier  = "${lower(replace(name, "-", "_"))}_inputset_${lower(replace(key, "-", "_"))}_${var.suffix}"
+            identifier  = "${lower(replace(key, "-", "_"))}_inputset_${var.suffix}"
             pipeline_id = harness_platform_pipeline.pipeline[name].identifier
         })
       }
@@ -38,7 +38,7 @@ locals {
   ]...)
 
   trigger_templates = merge([for name, details in var.harness_platform_pipelines : {
-    for key, value in var.harness_platform_pipelines[name].trigger : "${name}_trigger_${key}" =>
+    for key, value in var.harness_platform_pipelines[name].trigger : "${key}_trigger" =>
     merge(
       value,
       {
@@ -46,7 +46,7 @@ locals {
           details.pipeline.vars,
           details.inputset[value.inputset_ref].vars, value.vars,
           {
-            identifier  = "${lower(replace(name, "-", "_"))}_trigger_${lower(replace(key, "-", "_"))}_${var.suffix}"
+            identifier  = "${lower(replace(key, "-", "_"))}_trigger_${var.suffix}"
             description = value.description
             pipeline_id = harness_platform_pipeline.pipeline[name].identifier
             enabled     = value.enable
