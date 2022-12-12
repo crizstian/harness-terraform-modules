@@ -21,7 +21,7 @@ locals {
         details.pipeline.vars,
         {
           identifier  = "${lower(replace(name, "-", "_"))}_${var.suffix}"
-          description = value.description
+          description = details.pipeline.description
       })
     })
   }
