@@ -16,7 +16,7 @@ data "local_file" "trigger_template" {
 resource "harness_platform_triggers" "trigger" {
   for_each    = local.trigger_templates
   description = each.value.description
-  identifier  = each.value.identifier
+  identifier  = each.value.vars.identifier
   name        = each.key
   org_id      = each.value.vars.org_id
   project_id  = each.value.vars.project_id

@@ -26,8 +26,13 @@ locals {
     merge(
       value,
       {
-        identifier = "${lower(replace(name, "-", "_"))}_inputset_${lower(replace(key, "-", "_"))}_${var.suffix}"
-        vars       = merge(details.pipeline.vars, value.vars, { pipeline_id = harness_platform_pipeline.pipeline[name].identifier })
+        vars = merge(
+          details.pipeline.vars,
+          value.vars,
+          {
+            identifier  = "${lower(replace(name, "-", "_"))}_inputset_${lower(replace(key, "-", "_"))}_${var.suffix}"
+            pipeline_id = harness_platform_pipeline.pipeline[name].identifier
+        })
       }
     ) }
   ]...)
@@ -37,11 +42,11 @@ locals {
     merge(
       value,
       {
-        identifier = "${lower(replace(name, "-", "_"))}_trigger_${lower(replace(key, "-", "_"))}_${var.suffix}"
         vars = merge(
           details.pipeline.vars,
           details.inputset[value.inputset_ref].vars, value.vars,
           {
+            identifier  = "${lower(replace(name, "-", "_"))}_trigger_${lower(replace(key, "-", "_"))}_${var.suffix}"
             description = value.description
             pipeline_id = harness_platform_pipeline.pipeline[name].identifier
             enabled     = value.enable
