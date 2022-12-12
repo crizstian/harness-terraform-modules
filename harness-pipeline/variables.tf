@@ -50,6 +50,7 @@ locals {
       {
         vars = merge(
           details.pipeline.vars,
+          details.inputset.vars,
           {
             identifier  = "${lower(replace(key, "-", "_"))}_trigger_${var.suffix}"
             description = value.description
