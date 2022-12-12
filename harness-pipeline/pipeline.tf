@@ -17,7 +17,7 @@ data "local_file" "pipeline_template" {
 resource "harness_platform_pipeline" "pipeline" {
   for_each    = local.pipeline_templates
   description = each.value.description
-  identifier  = each.value.identifier
+  identifier  = each.value.vars.identifier
   name        = each.key
   org_id      = each.value.vars.org_id
   project_id  = each.value.vars.project_id
