@@ -56,13 +56,3 @@ locals {
     ) }
   ]...)
 }
-
-# locals {
-#   # pipeline_non_templatized = { for name, details in var.harness_platform_pipelines : name => details
-#   #   if !can(details.custom_template.pipeline)
-#   # }
-
-#   # all_pipelines = merge(local.pipeline_rendered, local.pipeline_non_templatized)
-
-#   # pipelines = { for name, details in local.all_pipelines : name => details }
-# }

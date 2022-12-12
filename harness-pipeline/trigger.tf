@@ -23,7 +23,3 @@ resource "harness_platform_triggers" "trigger" {
   target_id   = each.value.vars.pipeline_id
   yaml        = data.local_file.trigger_template[each.key].content
 }
-
-output "triggers" {
-  value = { for key, details in harness_platform_triggers.trigger : key => { identifier = details.identifier } }
-}

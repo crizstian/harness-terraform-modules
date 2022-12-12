@@ -24,7 +24,3 @@ resource "harness_platform_pipeline" "pipeline" {
   tags        = each.value.tags
   yaml        = data.local_file.pipeline_template[each.key].content
 }
-
-output "pipelines" {
-  value = { for key, details in harness_platform_pipeline.pipeline : key => { pipeline_id = details.identifier } }
-}

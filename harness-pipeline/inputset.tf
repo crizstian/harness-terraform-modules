@@ -23,7 +23,3 @@ resource "harness_platform_input_set" "inputset" {
   pipeline_id = each.value.vars.pipeline_id
   yaml        = data.local_file.inputset_template[each.key].content
 }
-
-output "inputsets" {
-  value = { for key, details in harness_platform_input_set.inputset : key => { inputset_id = details.identifier } }
-}
