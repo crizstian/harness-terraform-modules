@@ -1,5 +1,5 @@
 resource "github_repository" "repository" {
-  name        = "harness_${var.organization_prefix}"
+  name        = "harness_files_${var.organization_prefix}"
   description = "Repository created by Terraform provider"
   visibility  = "public"
   auto_init   = true
