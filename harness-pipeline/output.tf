@@ -7,13 +7,13 @@ locals {
   }
   inputset_rendered = merge([for pipeline, details in harness_platform_pipeline.pipeline : {
     for key, input in harness_platform_input_set.inputset : key => {
-      name    = "${pipeline}/${key}.yml"
+      name    = "${pipeline}/inputset/${key}.yml"
       content = base64encode(data.local_file.inputset_template[key].content)
     } }
   ]...)
   trigger_rendered = merge([for pipeline, details in harness_platform_pipeline.pipeline : {
     for key, trigger in harness_platform_triggers.trigger : key => {
-      name    = "${pipeline}/${key}.yml"
+      name    = "${pipeline}/trigger/${key}.yml"
       content = base64encode(data.local_file.trigger_template[key].content)
     } }
   ]...)
