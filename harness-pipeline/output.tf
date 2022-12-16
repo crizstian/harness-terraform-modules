@@ -1,23 +1,11 @@
 locals {
-  pipelines_rendered = { for key, details in harness_platform_pipeline.pipeline : key =>
-    {
-      name    = "${key}/pipeline.yml"
-      content = base64encode(data.local_file.pipeline_template[key].content)
-    }
-  }
+  pipelines_rendered = { for key, details in harness_platform_pipeline.pipeline : "${key}/pipeline.yml" => base64encode(data.local_file.pipeline_template[key].content) }
   inputset_rendered = merge([for pipeline, details in harness_platform_pipeline.pipeline : {
-    for key, input in harness_platform_input_set.inputset : key => {
-      name    = "${pipeline}/inputset/${key}.yml"
-      content = base64encode(data.local_file.inputset_template[key].content)
-    } }
+    for key, input in harness_platform_input_set.inputset : "${pipeline}/inputset/${key}.yml" => base64encode(data.local_file.inputset_template[key].content) }
   ]...)
   trigger_rendered = merge([for pipeline, details in harness_platform_pipeline.pipeline : {
-    for key, trigger in harness_platform_triggers.trigger : key => {
-      name    = "${pipeline}/trigger/${key}.yml"
-      content = base64encode(data.local_file.trigger_template[key].content)
-    } }
+    for key, trigger in harness_platform_triggers.trigger : "${pipeline}/trigger/${key}.yml" => base64encode(data.local_file.trigger_template[key].content) }
   ]...)
-
 
   files_rendered = merge(
     local.pipelines_rendered,
@@ -32,9 +20,8 @@ locals {
       for key, value in harness_platform_input_set.inputset : key => merge(
         {
           identifier = value.identifier
-
         },
-        can(module.github.0.files[key]) ? { git_file = module.github.0.files[key] } : {}
+        can(module.github.0.files[key]) ? { git_file = module.github.0.files["${pipeline}/inputset/${key}.yml"] } : {}
       ) if value.pipeline_id == details.identifier
     }
   }
@@ -42,9 +29,8 @@ locals {
     for key, value in harness_platform_triggers.trigger : key => merge(
       {
         identifier = value.identifier
-
       },
-      can(module.github.0.files[key]) ? { git_file = module.github.0.files[key] } : {}
+      can(module.github.0.files[key]) ? { git_file = module.github.0.files["${pipeline}/trigger/${key}.yml"] } : {}
     ) if value.target_id == details.identifier
     }
   }
@@ -52,7 +38,7 @@ locals {
     {
       pipeline_id = details.identifier
     },
-    can(module.github.0.files[key]) ? { git_file = module.github.0.files[key] } : {},
+    can(module.github.0.files[key]) ? { git_file = module.github.0.files["${key}/pipeline.yml"] } : {},
     length(keys(local.inputset_output[key])) > 0 ? { inputsets = local.inputset_output[key] } : {},
     length(keys(local.trigger_output[key])) > 0 ? { triggers = local.trigger_output[key] } : {}
     )
