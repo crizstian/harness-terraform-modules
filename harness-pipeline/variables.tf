@@ -1,7 +1,5 @@
 variable "suffix" {}
-variable "organization_prefix" {
-  default = ""
-}
+variable "organization_prefix" {}
 variable "github_details" {
   default = {}
 }
