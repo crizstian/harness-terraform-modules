@@ -1,4 +1,13 @@
 variable "suffix" {}
+variable "organization_prefix" {
+  default = ""
+}
+variable "github_details" {
+  default = {}
+}
+variable "store_pipelines_in_git" {
+  default = false
+}
 variable "tags" {
   default = []
 }
