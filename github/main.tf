@@ -18,5 +18,5 @@ resource "github_repository_file" "pipelines" {
 }
 
 output "files" {
-  value = { for key, value in var.files_rendered : key => key }
+  value = { for key, value in var.files_rendered : key => true }
 }

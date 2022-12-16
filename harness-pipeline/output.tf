@@ -21,7 +21,7 @@ locals {
         {
           identifier = value.identifier
         },
-        can(module.github.0.files[key]) ? { git_file = module.github.0.files["${pipeline}/inputset/${key}.yml"] } : {}
+        can(module.github.0.files["${pipeline}/inputset/${key}.yml"]) ? { git_file = "${pipeline}/inputset/${key}.yml" } : {}
       ) if value.pipeline_id == details.identifier
     }
   }
@@ -30,7 +30,7 @@ locals {
       {
         identifier = value.identifier
       },
-      can(module.github.0.files[key]) ? { git_file = module.github.0.files["${pipeline}/trigger/${key}.yml"] } : {}
+      can(module.github.0.files["${pipeline}/trigger/${key}.yml"]) ? { git_file = "${pipeline}/trigger/${key}.yml" } : {}
     ) if value.target_id == details.identifier
     }
   }
@@ -38,7 +38,7 @@ locals {
     {
       pipeline_id = details.identifier
     },
-    can(module.github.0.files[key]) ? { git_file = module.github.0.files["${key}/pipeline.yml"] } : {},
+    can(module.github.0.files["${key}/pipeline.yml"]) ? { git_file = "${key}/pipeline.yml" } : {},
     length(keys(local.inputset_output[key])) > 0 ? { inputsets = local.inputset_output[key] } : {},
     length(keys(local.trigger_output[key])) > 0 ? { triggers = local.trigger_output[key] } : {}
     )
