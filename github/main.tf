@@ -6,9 +6,6 @@ resource "github_repository" "repository" {
 }
 
 resource "github_repository_file" "pipelines" {
-  depends_on = [
-    module.bootstrap_harness_pipelines
-  ]
   for_each            = var.files_rendered
   repository          = github_repository.repository.name
   branch              = var.github_details.branch
