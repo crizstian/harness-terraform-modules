@@ -1,22 +1,23 @@
 locals {
-  pipelines_rendered = { for pipeline, values in harness_platform_pipeline.pipeline : pipeline =>
+  pipelines_rendered = { for key, details in harness_platform_pipeline.pipeline : key =>
     {
-      name    = "${pipeline}/pipeline.yml"
-      content = base64encode(data.local_file.pipeline_template[pipeline].content)
+      name    = "${key}/pipeline.yml"
+      content = base64encode(data.local_file.pipeline_template[key].content)
     }
   }
-  inputset_rendered = merge([for pipeline, details in harness_platform_pipeline.pipeline : { for inputset, values in details.inputsets : inputset =>
-    {
-      name    = "${pipeline}/${inputset}.yml"
-      content = base64encode(data.local_file.inputset_template[inputset].content)
-    }
-  }]...)
-  trigger_rendered = merge([for pipeline, details in harness_platform_pipeline.pipeline : { for trigger, values in details.triggers : trigger =>
-    {
-      name    = "${pipeline}/${trigger}.yml"
-      content = base64encode(data.local_file.trigger_template[trigger].content)
-    }
-  }]...)
+  inputset_rendered = merge([for pipeline, details in harness_platform_pipeline.pipeline : {
+    for key, input in harness_platform_input_set.inputset : key => {
+      name    = "${pipeline}/${key}.yml"
+      content = base64encode(data.local_file.inputset_template[key].content)
+    } }
+  ]...)
+  trigger_rendered = merge([for pipeline, details in harness_platform_pipeline.pipeline : {
+    for key, trigger in harness_platform_triggers.trigger : key => {
+      name    = "${pipeline}/${key}.yml"
+      content = base64encode(data.local_file.trigger_template[key].content)
+    } }
+  ]...)
+
 
   files_rendered = merge(
     local.pipelines_rendered,
