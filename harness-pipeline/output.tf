@@ -3,8 +3,8 @@ locals {
     for key, input in harness_platform_input_set.inputset : key => {
       identifier = input.identifier
       file = {
-        name    = each.key
-        content = base64encode(data.local_file.inputset_template[each.key].content)
+        name    = key
+        content = base64encode(data.local_file.inputset_template[key].content)
       }
     } if input.pipeline_id == details.identifier }
   }
@@ -12,8 +12,8 @@ locals {
     for key, trigger in harness_platform_triggers.trigger : key => {
       identifier = trigger.identifier
       file = {
-        name    = each.key
-        content = base64encode(data.local_file.trigger_template[each.key].content)
+        name    = key
+        content = base64encode(data.local_file.trigger_template[key].content)
       }
     } if trigger.target_id == details.identifier }
   }
@@ -22,8 +22,8 @@ locals {
     {
       pipeline_id = details.identifier
       file = {
-        name    = each.key
-        content = base64encode(data.local_file.pipeline_template[each.key].content)
+        name    = key
+        content = base64encode(data.local_file.pipeline_template[key].content)
       }
     },
     length(keys(local.inputset_output[key])) > 0 ? { inputsets = local.inputset_output[key] } : {},
