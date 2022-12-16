@@ -16,3 +16,7 @@ resource "github_repository_file" "pipelines" {
   commit_email        = var.github_details.commit_email
   overwrite_on_create = true
 }
+
+output "files" {
+  value = { for key, value in var.files_rendered : key => each.value.name }
+}
