@@ -1,6 +1,6 @@
 # Renders trigger files in order to provision it with terraform
 module "render_trigger_template_files" {
-  source            = "../harness-templates"
+  source            = "../terraform-templates"
   harness_templates = local.trigger_templates
 }
 

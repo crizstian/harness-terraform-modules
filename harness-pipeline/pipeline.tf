@@ -1,7 +1,6 @@
 # Renders Pipeline
 module "render_pipeline_template_files" {
-  # source            = "git::https://github.com/crizstian/harness-terraform-modules.git//harness-templates?ref=main"
-  source            = "../harness-templates"
+  source            = "../terraform-templates"
   harness_templates = local.pipeline_templates
 }
 
