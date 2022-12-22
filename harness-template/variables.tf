@@ -9,15 +9,15 @@ variable "harness_platform_templates" {
 
 locals {
   harness_templates = { for name, details in var.harness_platform_templates : name => merge(
-    details.pipeline,
+    details,
     {
-      tags = concat(details.pipeline.vars.tags, var.tags)
       vars = merge(
-        details.pipeline.vars,
+        details.vars,
         {
-          git_details = try(details.pipeline.vars.git_details, {})
-          identifier  = "${lower(replace(name, "-", "_"))}_${var.suffix}"
-          description = details.pipeline.description
+          tags        = concat(details.tags, var.tags)
+          git_details = try(details.vars.git_details, {})
+          identifier  = "${lower(replace(name, "-", "_"))}_template_${var.suffix}"
+          description = details.description
       })
     })
   }
