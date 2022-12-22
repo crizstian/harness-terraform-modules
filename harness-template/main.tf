@@ -21,7 +21,7 @@ resource "harness_platform_template" "template" {
   org_id        = each.value.vars.org_id
   project_id    = each.value.vars.project_id
   tags          = each.value.tags
-  template_yaml = data.local_file.pipeline_template[each.key].content
+  template_yaml = data.local_file.harness_template[each.key].content
   comments      = each.value.vars.comments
   version       = each.value.vars.version
   is_stable     = each.value.vars.is_stable
