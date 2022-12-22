@@ -1,5 +1,5 @@
 module "bootstrap_harness_connectors" {
-  source                          = "../harness-connectors"
+  source                          = "../harness-connector"
   for_each                        = local.k8s_connectors
   suffix                          = var.suffix
   tags                            = var.tags
