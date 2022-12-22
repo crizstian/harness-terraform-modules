@@ -14,6 +14,7 @@ data "local_file" "harness_template" {
 }
 
 resource "harness_platform_template" "template" {
+  for_each    = local.harness_templates
   description = each.value.vars.description
   identifier  = each.value.vars.identifier
   name        = each.key
