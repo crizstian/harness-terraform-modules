@@ -26,15 +26,15 @@ resource "harness_platform_template" "template" {
   is_stable     = each.value.vars.is_stable
   template_yaml = data.local_file.harness_template[each.key].content
 
-  dynamic "git_details" {
-    for_each = each.value.vars.git_details
-    content {
-      branch_name    = git_details.value["branch_name"]
-      commit_message = git_details.value["commit_message"]
-      file_path      = git_details.value["file_path"]
-      connector_ref  = git_details.value["connector_ref"]
-      store_type     = git_details.value["store_type"]
-      repo_name      = git_details.value["repo_name"]
-    }
-  }
+  # dynamic "git_details" {
+  #   for_each = each.value.vars.git_details
+  #   content {
+  #     branch_name    = git_details.value["branch_name"]
+  #     commit_message = git_details.value["commit_message"]
+  #     file_path      = git_details.value["file_path"]
+  #     connector_ref  = git_details.value["connector_ref"]
+  #     store_type     = git_details.value["store_type"]
+  #     repo_name      = git_details.value["repo_name"]
+  #   }
+  # }
 }
