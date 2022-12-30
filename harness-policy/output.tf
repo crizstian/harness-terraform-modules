@@ -6,6 +6,6 @@ locals {
   }
 }
 
-output "policys" {
+output "policies" {
   value = local.policy_output
 }
