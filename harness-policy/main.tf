@@ -1,6 +1,6 @@
 resource "harness_platform_policy" "policy" {
   for_each    = local.harness_policies
-  name        = each.key
+  name        = each.value.name
   description = each.value.description
   identifier  = each.value.identifier
   org_id      = each.value.org_id
