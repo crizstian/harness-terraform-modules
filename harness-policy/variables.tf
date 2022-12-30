@@ -20,7 +20,7 @@ locals {
     {
       org_id      = try(details.org_id, var.org_id)
       project_id  = try(details.project_id, var.project_id)
-      tags        = concat(details.tags, var.tags)
+      tags        = concat(try(details.tags, []), var.tags)
       identifier  = "${lower(replace(name, "-", "_"))}_template_${var.suffix}"
       description = details.description
     }
