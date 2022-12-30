@@ -64,7 +64,8 @@ locals {
             description = value.description
             pipeline_id = harness_platform_pipeline.pipeline[name].identifier
             enabled     = value.enable
-          }
+          },
+          [for k, v in value.inputset_ref : details.inputset[k].vars if v]...
         )
       }
     ) }
