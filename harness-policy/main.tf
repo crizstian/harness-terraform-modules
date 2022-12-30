@@ -6,5 +6,5 @@ resource "harness_platform_policy" "policy" {
   org_id      = each.value.org_id
   project_id  = each.value.project_id
   tags        = each.value.tags
-  rego        = file("${path.root}/${each.value.rego}")
+  rego        = file("${path.root}/${each.value.file}")
 }
