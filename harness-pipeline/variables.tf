@@ -23,7 +23,7 @@ locals {
   pipeline_templates = { for name, details in var.harness_platform_pipelines : name => merge(
     details.pipeline,
     {
-      tags = concat(details.pipeline.vars.tags, var.tags)
+      tags = concat(try(details.pipeline.vars.tags, []), var.tags)
       vars = merge(
         details.pipeline.vars,
         {
