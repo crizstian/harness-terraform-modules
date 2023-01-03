@@ -49,7 +49,7 @@ locals {
           {
             identifier  = "${lower(replace(key, "-", "_"))}_inputset_${var.suffix}"
             description = value.description
-            pipeline_id = try(details.pipeline.remote_id, harness_platform_pipeline.pipeline[name].identifier)
+            pipeline_id = try(details.pipeline.vars.remote_id, harness_platform_pipeline.pipeline[name].identifier)
         })
       }
     ) }
@@ -66,7 +66,7 @@ locals {
           {
             identifier  = "${lower(replace(key, "-", "_"))}_trigger_${var.suffix}"
             description = value.description
-            pipeline_id = try(details.pipeline.remote_id, harness_platform_pipeline.pipeline[name].identifier)
+            pipeline_id = try(details.pipeline.vars.remote_id, harness_platform_pipeline.pipeline[name].identifier)
             enabled     = value.enable
           },
           [for k, v in value.inputset_ref : details.inputset[k].vars if v]...
