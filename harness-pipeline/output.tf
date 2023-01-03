@@ -37,6 +37,7 @@ locals {
   pipeline_output = { for key, details in harness_platform_pipeline.pipeline : key => merge(
     {
       pipeline_id = details.identifier
+      vars        = var.harness_platform_pipelines[key].pipeline.vars
     },
     can(module.github.0.files["${key}/pipeline.yml"]) ? { git_file = module.github.0.files["${key}/pipeline.yml"] } : {},
     length(keys(local.inputset_output[key])) > 0 ? { inputsets = local.inputset_output[key] } : {},

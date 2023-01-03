@@ -19,6 +19,11 @@ variable "harness_platform_inputsets" {
   default     = {}
 }
 
+variable "harness_platform_triggers" {
+  description = "Harness Inputsets to be created in the given Harness account"
+  default     = {}
+}
+
 locals {
   pipeline_templates = { for name, details in var.harness_platform_pipelines : name => merge(
     details.pipeline,
@@ -30,7 +35,7 @@ locals {
           identifier  = "${lower(replace(name, "-", "_"))}_${var.suffix}"
           description = details.pipeline.description
       })
-    })
+    }) if !can(details.pipeline.parent_pipeline_owner)
   }
 
   inputset_templates = merge([for name, details in var.harness_platform_pipelines : {
