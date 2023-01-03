@@ -35,7 +35,7 @@ locals {
           identifier  = "${lower(replace(name, "-", "_"))}_${var.suffix}"
           description = details.pipeline.description
       })
-    }) if !can(details.pipeline.parent_pipeline_owner)
+    }) if !can(details.pipeline.foreign_pipeline)
   }
 
   inputset_templates = merge([for name, details in var.harness_platform_pipelines : {
