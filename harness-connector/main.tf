@@ -80,7 +80,7 @@ resource "harness_platform_connector_gcp" "connector" {
 
   manual {
     secret_key_ref     = each.value.manual.secret_key_ref
-    delegate_selectors = each.value.manual.delegate_selectors
+    delegate_selectors = each.value.delegate_selectors
   }
 }
 
