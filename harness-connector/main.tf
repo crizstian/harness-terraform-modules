@@ -65,7 +65,7 @@ resource "harness_platform_connector_aws" "connector" {
   manual {
     access_key_ref     = each.value.manual.access_key_ref
     secret_key_ref     = each.value.manual.secret_key_ref
-    delegate_selectors = each.value.manual.delegate_selectors
+    delegate_selectors = try(each.value.manual.delegate_selectors, var.delegate_selectors)
   }
 }
 
