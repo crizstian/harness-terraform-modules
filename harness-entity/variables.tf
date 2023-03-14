@@ -40,12 +40,15 @@ locals {
     if details.enable && name != "default"
   }
 
-  prjs = { for name, details in var.harness_platform_projects : name => merge(
-    details,
-    {
-      identifier = "${lower(replace(name, "/[\\s-.]/", "_"))}_${var.suffix}"
-      tags       = concat(try(details.tags, []), var.global_tags)
-      org_id     = try(details.org_id, var.org_id)
+  org_id_by_tag = { for org, details in module.bootstrap_harness_organizations.organization : local.harness_platform_organizations[org].tags[0] => details.identifier }
+
+  prjs = { for prj, details in var.harness_platform_projects : prj =>
+    merge(
+      details,
+      {
+        identifier = "${lower(replace(name, "/[\\s-.]/", "_"))}_${var.suffix}"
+        tags       = concat(try(details.tags, []), var.global_tags)
+        org_id     = try(local.org_id_by_tag[details.tags[0]], var.org_id)
     })
     if details.enable
   }

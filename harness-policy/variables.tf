@@ -13,7 +13,6 @@ variable "project_id" {
   default = ""
 }
 
-
 locals {
   harness_policies = { for name, details in var.harness_platform_policies : name => merge(
     details,
