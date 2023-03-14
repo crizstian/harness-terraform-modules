@@ -41,6 +41,7 @@ locals {
   }
 
   org_id_by_tag = merge([for org, details in harness_platform_organization.org : { for index, tag in var.harness_platform_organizations[org].tags : tag => details.identifier if startswith(tag, "owner: ") }]...)
+  prj_by_tag    = merge([for prj, details in var.harness_platform_projects : { for index, tag in var.harness_platform_projects[prj].tags : prj => index if startswith(tag, "owner: ") }]...)
 
   /* org_id_by_tag = { for org, details in harness_platform_organization.org : var.harness_platform_organizations[org].tags[0] => details.identifier } */
 
@@ -50,7 +51,7 @@ locals {
       {
         identifier = "${lower(replace(name, "/[\\s-.]/", "_"))}_${var.suffix}"
         tags       = concat(try(details.tags, []), var.global_tags)
-        org_id     = try(local.org_id_by_tag[details.tags[0]], var.org_id)
+        org_id     = try(local.org_id_by_tag[details.tags[local.prj_by_tag]], var.org_id)
     })
     if details.enable
   }
