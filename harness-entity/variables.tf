@@ -51,7 +51,7 @@ locals {
       {
         identifier = "${lower(replace(name, "/[\\s-.]/", "_"))}_${var.suffix}"
         tags       = concat(try(details.tags, []), var.global_tags)
-        org_id     = try(local.org_id_by_tag[details.tags[local.prj_by_tag]], var.org_id)
+        org_id     = try(local.org_id_by_tag[details.tags[local.prj_by_tag[name]]], var.org_id)
     })
     if details.enable
   }
