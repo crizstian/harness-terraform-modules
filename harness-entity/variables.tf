@@ -40,7 +40,7 @@ locals {
     if details.enable && name != "default"
   }
 
-  org_id_by_tag = { for org, details in module.bootstrap_harness_organizations.organization : local.harness_platform_organizations[org].tags[0] => details.identifier }
+  org_id_by_tag = { for org, details in harness_platform_organization.org : local.harness_platform_organizations[org].tags[0] => details.identifier }
 
   prjs = { for prj, details in var.harness_platform_projects : prj =>
     merge(
