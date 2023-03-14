@@ -44,7 +44,7 @@ locals {
 
   /* org_id_by_tag = { for org, details in harness_platform_organization.org : var.harness_platform_organizations[org].tags[0] => details.identifier } */
 
-  prjs = { for prj, details in var.harness_platform_projects : prj =>
+  prjs = { for name, details in var.harness_platform_projects : prj =>
     merge(
       details,
       {
