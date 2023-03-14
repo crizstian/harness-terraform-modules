@@ -8,10 +8,11 @@ output "organization" {
   }
 }
 
-/* output "project" {
-  value = { for key, details in harness_platform_project.project : key => {
-    identifier = details.identifier
-    org_id     = details.org_id
+output "project" {
+  value = { for key, details in harness_platform_project.project : key =>
+    {
+      project_id = details.identifier
+      org_id     = details.org_id
     }
   }
-} */
+}
