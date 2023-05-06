@@ -51,6 +51,18 @@ resource "harness_platform_connector_kubernetes" "connector" {
   inherit_from_delegate {
     delegate_selectors = each.value.delegate_selectors
   }
+
+  service_account {
+    master_url                = "https://kubernetes.example.com"
+    service_account_token_ref = "account.TEST_k8s_client_test"
+  }
+  delegate_selectors = ["harness-delegate"]
+
+  username_password {
+    master_url   = "https://kubernetes.example.com"
+    username     = "admin"
+    password_ref = "account.TEST_k8s_client_test"
+  }
 }
 
 resource "harness_platform_connector_aws" "connector" {
