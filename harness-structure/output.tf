@@ -1,4 +1,4 @@
-output "organization" {
+output "organizations" {
   value = { for key, details in harness_platform_organization.org : key =>
     {
       identifier = details.identifier
@@ -7,7 +7,7 @@ output "organization" {
   }
 }
 
-output "project" {
+output "projects" {
   value = { for key, details in harness_platform_project.project : key =>
     {
       identifier = details.identifier

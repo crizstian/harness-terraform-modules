@@ -3,7 +3,7 @@ resource "harness_platform_organization" "org" {
   tags        = each.value.tags
   identifier  = each.value.identifier
   name        = each.key
-  description = "${each.key} - ${each.value.description}"
+  description = each.value.description
 }
 
 resource "harness_platform_project" "project" {
@@ -11,6 +11,6 @@ resource "harness_platform_project" "project" {
   tags        = each.value.tags
   identifier  = each.value.identifier
   name        = each.key
-  description = "${each.key} - ${each.value.description}"
   org_id      = each.value.org_id
+  description = each.value.description
 }
