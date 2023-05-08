@@ -204,10 +204,13 @@ resource "harness_platform_connector_aws" "connector" {
   project_id  = each.value.project_id
   org_id      = each.value.org_id
 
-  manual {
-    access_key_ref     = each.value.manual.access_key_ref
-    secret_key_ref     = each.value.manual.secret_key_ref
-    delegate_selectors = each.value.delegate_selectors
+  dynamic "manual" {
+    for_each = each.value.manual
+    content {
+      access_key_ref     = each.value.manual.access_key_ref
+      secret_key_ref     = each.value.manual.secret_key_ref
+      delegate_selectors = each.value.delegate_selectors
+    }
   }
 }
 
