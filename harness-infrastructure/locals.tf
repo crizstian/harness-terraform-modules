@@ -19,12 +19,13 @@ locals {
   infrastructure_env_id = merge([for infrastructure, values in var.harness_platform_infrastructures : { for env, details in harness_platform_environment.environment : infrastructure => details.identifier if lower(env) == lower(try(values.vars.environment, "")) }]...)
   infrastructure_k8s_id = merge([for infrastructure, values in var.harness_platform_infrastructures : { for cnt, details in try(var.connectors.kubernetes_connectors, {}) : infrastructure => details.identifier if lower(cnt) == lower(infrastructure) }]...)
   infrastructure_keys   = toset(setsubtract(keys(var.harness_platform_infrastructures), keys(local.infrastructure_k8s_id)))
-  infrastructure_tpl_dp_id = merge([for infrastructure, values in var.harness_platform_infrastructures : { for tpl, details in try(var.templates.template_deployments, {}) : infrastructure => {
+  infrastructure_tpl_dp_id = { for infrastructure, values in var.harness_platform_infrastructures : infrastructure => {
     template-deployment = {
-      template_id      = details.identifier
-      template_version = element(values(values.template.template-deployment), 0)
+      template_id      = try(var.templates.template_deployments[element(keys(values.template.template-deployment), 0)], "")
+      template_version = try(element(values(values.template.template-deployment), 0), "")
     }
-  } if lower(tpl) == lower(element(keys(values.template.template-deployment), 0)) }]...)
+    }
+  }
 
   infrastructure_k8s = { for name, connector in local.infrastructure_k8s_id : name => {
     vars = merge(
