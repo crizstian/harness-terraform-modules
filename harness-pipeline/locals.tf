@@ -35,8 +35,7 @@ locals {
   pipelines = { for name, details in var.harness_platform_pipelines : name => {
     vars = merge(
       details.vars,
-      try(local.pipeline_tpl_id[name], {}),
-      try(var.templates.stages[name].default_values, try(var.templates.pipelines[name].default_values, {})),
+      try(var.templates.stages[details.template.pipeline.template_name].default_values, try(var.templates.pipelines[details.template.pipeline.template_name].default_values, {})),
       {
         suffix      = var.suffix
         name        = "${name}"
@@ -45,10 +44,9 @@ locals {
         org_id      = try(local.pipeline_org_id[name], "") != "" ? local.pipeline_org_id[name] : try(details.org_id, var.org_id)
         project_id  = try(local.pipeline_prj_id[name], "") != "" ? local.pipeline_prj_id[name] : try(details.project_id, var.project_id)
         git_details = try(details.vars.git_details, {})
-        template = {
-          id      = try(var.templates.stages[name].identifier, try(var.templates.pipelines[name].identifier, {}))
-          version = details.template.version
-        }
+        template = merge(
+          try(local.pipeline_tpl_id[name], {})
+        )
         /* template_variables = try(yamldecode(data.harness_platform_template.template[name].template_yaml).template.spec.variables, {}) */
       }
   ) } if details.enable && details.type == "pipeline" }
