@@ -1,77 +1,37 @@
-variable "suffix" {}
-variable "organization_prefix" {}
-variable "github_details" {
+variable "harness_platform_pipelines" {
   default = {}
 }
-variable "store_pipelines_in_git" {
-  default = false
+variable "harness_platform_inputsets" {
+  default = {}
+}
+variable "harness_platform_triggers" {
+  default = {}
+}
+variable "harness_platform_services" {
+  default = {}
+}
+variable "suffix" {}
+variable "org_id" {
+  default = ""
+}
+variable "project_id" {
+  default = ""
+}
+variable "pipeline_id" {
+  default = ""
 }
 variable "tags" {
-  default = []
+  default = ""
 }
-variable "harness_platform_pipelines" {
-  description = "Harness Pipelines to be created in the given Harness account"
-  default     = {}
+variable "organizations" {
+  default = {}
 }
-
-variable "harness_platform_inputsets" {
-  description = "Harness Inputsets to be created in the given Harness account"
-  default     = {}
+variable "projects" {
+  default = {}
 }
-
-variable "harness_platform_triggers" {
-  description = "Harness Inputsets to be created in the given Harness account"
-  default     = {}
+variable "connectors" {
+  default = {}
 }
-
-locals {
-  pipeline_templates = { for name, details in var.harness_platform_pipelines : name => merge(
-    details.pipeline,
-    {
-      tags = concat(try(details.pipeline.vars.tags, []), var.tags)
-      vars = merge(
-        details.pipeline.vars,
-        {
-          identifier  = "${lower(replace(name, "-", "_"))}_${var.suffix}"
-          description = details.pipeline.description
-      })
-    }) if !can(details.pipeline.foreign_pipeline)
-  }
-
-  inputset_templates = merge([for name, details in var.harness_platform_pipelines : {
-    for key, value in details.inputset : "${key}_inputset" =>
-    merge(
-      value,
-      {
-        vars = merge(
-          details.pipeline.vars,
-          value.vars,
-          {
-            identifier  = "${lower(replace(key, "-", "_"))}_inputset_${var.suffix}"
-            description = value.description
-            pipeline_id = try(details.pipeline.vars.remote_id, harness_platform_pipeline.pipeline[name].identifier)
-        })
-      }
-    ) }
-  ]...)
-
-  trigger_templates = merge([for name, details in var.harness_platform_pipelines : {
-    for key, value in details.trigger : "${key}_trigger" =>
-    merge(
-      value,
-      {
-        vars = merge(
-          details.pipeline.vars,
-          value.vars,
-          {
-            identifier  = "${lower(replace(key, "-", "_"))}_trigger_${var.suffix}"
-            description = value.description
-            pipeline_id = try(details.pipeline.vars.remote_id, harness_platform_pipeline.pipeline[name].identifier)
-            enabled     = value.enable
-          },
-          [for k, v in value.inputset_ref : details.inputset[k].vars if v]...
-        )
-      }
-    ) }
-  ]...)
+variable "templates" {
+  default = {}
 }
