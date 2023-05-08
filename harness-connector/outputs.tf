@@ -80,7 +80,7 @@ locals {
   }
 }
 
-output "connectors" {
+output "all" {
   value = merge(
     length(keys(local.gitlab_connectors_output)) > 0 ? { gitlab_connectors = local.gitlab_connectors_output } : {},
     length(keys(local.artifactory_connectors_output)) > 0 ? { artifactory_connectors = local.artifactory_connectors_output } : {},
