@@ -2,6 +2,7 @@
 locals {
 
   all_connectors = merge(
+    { for name, details in var.harness_platform_docker_connectors : "docker_${name}" => details },
     { for name, details in var.harness_platform_gitlab_connectors : "gitlab_${name}" => details },
     { for name, details in var.harness_platform_github_connectors : "github_${name}" => details },
     { for name, details in var.harness_platform_artifactory_connectors : "artifactory_${name}" => details },
@@ -15,6 +16,18 @@ locals {
 
   connector_org_id = merge([for connector, values in local.all_connectors : { for org, details in var.organizations : connector => details.identifier if lower(org) == lower(try(values.organization, "")) }]...)
   connector_prj_id = merge([for connector, values in local.all_connectors : { for prj, details in var.projects : connector => details.identifier if lower(prj) == lower(try(values.project, "")) }]...)
+
+  docker_connectors = { for name, details in var.harness_platform_docker_connectors : name => merge(
+    details,
+    {
+      delegate_selectors = try(details.delegate_selectors, var.delegate_selectors)
+      identifier         = "${lower(replace(name, "/[\\s-.]/", "_"))}_docker_connector_${var.suffix}"
+      validation_repo    = details.connection_type == "Repo" ? "" : details.validation_repo
+      tags               = concat(try(details.tags, []), var.tags)
+      org_id             = try(local.connector_org_id["docker_${name}"], "") != "" ? local.connector_org_id["docker_${name}"] : try(details.org_id, var.org_id)
+      project_id         = try(local.connector_prj_id["docker_${name}"], "") != "" ? local.connector_prj_id["docker_${name}"] : try(details.project_id, var.project_id)
+    }
+  ) if details.enable }
 
   gitlab_connectors = { for name, details in var.harness_platform_gitlab_connectors : name => merge(
     details,
