@@ -69,5 +69,5 @@ output "ttd" {
   value = var.templates.template_deployments
 }
 output "test" {
-  value = keys(try(var.harness_platform_infrastructures.*.template.template-deployment, {}))
+  value = var.harness_platform_infrastructures
 }
