@@ -34,8 +34,9 @@ locals {
         {
           steps  = {}
           stages = {}
-          template_deployment = {
-            /* id = [for tpl, v in try(details.vars.templates.template_deployment, {}) : harness_platform_template.template_deployment[tpl].identifier][0] */
+          template-deployment = {
+            template_id      = try(harness_platform_template.template_deployment[try(details.vars.templates.template-deployment.template_name, "null")].identifier, "null")
+            template_version = try(details.vars.templates.template-deployment.template_name, "1")
           }
       })
     }
