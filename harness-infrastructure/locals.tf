@@ -62,3 +62,12 @@ locals {
   )
 }
 
+output "infrastructure_tpl_dp_id" {
+  value = local.infrastructure_tpl_dp_id
+}
+output "ttd" {
+  value = var.templates.template_deployments
+}
+output "test" {
+  value = keys(try(var.harness_platform_infrastructures.*.template.template-deployment, {}))
+}
