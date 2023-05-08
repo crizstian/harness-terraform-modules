@@ -21,7 +21,7 @@ locals {
   infrastructure_keys   = toset(setsubtract(keys(var.harness_platform_infrastructures), keys(local.infrastructure_k8s_id)))
   infrastructure_tpl_dp_id = { for infrastructure, values in var.harness_platform_infrastructures : infrastructure => {
     template-deployment = {
-      template_id      = try(var.templates.template_deployments[values.template.template-deployment.template_name], "")
+      template_id      = try(var.templates.template_deployments[values.template.template-deployment.template_name].identifier, "")
       template_version = try(values.template.template-deployment.template_version, "")
     }
     }
