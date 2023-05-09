@@ -1,3 +1,6 @@
+variable "harness_platform_pipelines" {
+  default = {}
+}
 variable "harness_platform_inputsets" {
   default = {}
 }
