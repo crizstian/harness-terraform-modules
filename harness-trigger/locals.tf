@@ -18,14 +18,15 @@ locals {
             try(definition.TRIGGER_VALUES, {}),
             details,
             {
-              svc         = "${svc}"
-              trg         = "${trg}"
-              name        = "${name}"
-              suffix      = var.suffix
-              tags        = concat(try(variables.SERVICE_DEFINITION.tags, []), var.tags)
-              org_id      = try(var.pipelines[pipe].org_id, "") != "" ? var.pipelines[pipe].org_id : try(details.org_id, var.org_id)
-              project_id  = try(var.pipelines[pipe].project_id, "") != "" ? var.pipelines[pipe].project_id : try(details.project_id, var.project_id)
-              pipeline_id = try(var.pipelines[pipe].identifier, "")
+              svc              = "${svc}"
+              trg              = "${trg}"
+              name             = "${name}"
+              suffix           = var.suffix
+              tags             = concat(try(variables.SERVICE_DEFINITION.tags, []), var.tags)
+              org_id           = try(var.pipelines[pipe].org_id, "") != "" ? var.pipelines[pipe].org_id : try(details.org_id, var.org_id)
+              project_id       = try(var.pipelines[pipe].project_id, "") != "" ? var.pipelines[pipe].project_id : try(details.project_id, var.project_id)
+              pipeline_id      = try(var.pipelines[pipe].identifier, "")
+              TRIGGER_INPUTSET = try(definition.TRIGGER_INPUTSET, {})
             }
           ) if definition.enable && name == pipe
         } #if values.enable
