@@ -1,4 +1,10 @@
-variable "harness_platform_pipelines" {
+variable "harness_platform_inputsets" {
+  default = {}
+}
+variable "harness_platform_triggers" {
+  default = {}
+}
+variable "harness_platform_services" {
   default = {}
 }
 variable "suffix" {}
