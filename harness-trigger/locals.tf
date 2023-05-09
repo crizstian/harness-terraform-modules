@@ -227,3 +227,9 @@ output "trg_by_svc" {
 output "trg_by_infra" {
   value = local.trg_by_infra
 }
+output "ci" {
+  value = local.ci
+}
+output "cd" {
+  value = local.cd
+}
