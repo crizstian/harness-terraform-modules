@@ -51,7 +51,10 @@ locals {
             merge(
               infra,
               local.inpt_by_svc["${svc}_${name}_${inpt}"],
-              { env = "${env}" }
+              {
+                env    = "${env}"
+                env_id = "${lower(env)}_${var.suffix}"
+              }
             ) if infra.enable
           } if set.enable && name == pipe
         ] #if values.enable
