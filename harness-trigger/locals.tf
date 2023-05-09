@@ -1,7 +1,7 @@
 # github pipelines
 locals {
   inputsets         = var.inputsets.inputset
-  inputsets_verbose = var.inputsets.inputset_verbose
+  inputsets_verbose = var.inputsets.verbose
   #inputset = var.inputsets.inputset
 
   trg_by_svc = merge(flatten([
