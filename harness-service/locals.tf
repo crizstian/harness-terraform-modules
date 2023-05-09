@@ -10,9 +10,16 @@ locals {
     }
   }
 
+  /* service_cnt_ids = {for service, values in var.harness_platform_services: service => merge(
+    [
+      for cnt, value in values.CONNECTORS: {}
+    ]...)
+    } */
+
   services = { for name, details in var.harness_platform_services : name => {
     vars = merge(
       try(details.CI, {}),
+      try(var.var.connectors.default_connectors, {}),
       try(local.service_tpl_dp_id[name], {}),
       details.SERVICE_DEFINITION,
       {
