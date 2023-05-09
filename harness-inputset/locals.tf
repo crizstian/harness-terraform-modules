@@ -7,12 +7,12 @@ locals {
         for pipe, values in variables.PIPELINE : {
           for inpt, set in values.INPUTSET : "${svc}_${name}_${inpt}" =>
           merge(
-            details,
-            set.VALUES,
+            try(var.templates.stages[name].default_values, try(var.templates.pipelines[pipe].default_values, {})),
             try(var.connectors.default_connectors, {}),
             try(set.CONNECTORS, {}),
             try(set.CI, {}),
-            try(var.templates.stages[name].default_values, try(var.templates.pipelines[pipe].default_values, {})),
+            details,
+            set.VALUES,
             {
               svc         = "${svc}"
               inpt        = "${inpt}"
@@ -24,7 +24,7 @@ locals {
               project_id  = try(var.pipelines[pipe].project_id, "") != "" ? var.pipelines[pipe].project_id : try(details.project_id, var.project_id)
               pipeline_id = try(var.pipelines[pipe].identifier, "")
             }
-          ) if set.enable
+          ) if set.enable && name == pipe
         } #if values.enable
       ] if variables.SERVICE_DEFINITION.enable
     ] if details.enable
@@ -53,7 +53,7 @@ locals {
               local.inpt_by_svc["${svc}_${name}_${inpt}"],
               { env = "${env}" }
             ) if infra.enable
-          } if set.enable
+          } if set.enable && name == pipe
         ] #if values.enable
       ] if variables.SERVICE_DEFINITION.enable
     ] if details.enable && details.type == "CD"
