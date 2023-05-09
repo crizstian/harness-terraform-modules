@@ -20,6 +20,7 @@ locals {
     vars = merge(
       try(details.CI, {}),
       try(var.var.connectors.default_connectors, {}),
+      try(details.CONNECTORS, {}),
       try(local.service_tpl_dp_id[name], {}),
       details.SERVICE_DEFINITION,
       {
