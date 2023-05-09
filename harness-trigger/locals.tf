@@ -10,12 +10,12 @@ locals {
         for pipe, values in variables.PIPELINE : {
           for trg, definition in values.TRIGGER : "${svc}_${name}_${trg}" =>
           merge(
-            details,
-            definition,
             try(var.templates.stages[name].default_values, try(var.templates.pipelines[pipe].default_values, {})),
             try(var.connectors.default_connectors, {}),
             try(variables.CI, {}),
             try(variables.CONNECTORS, {}),
+            details,
+            definition,
             {
               svc         = "${svc}"
               trg         = "${trg}"
