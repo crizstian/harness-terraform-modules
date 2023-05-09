@@ -19,7 +19,7 @@ locals {
   services = { for name, details in var.harness_platform_services : name => {
     vars = merge(
       try(details.CI, {}),
-      try(var.var.connectors.default_connectors, {}),
+      try(var.connectors.default_connectors, {}),
       try(details.CONNECTORS, {}),
       try(local.service_tpl_dp_id[name], {}),
       details.SERVICE_DEFINITION,
