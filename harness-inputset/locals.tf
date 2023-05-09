@@ -294,7 +294,3 @@ locals {
   ) */
 
 }
-
-output "inpt_by_svc" {
-  value = local.inpt_by_svc
-}
