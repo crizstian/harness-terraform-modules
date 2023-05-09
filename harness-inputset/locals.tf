@@ -19,9 +19,9 @@ locals {
               suffix      = var.suffix
               tags        = concat(try(variables.SERVICE_DEFINITION.tags, []), var.tags)
               git_details = try(variables.SERVICE_DEFINITION.git_details, {})
+              service_id  = try("${replace(svc, "-", "_")}_${var.suffix}", "")
               org_id      = try(var.pipelines[pipe].org_id, "") != "" ? var.pipelines[pipe].org_id : try(details.org_id, var.org_id)
               project_id  = try(var.pipelines[pipe].project_id, "") != "" ? var.pipelines[pipe].project_id : try(details.project_id, var.project_id)
-              service_id  = try("${replace(svc, "-", "_")}_${var.suffix}", "")
               pipeline_id = try(var.pipelines[pipe].identifier, "")
             }
           ) if set.enable
