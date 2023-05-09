@@ -26,7 +26,7 @@ locals {
               project_id  = try(var.pipelines[pipe].project_id, "") != "" ? var.pipelines[pipe].project_id : try(details.project_id, var.project_id)
               pipeline_id = try(var.pipelines[pipe].identifier, "")
             }
-          ) if set.enable && name == pipe
+          ) if definition.enable && name == pipe
         } #if values.enable
       ] if variables.SERVICE_DEFINITION.enable
     ] if details.enable
@@ -50,7 +50,7 @@ locals {
     for name, details in var.harness_platform_triggers : [
       for svc, variables in var.harness_platform_services : [
         for pipe, values in variables.PIPELINE : [
-          for trg, set in values.TRIGGER : {
+          for trg, definition in values.TRIGGER : {
             for env, infra in variables.CD.ENV : "${svc}_${name}_${env}" =>
             merge(
               infra,
@@ -60,7 +60,7 @@ locals {
                 env_id = "${lower(env)}_${var.suffix}"
               }
             ) if infra.enable
-          } if set.enable && name == pipe
+          } if definition.enable && name == pipe
         ] #if values.enable
       ] if variables.SERVICE_DEFINITION.enable
     ] if details.enable && details.type == "CD"
