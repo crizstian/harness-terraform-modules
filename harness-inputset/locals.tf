@@ -4,7 +4,7 @@ locals {
   inpt_by_svc = merge(flatten([
     for name, details in var.harness_platform_inputsets : [
       for svc, variables in var.harness_platform_services : [
-        for pipe, values in variables.variables.PIPELINE : {
+        for pipe, values in variables.PIPELINE : {
           for inpt, set in values.INPUTSET : "${svc}_${name}_${inpt}" =>
           merge(
             details,
@@ -25,8 +25,8 @@ locals {
               pipeline_id = try(var.pipelines[pipe].identifier, "")
             }
           ) if set.enable
-        } if values.enable
-      ] if variables.enable
+        } #if values.enable
+      ] if variables.SERVICE_DEFINITION.enable
     ] if details.enable
   ])...)
 
@@ -54,8 +54,8 @@ locals {
               { svc = "${env}" }
             ) if infra.enable
           } if set.enable
-        ] if values.enable
-      ] if variables.enable
+        ] #if values.enable
+      ] if variables.SERVICE_DEFINITION.enable
     ] if details.enable && details.type == "CD"
   ])...)
 
