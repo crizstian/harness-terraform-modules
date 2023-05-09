@@ -51,7 +51,7 @@ locals {
             merge(
               infra,
               local.inpt_by_svc["${svc}_${name}_${inpt}"],
-              { svc = "${env}" }
+              { env = "${env}" }
             ) if infra.enable
           } if set.enable
         ] #if values.enable
