@@ -14,8 +14,9 @@ locals {
             try(var.connectors.default_connectors, {}),
             try(variables.CI, {}),
             try(variables.CONNECTORS, {}),
+            try(definition.TRIGGER_SETUP, {}),
+            try(definition.TRIGGER_VALUES, {}),
             details,
-            definition,
             {
               svc         = "${svc}"
               trg         = "${trg}"
