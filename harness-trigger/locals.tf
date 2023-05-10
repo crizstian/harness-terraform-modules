@@ -11,6 +11,7 @@ locals {
           for trg, definition in values.TRIGGER : "${svc}_${name}_${trg}" =>
           merge(
             try(var.templates.stages[name].default_values, try(var.templates.pipelines[pipe].default_values, {})),
+            merge([for inpt, enable in try(definition.TRIGGER_INPUTSET, {}) : values.INPUTSET[inpt].VALUES if try(enable, false)]...),
             try(var.connectors.default_connectors, {}),
             try(variables.CI, {}),
             try(variables.CONNECTORS, {}),
@@ -37,7 +38,7 @@ locals {
   ci = { for name, values in local.trg_by_svc : name =>
     {
       vars = merge(
-        merge([for inpt, enable in values.TRIGGER_INPUTSET : try(local.inputsets_verbose["${values.svc}_${values.name}_${inpt}"], {}) if enable]...),
+        #merge([for inpt, enable in values.TRIGGER_INPUTSET : try(local.inputsets_verbose["${values.svc}_${values.name}_${inpt}"], {}) if enable]...),
         values,
         {
           name         = "${values.svc}_${values.trg}"
@@ -71,7 +72,7 @@ locals {
   cd = { for name, values in local.trg_by_infra : name =>
     {
       vars = merge(
-        merge([for inpt, enable in values.TRIGGER_INPUTSET : try(local.inputsets_verbose["${values.svc}_${values.name}_${inpt}"], {}) if enable]...),
+        # merge([for inpt, enable in values.TRIGGER_INPUTSET : try(local.inputsets_verbose["${values.svc}_${values.name}_${inpt}"], {}) if enable]...),
         values,
         {
           name         = "${values.svc}_${values.trg}_${values.env}"
