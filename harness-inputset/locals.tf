@@ -298,6 +298,6 @@ locals {
 
 }
 
-output "inputset" {
+output "test" {
   value = local.inputsets
 }
