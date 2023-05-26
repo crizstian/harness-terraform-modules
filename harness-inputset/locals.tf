@@ -297,3 +297,7 @@ locals {
   ) */
 
 }
+
+output "inputset" {
+  value = local.inputsets
+}
