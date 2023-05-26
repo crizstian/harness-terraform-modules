@@ -9,8 +9,8 @@ locals {
           merge(
             try(var.templates.stages[name].default_values, try(var.templates.pipelines[pipe].default_values, {})),
             try(var.connectors.default_connectors, {}),
-            try(set.CONNECTORS, {}),
-            try(set.CI, {}),
+            try(variables.CONNECTORS, {}),
+            try(variables.CI, {}),
             details,
             set.VALUES,
             {
