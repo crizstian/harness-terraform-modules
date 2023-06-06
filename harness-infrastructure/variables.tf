@@ -30,5 +30,8 @@ variable "tags" {
   default = ""
 }
 variable "common_values" {
-  default = {}
+  default = {
+    org_id     = ""
+    project_id = ""
+  }
 }

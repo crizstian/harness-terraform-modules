@@ -33,5 +33,8 @@ variable "services_path" {
   default = ""
 }
 variable "common_values" {
-  default = {}
+  default = {
+    org_id     = ""
+    project_id = ""
+  }
 }
