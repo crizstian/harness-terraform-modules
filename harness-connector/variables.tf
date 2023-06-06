@@ -47,3 +47,6 @@ variable "tags" {
 variable "delegate_selectors" {
   default = []
 }
+variable "common_values" {
+  default = []
+}

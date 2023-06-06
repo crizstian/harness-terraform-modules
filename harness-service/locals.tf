@@ -27,8 +27,8 @@ locals {
         name       = "${name}"
         identifier = "${lower(replace(name, "/[\\s-.]/", "_"))}_${var.suffix}"
         tags       = concat(try(details.SERVICE_DEFINITION.tags, []), var.tags)
-        org_id     = try(local.service_org_id[name], "") != "" ? local.service_org_id[name] : try(details.vars.org_id, var.org_id)
-        project_id = try(local.service_prj_id[name], "") != "" ? local.service_prj_id[name] : try(details.vars.project_id, var.project_id)
+        org_id     = try(local.service_org_id[name], "") != "" ? local.service_org_id[name] : try(details.org_id, var.common_values.org_id)
+        project_id = try(local.service_prj_id[name], "") != "" ? local.service_prj_id[name] : try(details.project_id, var.common_values.project_id)
       }
   ) } if details.SERVICE_DEFINITION.enable }
 }

@@ -35,3 +35,6 @@ variable "connectors" {
 variable "templates" {
   default = {}
 }
+variable "common_values" {
+  default = []
+}

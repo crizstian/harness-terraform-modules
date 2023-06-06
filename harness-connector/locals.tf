@@ -23,8 +23,8 @@ locals {
       delegate_selectors = try(details.delegate_selectors, var.delegate_selectors)
       identifier         = "${lower(replace(name, "/[\\s-.]/", "_"))}_docker_connector_${var.suffix}"
       tags               = concat(try(details.tags, []), var.tags)
-      org_id             = try(local.connector_org_id["docker_${name}"], "") != "" ? local.connector_org_id["docker_${name}"] : try(details.org_id, var.org_id)
-      project_id         = try(local.connector_prj_id["docker_${name}"], "") != "" ? local.connector_prj_id["docker_${name}"] : try(details.project_id, var.project_id)
+      org_id             = try(local.connector_org_id["docker_${name}"], "") != "" ? local.connector_org_id["docker_${name}"] : try(details.org_id, var.common_values.org_id)
+      project_id         = try(local.connector_prj_id["docker_${name}"], "") != "" ? local.connector_prj_id["docker_${name}"] : try(details.project_id, var.common_values.project_id)
     }
   ) if details.enable }
 
@@ -35,8 +35,8 @@ locals {
       identifier         = "${lower(replace(name, "/[\\s-.]/", "_"))}_gitlab_connector_${var.suffix}"
       validation_repo    = details.connection_type == "Repo" ? "" : details.validation_repo
       tags               = concat(try(details.tags, []), var.tags)
-      org_id             = try(local.connector_org_id["gitlab_${name}"], "") != "" ? local.connector_org_id["gitlab_${name}"] : try(details.org_id, var.org_id)
-      project_id         = try(local.connector_prj_id["gitlab_${name}"], "") != "" ? local.connector_prj_id["gitlab_${name}"] : try(details.project_id, var.project_id)
+      org_id             = try(local.connector_org_id["gitlab_${name}"], "") != "" ? local.connector_org_id["gitlab_${name}"] : try(details.org_id, var.common_values.org_id)
+      project_id         = try(local.connector_prj_id["gitlab_${name}"], "") != "" ? local.connector_prj_id["gitlab_${name}"] : try(details.project_id, var.common_values.project_id)
     }
   ) if details.enable }
 
@@ -47,8 +47,8 @@ locals {
       identifier         = "${lower(replace(name, "/[\\s-.]/", "_"))}_github_connector_${var.suffix}"
       validation_repo    = details.connection_type == "Repo" ? "" : details.validation_repo
       tags               = concat(try(details.tags, []), var.tags)
-      org_id             = try(local.connector_org_id["github_${name}"], "") != "" ? local.connector_org_id["github_${name}"] : try(details.org_id, var.org_id)
-      project_id         = try(local.connector_prj_id["github_${name}"], "") != "" ? local.connector_prj_id["github_${name}"] : try(details.project_id, var.project_id)
+      org_id             = try(local.connector_org_id["github_${name}"], "") != "" ? local.connector_org_id["github_${name}"] : try(details.org_id, var.common_values.org_id)
+      project_id         = try(local.connector_prj_id["github_${name}"], "") != "" ? local.connector_prj_id["github_${name}"] : try(details.project_id, var.common_values.project_id)
     }
   ) if details.enable }
 
@@ -58,8 +58,8 @@ locals {
       delegate_selectors = try(details.delegate_selectors, var.delegate_selectors)
       identifier         = "${lower(replace(name, "/[\\s-.]/", "_"))}_artifactory_connector_${var.suffix}"
       tags               = concat(try(details.tags, []), var.tags)
-      org_id             = try(local.connector_org_id["artifactory_${name}"], "") != "" ? local.connector_org_id["artifactory_${name}"] : try(details.org_id, var.org_id)
-      project_id         = try(local.connector_prj_id["artifactory_${name}"], "") != "" ? local.connector_prj_id["artifactory_${name}"] : try(details.project_id, var.project_id)
+      org_id             = try(local.connector_org_id["artifactory_${name}"], "") != "" ? local.connector_org_id["artifactory_${name}"] : try(details.org_id, var.common_values.org_id)
+      project_id         = try(local.connector_prj_id["artifactory_${name}"], "") != "" ? local.connector_prj_id["artifactory_${name}"] : try(details.project_id, var.common_values.project_id)
     }
   ) if details.enable }
 
@@ -69,8 +69,8 @@ locals {
       delegate_selectors    = try(details.delegate_selectors, var.delegate_selectors)
       tags                  = concat(try(details.tags, []), var.tags)
       identifier            = "${lower(replace(name, "/[\\s-.]/", "_"))}_gcp_connector_${var.suffix}"
-      org_id                = try(local.connector_org_id["gcp_${name}"], "") != "" ? local.connector_org_id["gcp_${name}"] : try(details.org_id, var.org_id)
-      project_id            = try(local.connector_prj_id["gcp_${name}"], "") != "" ? local.connector_prj_id["gcp_${name}"] : try(details.project_id, var.project_id)
+      org_id                = try(local.connector_org_id["gcp_${name}"], "") != "" ? local.connector_org_id["gcp_${name}"] : try(details.org_id, var.common_values.org_id)
+      project_id            = try(local.connector_prj_id["gcp_${name}"], "") != "" ? local.connector_prj_id["gcp_${name}"] : try(details.project_id, var.common_values.project_id)
       manual                = try(details.manual, {})
       inherit_from_delegate = try(details.inherit_from_delegate, {})
   }) if details.enable }
@@ -81,8 +81,8 @@ locals {
       delegate_selectors    = try(details.delegate_selectors, var.delegate_selectors)
       tags                  = concat(try(details.tags, []), var.tags)
       identifier            = "${lower(replace(name, "/[\\s-.]/", "_"))}_aws_connector_${var.suffix}"
-      org_id                = try(local.connector_org_id["aws_${name}"], "") != "" ? local.connector_org_id["aws_${name}"] : try(details.org_id, var.org_id)
-      project_id            = try(local.connector_prj_id["aws_${name}"], "") != "" ? local.connector_prj_id["aws_${name}"] : try(details.project_id, var.project_id)
+      org_id                = try(local.connector_org_id["aws_${name}"], "") != "" ? local.connector_org_id["aws_${name}"] : try(details.org_id, var.common_values.org_id)
+      project_id            = try(local.connector_prj_id["aws_${name}"], "") != "" ? local.connector_prj_id["aws_${name}"] : try(details.project_id, var.common_values.project_id)
       manual                = try(details.manual, {})
       inherit_from_delegate = try(details.inherit_from_delegate, {})
   }) if details.enable }
@@ -93,8 +93,8 @@ locals {
       delegate_selectors = try(details.delegate_selectors, var.delegate_selectors)
       tags               = concat(try(details.tags, []), var.tags)
       identifier         = "${lower(replace(name, "/[\\s-.]/", "_"))}_nexus_connector_${var.suffix}"
-      org_id             = try(local.connector_org_id["nexus_${name}"], "") != "" ? local.connector_org_id["nexus_${name}"] : try(details.org_id, var.org_id)
-      project_id         = try(local.connector_prj_id["nexus_${name}"], "") != "" ? local.connector_prj_id["nexus_${name}"] : try(details.project_id, var.project_id)
+      org_id             = try(local.connector_org_id["nexus_${name}"], "") != "" ? local.connector_org_id["nexus_${name}"] : try(details.org_id, var.common_values.org_id)
+      project_id         = try(local.connector_prj_id["nexus_${name}"], "") != "" ? local.connector_prj_id["nexus_${name}"] : try(details.project_id, var.common_values.project_id)
       credentials        = try(details.credentials, {})
   }) if details.enable }
 
@@ -104,8 +104,8 @@ locals {
       delegate_selectors = try(details.delegate_selectors, var.delegate_selectors)
       tags               = concat(try(details.tags, []), var.tags)
       identifier         = "${lower(replace(name, "/[\\s-.]/", "_"))}_service_now_connector_${var.suffix}"
-      org_id             = try(local.connector_org_id["service_now_${name}"], "") != "" ? local.connector_org_id["service_now_${name}"] : try(details.org_id, var.org_id)
-      project_id         = try(local.connector_prj_id["service_now_${name}"], "") != "" ? local.connector_prj_id["service_now_${name}"] : try(details.project_id, var.project_id)
+      org_id             = try(local.connector_org_id["service_now_${name}"], "") != "" ? local.connector_org_id["service_now_${name}"] : try(details.org_id, var.common_values.org_id)
+      project_id         = try(local.connector_prj_id["service_now_${name}"], "") != "" ? local.connector_prj_id["service_now_${name}"] : try(details.project_id, var.common_values.project_id)
   }) if details.enable }
 
   dynatrace_connectors = { for name, details in var.harness_platform_dynatrace_connectors : name => merge(
@@ -114,8 +114,8 @@ locals {
       delegate_selectors = try(details.delegate_selectors, var.delegate_selectors)
       tags               = concat(try(details.tags, []), var.tags)
       identifier         = "${lower(replace(name, "/[\\s-.]/", "_"))}_dynatrace_connector_${var.suffix}"
-      org_id             = try(local.connector_org_id["dynatrace_${name}"], "") != "" ? local.connector_org_id["dynatrace_${name}"] : try(details.org_id, var.org_id)
-      project_id         = try(local.connector_prj_id["dynatrace_${name}"], "") != "" ? local.connector_prj_id["dynatrace_${name}"] : try(details.project_id, var.project_id)
+      org_id             = try(local.connector_org_id["dynatrace_${name}"], "") != "" ? local.connector_org_id["dynatrace_${name}"] : try(details.org_id, var.common_values.org_id)
+      project_id         = try(local.connector_prj_id["dynatrace_${name}"], "") != "" ? local.connector_prj_id["dynatrace_${name}"] : try(details.project_id, var.common_values.project_id)
   }) if details.enable }
 
   kubernetes_connectors = { for name, details in var.harness_platform_kubernetes_connectors : name => merge(
@@ -124,8 +124,8 @@ locals {
       delegate_selectors    = can(details.inherit_from_delegate) ? null : try(details.delegate_selectors, var.delegate_selectors)
       tags                  = concat(try(details.tags, []), var.tags)
       identifier            = "${lower(replace(name, "/[\\s-.]/", "_"))}_kubernetes_connector_${var.suffix}"
-      org_id                = try(local.connector_org_id["kubernetes_${name}"], "") != "" ? local.connector_org_id["kubernetes_${name}"] : try(details.org_id, var.org_id)
-      project_id            = try(local.connector_prj_id["kubernetes_${name}"], "") != "" ? local.connector_prj_id["kubernetes_${name}"] : try(details.project_id, var.project_id)
+      org_id                = try(local.connector_org_id["kubernetes_${name}"], "") != "" ? local.connector_org_id["kubernetes_${name}"] : try(details.org_id, var.common_values.org_id)
+      project_id            = try(local.connector_prj_id["kubernetes_${name}"], "") != "" ? local.connector_prj_id["kubernetes_${name}"] : try(details.project_id, var.common_values.project_id)
       service_account       = try(details.service_account, {})
       username_password     = try(details.username_password, {})
       inherit_from_delegate = try(details.inherit_from_delegate, {})

@@ -29,4 +29,6 @@ variable "project_id" {
 variable "tags" {
   default = ""
 }
-
+variable "common_values" {
+  default = []
+}

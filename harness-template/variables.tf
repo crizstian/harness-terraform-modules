@@ -20,3 +20,6 @@ variable "projects" {
 variable "connectors" {
   default = {}
 }
+variable "common_values" {
+  default = []
+}
