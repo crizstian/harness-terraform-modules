@@ -62,3 +62,7 @@ locals {
     local.infrastructure_not_k8s
   )
 }
+
+output "test2" {
+  value = local.infrastructure_tpl_dp_id
+}
