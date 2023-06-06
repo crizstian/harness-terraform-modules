@@ -35,8 +35,8 @@ locals {
         identifier   = "${lower(replace(name, "/[\\s-.]/", "_"))}_${var.suffix}"
         tags         = concat(try(var.harness_platform_infrastructures[name].vars.tags, []), var.tags)
         env_id       = try(local.infrastructure_env_id[name], "") != "" ? local.infrastructure_env_id[name] : try(var.harness_platform_infrastructures[name].vars.env_id, var.env_id)
-        org_id       = try(local.infrastructure_org_id[infra], "") != "" ? local.infrastructure_org_id[infra] : try(var.harness_platform_infrastructures[name].vars.org_id, var.common_values.org_id)
-        project_id   = try(local.infrastructure_prj_id[infra], "") != "" ? local.infrastructure_prj_id[infra] : try(var.harness_platform_infrastructures[name].vars.project_id, var.common_values.project_id)
+        org_id       = try(local.infrastructure_org_id[name], "") != "" ? local.infrastructure_org_id[name] : try(var.harness_platform_infrastructures[name].vars.org_id, var.common_values.org_id)
+        project_id   = try(local.infrastructure_prj_id[name], "") != "" ? local.infrastructure_prj_id[name] : try(var.harness_platform_infrastructures[name].vars.project_id, var.common_values.project_id)
         connector_id = connector
     })
     } if var.harness_platform_infrastructures[name].enable
@@ -51,8 +51,8 @@ locals {
         identifier = "${lower(replace(name, "/[\\s-.]/", "_"))}_${var.suffix}"
         tags       = concat(try(var.harness_platform_infrastructures[name].vars.tags, []), var.tags)
         env_id     = try(local.infrastructure_env_id[name], "") != "" ? local.infrastructure_env_id[name] : try(var.harness_platform_infrastructures[name].vars.env_id, var.env_id)
-        org_id     = try(local.infrastructure_org_id[infra], "") != "" ? local.infrastructure_org_id[infra] : try(var.harness_platform_infrastructures[name].vars.org_id, var.common_values.org_id)
-        project_id = try(local.infrastructure_prj_id[infra], "") != "" ? local.infrastructure_prj_id[infra] : try(var.harness_platform_infrastructures[name].vars.project_id, var.common_values.project_id)
+        org_id     = try(local.infrastructure_org_id[name], "") != "" ? local.infrastructure_org_id[name] : try(var.harness_platform_infrastructures[name].vars.org_id, var.common_values.org_id)
+        project_id = try(local.infrastructure_prj_id[name], "") != "" ? local.infrastructure_prj_id[name] : try(var.harness_platform_infrastructures[name].vars.project_id, var.common_values.project_id)
     })
     } if var.harness_platform_infrastructures[name].enable
   }
