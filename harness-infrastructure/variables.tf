@@ -30,5 +30,5 @@ variable "tags" {
   default = ""
 }
 variable "common_values" {
-  default = []
+  default = {}
 }

@@ -33,5 +33,5 @@ variable "services_path" {
   default = ""
 }
 variable "common_values" {
-  default = []
+  default = {}
 }

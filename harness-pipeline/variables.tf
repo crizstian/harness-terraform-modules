@@ -27,5 +27,5 @@ variable "templates" {
   default = {}
 }
 variable "common_values" {
-  default = []
+  default = {}
 }

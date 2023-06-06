@@ -13,7 +13,7 @@ variable "project_id" {
   default = ""
 }
 variable "common_values" {
-  default = []
+  default = {}
 }
 locals {
   harness_policies = { for name, details in var.harness_platform_policies : name => merge(
