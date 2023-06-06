@@ -21,8 +21,8 @@ locals {
   infrastructure_keys   = toset(setsubtract(keys(var.harness_platform_infrastructures), keys(local.infrastructure_k8s_id)))
   infrastructure_tpl_dp_id = { for infrastructure, values in var.harness_platform_infrastructures : infrastructure => {
     template-deployment = {
-      template_id      = try(var.templates.template_deployments[values.template.template-deployment.template_name].identifier, "")
-      template_version = try(values.template.template-deployment.template_version, "")
+      template_id      = try(var.templates.template_deployments[values.template.template-deployment.template_name].identifier, "NOT_FOUND")
+      template_version = try(values.template.template-deployment.template_version, "NOT_FOUND")
     }
     }
   }
@@ -61,8 +61,4 @@ locals {
     local.infrastructure_k8s,
     local.infrastructure_not_k8s
   )
-}
-
-output "test2" {
-  value = local.infrastructure_tpl_dp_id
 }
