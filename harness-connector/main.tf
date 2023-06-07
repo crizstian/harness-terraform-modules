@@ -167,7 +167,7 @@ resource "harness_platform_connector_github" "connector" {
   tags            = each.value.tags
 
   dynamic "credentials" {
-    for_each = each.value.credentials
+    for_each = each.value.credentials.http
     content {
       http {
         username  = credentials.value.http.username
