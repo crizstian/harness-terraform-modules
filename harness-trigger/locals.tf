@@ -11,8 +11,8 @@ locals {
           for trg, definition in values.TRIGGER : "${svc}_${name}_${trg}" =>
           merge(
             try(var.templates.stages[name].default_values, try(var.templates.pipelines[pipe].default_values, {})),
-            merge([for inpt, enable in try(definition.TRIGGER_INPUTSET, {}) : values.INPUTSET[inpt].VALUES if try(enable, false)]...),
             try(var.connectors.default_connectors, {}),
+            merge([for inpt, enable in try(definition.TRIGGER_INPUTSET, {}) : values.INPUTSET[inpt].VALUES if try(enable, false)]...),
             try(variables.CI, {}),
             try(variables.CONNECTORS, {}),
             try(definition.VALUES, {}),
