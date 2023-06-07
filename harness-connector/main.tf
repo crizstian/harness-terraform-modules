@@ -252,7 +252,7 @@ resource "harness_platform_connector_newrelic" "connector" {
   api_key_ref        = each.value.api_key_ref
 }
 
-resource "harness_platform_connector_helm" "test" {
+resource "harness_platform_connector_helm" "connector" {
   for_each           = local.helm_connectors
   identifier         = each.value.identifier
   name               = each.key
