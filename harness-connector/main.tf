@@ -171,14 +171,14 @@ resource "harness_platform_connector_github" "connector" {
     dynamic "http" {
       for_each = each.value.credentials.http
       content {
-        username  = credentials.value.username
-        token_ref = credentials.value.token_ref_id
+        username  = http.value.username
+        token_ref = http.value.token_ref_id
       }
     }
     dynamic "ssh" {
       for_each = each.value.credentials.ssh
       content {
-        ssh_key_ref = credentials.value.ssh_key_ref_id
+        ssh_key_ref = ssh.value.ssh_key_ref_id
       }
     }
   }
