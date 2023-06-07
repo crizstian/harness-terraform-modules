@@ -57,8 +57,13 @@ locals {
           }
         }
         ssh = {
-          ssh_key_ref_id = try(details.credentials.ssh.ssh_key_ref_id, "")
+          keyfile = {
+            ssh_key_ref_id = try(details.credentials.ssh.ssh_key_ref_id, "")
+          }
         }
+      }
+      api_authentication = {
+        token_ref_id = try(details.api_authentication.token_ref_id, "")
       }
     }
   ) if details.enable }
