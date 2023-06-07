@@ -31,6 +31,9 @@ variable "harness_platform_kubernetes_connectors" {
 variable "harness_platform_newrelic_connectors" {
   default = {}
 }
+variable "harness_platform_helm_connectors" {
+  default = {}
+}
 variable "suffix" {}
 variable "org_id" {
   default = ""
