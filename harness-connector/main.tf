@@ -177,7 +177,7 @@ resource "harness_platform_connector_github" "connector" {
     dynamic "ssh" {
       for_each = each.value.credentials.ssh
       content {
-        ssh_key_ref = http.value.ssh_key_id
+        ssh_key_ref = ssh.value.ssh_key_id
       }
     }
   }
