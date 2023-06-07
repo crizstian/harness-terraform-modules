@@ -12,6 +12,7 @@ locals {
     { for name, details in var.harness_platform_service_now_connectors : "service_now_${name}" => details },
     { for name, details in var.harness_platform_dynatrace_connectors : "dynatrace_${name}" => details },
     { for name, details in var.harness_platform_kubernetes_connectors : "kubernetes_${name}" => details },
+    { for name, details in var.harness_platform_newrelic_connectors : "newrelic_${name}" => details },
   )
 
   connector_org_id = merge([for connector, values in local.all_connectors : { for org, details in var.organizations : connector => details.identifier if lower(org) == lower(try(values.organization, "")) }]...)
@@ -130,6 +131,16 @@ locals {
       identifier         = "${lower(replace(name, "/[\\s-.]/", "_"))}_service_now_connector_${var.suffix}"
       org_id             = try(local.connector_org_id["service_now_${name}"], "") != "" ? local.connector_org_id["service_now_${name}"] : try(details.org_id, var.common_values.org_id)
       project_id         = try(local.connector_prj_id["service_now_${name}"], "") != "" ? local.connector_prj_id["service_now_${name}"] : try(details.project_id, var.common_values.project_id)
+  }) if details.enable }
+
+  newrelic_connectors = { for name, details in var.harness_platform_newrelic_connectors : name => merge(
+    details,
+    {
+      delegate_selectors = try(details.delegate_selectors, var.delegate_selectors)
+      tags               = concat(try(details.tags, []), var.tags)
+      identifier         = "${lower(replace(name, "/[\\s-.]/", "_"))}_newrelic_connector_${var.suffix}"
+      org_id             = try(local.connector_org_id["newrelic_${name}"], "") != "" ? local.connector_org_id["newrelic_${name}"] : try(details.org_id, var.common_values.org_id)
+      project_id         = try(local.connector_prj_id["newrelic_${name}"], "") != "" ? local.connector_prj_id["newrelic_${name}"] : try(details.project_id, var.common_values.project_id)
   }) if details.enable }
 
   dynatrace_connectors = { for name, details in var.harness_platform_dynatrace_connectors : name => merge(

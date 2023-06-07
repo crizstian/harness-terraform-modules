@@ -238,3 +238,16 @@ resource "harness_platform_connector_aws" "connector" {
   }
 }
 
+resource "harness_platform_connector_newrelic" "connector" {
+  for_each           = local.newrelic_connectors
+  identifier         = each.value.identifier
+  name               = each.key
+  description        = each.value.description
+  tags               = each.value.tags
+  project_id         = each.value.project_id
+  org_id             = each.value.org_id
+  delegate_selectors = each.value.delegate_selectors
+  url                = each.value.url
+  account_id         = each.value.account_id
+  api_key_ref        = each.value.api_key_ref
+}
