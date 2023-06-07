@@ -34,6 +34,11 @@ locals {
       {
         identifier = value.project_id != "" ? value.identifier : value.org_id != "" ? "org.${value.identifier}" : "account.${value.identifier}"
       }
+    },
+    { for key, value in harness_platform_connector_github.connector_ssh : key =>
+      {
+        identifier = value.project_id != "" ? value.identifier : value.org_id != "" ? "org.${value.identifier}" : "account.${value.identifier}"
+      }
     }
   )
   docker_connectors_output = merge(

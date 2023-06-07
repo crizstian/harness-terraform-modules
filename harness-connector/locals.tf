@@ -49,24 +49,26 @@ locals {
       tags               = concat(try(details.tags, []), var.tags)
       org_id             = try(local.connector_org_id["github_${name}"], "") != "" ? local.connector_org_id["github_${name}"] : try(details.org_id, var.common_values.org_id)
       project_id         = try(local.connector_prj_id["github_${name}"], "") != "" ? local.connector_prj_id["github_${name}"] : try(details.project_id, var.common_values.project_id)
-      credentials = {
-        http = {
-          token = {
-            username     = try(details.credentials.http.username, "")
-            token_ref_id = try(details.credentials.http.token_ref_id, "")
-          }
-        }
-        ssh = {
-          keyfile = {
-            ssh_key_ref_id = try(details.credentials.ssh.ssh_key_ref_id, "")
-          }
-        }
-      }
       api_authentication = {
         token_ref_id = try(details.api_authentication.token_ref_id, "")
       }
     }
-  ) if details.enable }
+  ) if details.enable && keys(details.credentials)[0] == "http" }
+
+  github_connectors_ssh = { for name, details in var.harness_platform_github_connectors : name => merge(
+    details,
+    {
+      delegate_selectors = try(details.delegate_selectors, var.delegate_selectors)
+      identifier         = "${lower(replace(name, "/[\\s-.]/", "_"))}_github_connector_${var.suffix}"
+      validation_repo    = details.connection_type == "Repo" ? "" : details.validation_repo
+      tags               = concat(try(details.tags, []), var.tags)
+      org_id             = try(local.connector_org_id["github_${name}"], "") != "" ? local.connector_org_id["github_${name}"] : try(details.org_id, var.common_values.org_id)
+      project_id         = try(local.connector_prj_id["github_${name}"], "") != "" ? local.connector_prj_id["github_${name}"] : try(details.project_id, var.common_values.project_id)
+      api_authentication = {
+        token_ref_id = try(details.api_authentication.token_ref_id, "")
+      }
+    }
+  ) if details.enable && keys(details.credentials)[0] == "ssh" }
 
   artifactory_connectors = { for name, details in var.harness_platform_artifactory_connectors : name => merge(
     details,

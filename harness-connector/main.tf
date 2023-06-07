@@ -166,43 +166,35 @@ resource "harness_platform_connector_github" "connector" {
   project_id      = each.value.project_id
   tags            = each.value.tags
 
+  credentials {
+    http {
+      username  = each.value.credentials.http.username
+      token_ref = each.value.credentials.http.token_ref_id
+    }
+  }
+  api_authentication {
+    token_ref = each.value.credentials.http.token_ref_id
+  }
+}
+resource "harness_platform_connector_github" "connector_ssh" {
+  for_each        = local.github_connectors_ssh
+  identifier      = each.value.identifier
+  name            = each.key
+  description     = each.value.description
+  url             = each.value.url
+  connection_type = each.value.connection_type
+  validation_repo = each.value.validation_repo
+  org_id          = each.value.org_id
+  project_id      = each.value.project_id
+  tags            = each.value.tags
 
   credentials {
-    dynamic "http" {
-      for_each = each.value.credentials.http
-      content {
-        username  = http.value.username
-        token_ref = http.value.token_ref_id
-      }
-    }
-    dynamic "ssh" {
-      for_each = each.value.credentials.ssh
-      content {
-        ssh_key_ref = ssh.value.ssh_key_ref_id
-      }
+    ssh {
+      ssh_key_ref = each.value.credentials.ssh.ssh_key_ref_id
     }
   }
-
-
-  /* dynamic "credentials" {
-    for_each = each.value.credentials.http
-    content {
-      http {
-        username  = credentials.value.username
-        token_ref = credentials.value.token_ref_id
-      }
-    }
-  }
-  dynamic "credentials" {
-    for_each = each.value.credentials.ssh
-    content {
-      ssh {
-        ssh_key_ref = credentials.value.ssh_key_ref_id
-      }
-    }
-  } */
   api_authentication {
-    token_ref = each.value.api_authentication.token_ref_id
+    token_ref = each.value.credentials.http.token_ref_id
   }
 }
 
