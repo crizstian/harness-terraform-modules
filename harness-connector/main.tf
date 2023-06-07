@@ -181,8 +181,11 @@ resource "harness_platform_connector_github" "connector" {
       }
     }
   }
-  api_authentication {
-    token_ref = each.value.credentials.http.token_ref_id
+  dynamic "api_authentication" {
+    for_each = each.value.credentials.http
+    content {
+      token_ref = api_authentication.value.token_ref_id
+    }
   }
 }
 
