@@ -175,17 +175,14 @@ resource "harness_platform_connector_github" "connector" {
       }
     }
   }
-
-
-  /* credentials {
-    http {
-      username  = each.value.credentials.http.username
-      token_ref = each.value.credentials.http.token_ref_id
+  dynamic "credentials" {
+    for_each = each.value.credentials.ssh
+    content {
+      ssh {
+        ssh_key_ref = each.value.credentials.ssh.ssh_key_ref_id
+      }
     }
-    ssh {
-      ssh_key_ref = each.value.credentials.ssh.ssh_key_ref_id
-    }
-  } */
+  }
   api_authentication {
     token_ref = each.value.api_authentication.token_ref_id
   }
