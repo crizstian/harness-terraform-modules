@@ -50,8 +50,16 @@ locals {
       org_id             = try(local.connector_org_id["github_${name}"], "") != "" ? local.connector_org_id["github_${name}"] : try(details.org_id, var.common_values.org_id)
       project_id         = try(local.connector_prj_id["github_${name}"], "") != "" ? local.connector_prj_id["github_${name}"] : try(details.project_id, var.common_values.project_id)
       credentials = {
-        http = try(details.credentials.http, {})
-        ssh  = try(details.credentials.ssh, {})
+        http = {
+          username  = try(details.credentials.username, "")
+          token_ref = try(details.credentials.token_ref_id, "")
+        }
+        ssh = {
+          ssh_key_ref = try(details.credentials.ssh_key_id, "")
+        }
+      }
+      api_authentication = {
+        token_ref = try(details.api_authentication.token_ref_id, "")
       }
     }
   ) if details.enable }

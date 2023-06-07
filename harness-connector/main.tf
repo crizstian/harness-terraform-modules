@@ -167,25 +167,16 @@ resource "harness_platform_connector_github" "connector" {
   tags            = each.value.tags
 
   credentials {
-    dynamic "http" {
-      for_each = each.value.credentials.http
-      content {
-        username  = http.value.username
-        token_ref = http.value.token_ref_id
-      }
+    http {
+      username  = each.value.credentials.username
+      token_ref = each.value.credentials.token_ref_id
     }
-    dynamic "ssh" {
-      for_each = each.value.credentials.ssh
-      content {
-        ssh_key_ref = ssh.value.ssh_key_id
-      }
+    ssh {
+      ssh_key_ref = each.value.credentials.ssh_key_id
     }
   }
-  dynamic "api_authentication" {
-    for_each = each.value.credentials.http
-    content {
-      token_ref = api_authentication.value.token_ref_id
-    }
+  api_authentication {
+    token_ref = each.value.api_authentication.token_ref_id
   }
 }
 
