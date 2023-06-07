@@ -166,7 +166,25 @@ resource "harness_platform_connector_github" "connector" {
   project_id      = each.value.project_id
   tags            = each.value.tags
 
-  dynamic "credentials" {
+
+  credentials {
+    dynamic "http" {
+      for_each = each.value.credentials.http
+      content {
+        username  = credentials.value.username
+        token_ref = credentials.value.token_ref_id
+      }
+    }
+    dynamic "ssh" {
+      for_each = each.value.credentials.ssh
+      content {
+        ssh_key_ref = credentials.value.ssh_key_ref_id
+      }
+    }
+  }
+
+
+  /* dynamic "credentials" {
     for_each = each.value.credentials.http
     content {
       http {
@@ -182,7 +200,7 @@ resource "harness_platform_connector_github" "connector" {
         ssh_key_ref = credentials.value.ssh_key_ref_id
       }
     }
-  }
+  } */
   api_authentication {
     token_ref = each.value.api_authentication.token_ref_id
   }
