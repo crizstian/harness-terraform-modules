@@ -172,7 +172,7 @@ resource "harness_platform_connector_github" "connector" {
       token_ref = each.value.credentials.http.token_ref_id
     }
     ssh {
-      ssh_key_ref = each.value.credentials.ssh.ssh_key_id
+      ssh_key_ref = each.value.credentials.ssh.ssh_key_ref_id
     }
   }
   api_authentication {

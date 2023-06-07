@@ -55,7 +55,7 @@ locals {
           token_ref_id = try(details.credentials.http.token_ref_id, "")
         }
         ssh = {
-          ssh_key_ref = try(details.credentials.ssh.ssh_key_id, "")
+          ssh_key_ref_id = try(details.credentials.ssh.ssh_key_ref_id, "")
         }
       }
       api_authentication = {
