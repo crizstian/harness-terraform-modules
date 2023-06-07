@@ -25,6 +25,12 @@ locals {
       tags               = concat(try(details.tags, []), var.tags)
       org_id             = try(local.connector_org_id["docker_${name}"], "") != "" ? local.connector_org_id["docker_${name}"] : try(details.org_id, var.common_values.org_id)
       project_id         = try(local.connector_prj_id["docker_${name}"], "") != "" ? local.connector_prj_id["docker_${name}"] : try(details.project_id, var.common_values.project_id)
+      credentials = can(each.credentials) ? {
+        token = {
+          username        = each.value.credentials.username
+          password_ref_id = each.value.credentials.password_ref_id
+        }
+      } : {}
     }
   ) if details.enable }
 

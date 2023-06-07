@@ -210,9 +210,12 @@ resource "harness_platform_connector_docker" "connector" {
   type               = each.value.type
   url                = each.value.url
 
-  credentials {
-    username     = each.value.credentials.username
-    password_ref = each.value.credentials.password_ref_id
+  dynamic "credentials" {
+    for_each = each.value.credentials
+    content {
+      username     = credentials.value.username
+      password_ref = credentials.value.password_ref_id
+    }
   }
 }
 
