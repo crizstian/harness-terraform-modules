@@ -51,11 +51,11 @@ locals {
       project_id         = try(local.connector_prj_id["github_${name}"], "") != "" ? local.connector_prj_id["github_${name}"] : try(details.project_id, var.common_values.project_id)
       credentials = {
         http = {
-          username  = try(details.credentials.username, "")
-          token_ref = try(details.credentials.token_ref_id, "")
+          username  = try(details.credentials.http.username, "")
+          token_ref = try(details.credentials.http.token_ref_id, "")
         }
         ssh = {
-          ssh_key_ref = try(details.credentials.ssh_key_id, "")
+          ssh_key_ref = try(details.credentials.ssh.ssh_key_id, "")
         }
       }
       api_authentication = {
