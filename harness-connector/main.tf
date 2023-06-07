@@ -170,8 +170,8 @@ resource "harness_platform_connector_github" "connector" {
     for_each = each.value.credentials.http
     content {
       http {
-        username  = credentials.value.http.username
-        token_ref = credentials.value.http.token_ref_id
+        username  = credentials.value.username
+        token_ref = credentials.value.token_ref_id
       }
     }
   }
