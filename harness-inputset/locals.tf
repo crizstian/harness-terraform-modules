@@ -297,7 +297,3 @@ locals {
   ) */
 
 }
-
-output "test" {
-  value = local.inputsets
-}
