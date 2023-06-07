@@ -13,6 +13,7 @@ locals {
     { for name, details in var.harness_platform_dynatrace_connectors : "dynatrace_${name}" => details },
     { for name, details in var.harness_platform_kubernetes_connectors : "kubernetes_${name}" => details },
     { for name, details in var.harness_platform_newrelic_connectors : "newrelic_${name}" => details },
+    { for name, details in var.harness_platform_helm_connectors : "helm_${name}" => details },
   )
 
   connector_org_id = merge([for connector, values in local.all_connectors : { for org, details in var.organizations : connector => details.identifier if lower(org) == lower(try(values.organization, "")) }]...)
@@ -26,6 +27,23 @@ locals {
       tags               = concat(try(details.tags, []), var.tags)
       org_id             = try(local.connector_org_id["docker_${name}"], "") != "" ? local.connector_org_id["docker_${name}"] : try(details.org_id, var.common_values.org_id)
       project_id         = try(local.connector_prj_id["docker_${name}"], "") != "" ? local.connector_prj_id["docker_${name}"] : try(details.project_id, var.common_values.project_id)
+      credentials = can(details.credentials) ? {
+        token = {
+          username        = details.credentials.username
+          password_ref_id = details.credentials.password_ref_id
+        }
+      } : {}
+    }
+  ) if details.enable }
+
+  helm_connectors = { for name, details in var.harness_platform_helm_connectors : name => merge(
+    details,
+    {
+      delegate_selectors = try(details.delegate_selectors, var.delegate_selectors)
+      identifier         = "${lower(replace(name, "/[\\s-.]/", "_"))}_helm_connector_${var.suffix}"
+      tags               = concat(try(details.tags, []), var.tags)
+      org_id             = try(local.connector_org_id["helm_${name}"], "") != "" ? local.connector_org_id["helm_${name}"] : try(details.org_id, var.common_values.org_id)
+      project_id         = try(local.connector_prj_id["helm_${name}"], "") != "" ? local.connector_prj_id["helm_${name}"] : try(details.project_id, var.common_values.project_id)
       credentials = can(details.credentials) ? {
         token = {
           username        = details.credentials.username

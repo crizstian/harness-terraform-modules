@@ -251,3 +251,15 @@ resource "harness_platform_connector_newrelic" "connector" {
   account_id         = each.value.account_id
   api_key_ref        = each.value.api_key_ref
 }
+
+resource "harness_platform_connector_helm" "test" {
+  for_each           = local.helm_connectors
+  identifier         = each.value.identifier
+  name               = each.key
+  description        = each.value.description
+  tags               = each.value.tags
+  project_id         = each.value.project_id
+  org_id             = each.value.org_id
+  delegate_selectors = each.value.delegate_selectors
+  url                = each.value.url
+}
