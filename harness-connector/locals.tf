@@ -49,6 +49,10 @@ locals {
       tags               = concat(try(details.tags, []), var.tags)
       org_id             = try(local.connector_org_id["github_${name}"], "") != "" ? local.connector_org_id["github_${name}"] : try(details.org_id, var.common_values.org_id)
       project_id         = try(local.connector_prj_id["github_${name}"], "") != "" ? local.connector_prj_id["github_${name}"] : try(details.project_id, var.common_values.project_id)
+      credentials = {
+        http = try(details.credentials.http, {})
+        ssh  = try(details.credentials.ssh, {})
+      }
     }
   ) if details.enable }
 
