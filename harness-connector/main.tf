@@ -193,9 +193,6 @@ resource "harness_platform_connector_github" "connector_ssh" {
       ssh_key_ref = each.value.credentials.ssh.ssh_key_ref_id
     }
   }
-  api_authentication {
-    token_ref = each.value.api_authentication.token_ref_id
-  }
 }
 
 resource "harness_platform_connector_docker" "connector" {
