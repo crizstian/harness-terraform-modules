@@ -7,7 +7,7 @@ resource "harness_platform_environment" "environment" {
   project_id  = each.value.vars.project_id
   tags        = each.value.vars.tags
   type        = each.value.vars.type
-  yaml        = each.value.vars.yaml != "" ? templatefile(each.value.vars.yaml, each.value.vars) : ""
+  yaml        = can(each.value.vars.yaml) ? templatefile(each.value.vars.yaml, each.value.vars) : ""
 }
 
 resource "harness_platform_environment_service_overrides" "example" {
@@ -17,7 +17,7 @@ resource "harness_platform_environment_service_overrides" "example" {
   env_id     = each.value.vars.env_id
   project_id = each.value.vars.project_id
   service_id = each.value.vars.service_id
-  yaml       = each.value.vars.yaml != "" ? templatefile(each.value.vars.yaml, each.value.vars) : ""
+  yaml       = can(each.value.vars.yaml) ? templatefile(each.value.vars.yaml, each.value.vars) : ""
 
 }
 
@@ -31,5 +31,5 @@ resource "harness_platform_infrastructure" "infrastructure" {
   env_id      = each.value.vars.env_id
   tags        = each.value.vars.tags
   type        = each.value.vars.type
-  yaml        = each.value.vars.yaml != "" ? templatefile(each.value.vars.yaml, each.value.vars) : ""
+  yaml        = can(each.value.vars.yaml) ? templatefile(each.value.vars.yaml, each.value.vars) : ""
 }
