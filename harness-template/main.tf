@@ -1,7 +1,7 @@
 resource "harness_platform_template" "step" {
-  for_each      = local.steps
-  name          = each.key
-  description   = each.value.vars.description
+  for_each = local.steps
+  name     = each.key
+  /* description   = each.value.vars.description */
   identifier    = each.value.vars.identifier
   org_id        = each.value.vars.org_id
   project_id    = each.value.vars.project_id
@@ -24,10 +24,10 @@ resource "harness_platform_template" "step" {
   }
 }
 resource "harness_platform_template" "stage" {
-  depends_on    = [harness_platform_template.step]
-  for_each      = local.stages
-  name          = each.key
-  description   = each.value.vars.description
+  depends_on = [harness_platform_template.step]
+  for_each   = local.stages
+  name       = each.key
+  /* description   = each.value.vars.description */
   identifier    = each.value.vars.identifier
   org_id        = each.value.vars.org_id
   project_id    = each.value.vars.project_id
@@ -50,9 +50,9 @@ resource "harness_platform_template" "stage" {
   }
 }
 resource "harness_platform_template" "template_deployment" {
-  for_each      = local.template_deployment
-  name          = each.key
-  description   = each.value.vars.description
+  for_each = local.template_deployment
+  name     = each.key
+  /* description   = each.value.vars.description */
   identifier    = each.value.vars.identifier
   org_id        = each.value.vars.org_id
   project_id    = each.value.vars.project_id
@@ -75,10 +75,10 @@ resource "harness_platform_template" "template_deployment" {
   }
 }
 resource "harness_platform_template" "pipeline" {
-  depends_on    = [harness_platform_template.stage, harness_platform_template.template_deployment]
-  for_each      = local.pipelines
-  name          = each.key
-  description   = each.value.vars.description
+  depends_on = [harness_platform_template.stage, harness_platform_template.template_deployment]
+  for_each   = local.pipelines
+  name       = each.key
+  /* description   = each.value.vars.description */
   identifier    = each.value.vars.identifier
   org_id        = each.value.vars.org_id
   project_id    = each.value.vars.project_id
@@ -101,9 +101,9 @@ resource "harness_platform_template" "pipeline" {
   }
 }
 resource "harness_platform_template" "template" {
-  for_each      = local.definitions
-  name          = each.key
-  description   = each.value.vars.description
+  for_each = local.definitions
+  name     = each.key
+  /* description   = each.value.vars.description */
   identifier    = each.value.vars.identifier
   org_id        = each.value.vars.org_id
   project_id    = each.value.vars.project_id
