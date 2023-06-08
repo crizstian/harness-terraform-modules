@@ -56,7 +56,7 @@ locals {
     for type, values in var.harness_platform_infrastructures : {
       for infra, details in values.infrastructure : infra => {
         vars = merge(
-          try(local.infrastructure_tpl_dp_id[name], {}),
+          try(local.infrastructure_tpl_dp_id[infra], {}),
           values,
           details,
           {
