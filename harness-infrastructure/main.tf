@@ -20,5 +20,4 @@ resource "harness_platform_infrastructure" "infrastructure" {
   tags        = each.value.vars.tags
   type        = each.value.vars.type
   yaml        = templatefile(each.value.vars.yaml, each.value.vars)
-  #deployment_type = each.value.vars.deployment_type
 }

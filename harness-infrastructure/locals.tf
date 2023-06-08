@@ -1,21 +1,24 @@
 locals {
-  environment_org_id = merge([for environment, values in var.harness_platform_environments : { for org, details in var.organizations : environment => details.identifier if lower(org) == lower(try(values.vars.organization, "")) }]...)
-  environment_prj_id = merge([for environment, values in var.harness_platform_environments : { for prj, details in var.projects : environment => details.identifier if lower(prj) == lower(try(values.vars.project, "")) }]...)
+  environment_org_id = merge([for environment, values in var.harness_platform_environments : { for org, details in var.organizations : environment => details.identifier if lower(org) == lower(try(values.organization, "")) }]...)
+  environment_prj_id = merge([for environment, values in var.harness_platform_environments : { for prj, details in var.projects : environment => details.identifier if lower(prj) == lower(try(values.project, "")) }]...)
 
-  environments = { for name, details in var.harness_platform_environments : name => {
-    vars = merge(
-      details.vars,
-      {
-        name       = "${name}"
-        identifier = "${lower(replace(name, "/[\\s-.]/", "_"))}_${var.suffix}"
-        tags       = concat(try(details.vars.tags, []), var.tags)
-        org_id     = try(local.environment_org_id[name], "") != "" ? local.environment_org_id[name] : try(details.org_id, var.common_values.org_id)
-        project_id = try(local.environment_prj_id[name], "") != "" ? local.environment_prj_id[name] : try(details.project_id, var.common_values.project_id)
-      }
-  ) } if details.enable }
+  environments = { for name, details in var.harness_platform_environments : name =>
+    {
+      vars = merge(
+        details,
+        {
+          name       = "${name}"
+          identifier = "${lower(replace(name, "/[\\s-.]/", "_"))}_${var.suffix}"
+          tags       = concat(try(details.vars.tags, []), var.tags)
+          org_id     = try(local.environment_org_id[name], "") != "" ? local.environment_org_id[name] : try(details.org_id, var.common_values.org_id)
+          project_id = try(local.environment_prj_id[name], "") != "" ? local.environment_prj_id[name] : try(details.project_id, var.common_values.project_id)
+        }
+      )
+    } if details.enable
+  }
 
-  infrastructure_org_id = merge([for infrastructure, values in var.harness_platform_infrastructures : { for org, details in var.organizations : infrastructure => details.identifier if lower(org) == lower(try(values.vars.organization, "")) }]...)
-  infrastructure_prj_id = merge([for infrastructure, values in var.harness_platform_infrastructures : { for prj, details in var.projects : infrastructure => details.identifier if lower(prj) == lower(try(values.vars.project, "")) }]...)
+  infrastructure_org_id = merge([for infrastructure, values in var.harness_platform_infrastructures : { for org, details in var.organizations : infrastructure => details.identifier if lower(org) == lower(try(values.organization, "")) }]...)
+  infrastructure_prj_id = merge([for infrastructure, values in var.harness_platform_infrastructures : { for prj, details in var.projects : infrastructure => details.identifier if lower(prj) == lower(try(values.project, "")) }]...)
   infrastructure_env_id = merge([for infrastructure, values in var.harness_platform_infrastructures : { for env, details in harness_platform_environment.environment : infrastructure => details.identifier if lower(env) == lower(try(values.vars.environment, "")) }]...)
   infrastructure_k8s_id = merge([for infrastructure, values in var.harness_platform_infrastructures : { for cnt, details in try(var.connectors.kubernetes_connectors, {}) : infrastructure => details.identifier if lower(cnt) == lower(infrastructure) }]...)
   infrastructure_keys   = toset(setsubtract(keys(var.harness_platform_infrastructures), keys(local.infrastructure_k8s_id)))
@@ -27,35 +30,46 @@ locals {
     }
   }
 
-  infrastructure_k8s = { for name, connector in local.infrastructure_k8s_id : name => {
-    vars = merge(
-      var.harness_platform_infrastructures[name].vars,
-      {
-        name         = "${name}"
-        identifier   = "${lower(replace(name, "/[\\s-.]/", "_"))}_${var.suffix}"
-        tags         = concat(try(var.harness_platform_infrastructures[name].vars.tags, []), var.tags)
-        env_id       = try(local.infrastructure_env_id[name], "") != "" ? local.infrastructure_env_id[name] : try(var.harness_platform_infrastructures[name].vars.env_id, var.env_id)
-        org_id       = try(local.infrastructure_org_id[name], "") != "" ? local.infrastructure_org_id[name] : try(var.harness_platform_infrastructures[name].vars.org_id, var.common_values.org_id)
-        project_id   = try(local.infrastructure_prj_id[name], "") != "" ? local.infrastructure_prj_id[name] : try(var.harness_platform_infrastructures[name].vars.project_id, var.common_values.project_id)
-        connector_id = connector
-    })
-    } if var.harness_platform_infrastructures[name].enable
-  }
+  infrastructure_k8s = merge(
+    [
+      for type, values in var.harness_platform_infrastructures : {
+        for infra, details in values.infrastructure : infra => {
+          vars = merge(
+            values,
+            details,
+            {
+              name         = infra
+              identifier   = "${lower(replace(infra, "/[\\s-.]/", "_"))}_${var.suffix}"
+              tags         = concat(try(values.vars.tags, []), var.tags)
+              org_id       = try(local.infrastructure_org_id[infra], "") != "" ? local.infrastructure_org_id[infra] : try(values.vars.org_id, var.common_values.org_id)
+              project_id   = try(local.infrastructure_prj_id[infra], "") != "" ? local.infrastructure_prj_id[infra] : try(values.vars.project_id, var.common_values.project_id)
+              connector_id = try(var.connectors.kubernetes_connectors[infra].identifier, "")
+              env_id       = harness_platform_environment.environment[details.environment].identifier
+            }
+          )
+        } if details.enable && values.type == "KubernetesDirect"
+      }
+    ]...
+  )
 
-  infrastructure_not_k8s = { for key, name in local.infrastructure_keys : name => {
-    vars = merge(
-      var.harness_platform_infrastructures[name].vars,
-      try(local.infrastructure_tpl_dp_id[name], {}),
-      {
-        name       = "${name}"
-        identifier = "${lower(replace(name, "/[\\s-.]/", "_"))}_${var.suffix}"
-        tags       = concat(try(var.harness_platform_infrastructures[name].vars.tags, []), var.tags)
-        env_id     = try(local.infrastructure_env_id[name], "") != "" ? local.infrastructure_env_id[name] : try(var.harness_platform_infrastructures[name].vars.env_id, var.env_id)
-        org_id     = try(local.infrastructure_org_id[name], "") != "" ? local.infrastructure_org_id[name] : try(var.harness_platform_infrastructures[name].vars.org_id, var.common_values.org_id)
-        project_id = try(local.infrastructure_prj_id[name], "") != "" ? local.infrastructure_prj_id[name] : try(var.harness_platform_infrastructures[name].vars.project_id, var.common_values.project_id)
-    })
-    } if var.harness_platform_infrastructures[name].enable
-  }
+  infrastructure_not_k8s = merge([
+    for type, values in var.harness_platform_infrastructures : {
+      for infra, details in values.infrastructure : infra => {
+        vars = merge(
+          values,
+          details,
+          {
+            name       = infra
+            identifier = "${lower(replace(infra, "/[\\s-.]/", "_"))}_${var.suffix}"
+            tags       = concat(try(values.vars.tags, []), var.tags)
+            org_id     = try(local.infrastructure_org_id[infra], "") != "" ? local.infrastructure_org_id[infra] : try(values.vars.org_id, var.common_values.org_id)
+            project_id = try(local.infrastructure_prj_id[infra], "") != "" ? local.infrastructure_prj_id[infra] : try(values.vars.project_id, var.common_values.project_id)
+            env_id     = harness_platform_environment.environment[details.environment].identifier
+          },
+        )
+      } if details.enable && values.type != "KubernetesDirect"
+    }
+  ]...)
 
   infrastructures = merge(
     local.infrastructure_k8s,
