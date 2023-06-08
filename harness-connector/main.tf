@@ -172,8 +172,11 @@ resource "harness_platform_connector_github" "connector" {
       token_ref = each.value.credentials.http.token_ref_id
     }
   }
-  api_authentication {
-    token_ref = each.value.api_authentication.token_ref_id
+  dynamic "api_authentication" {
+    for_each = each.value.api_authentication
+    content {
+      token_ref = api_authentication.value.token_ref_id
+    }
   }
 }
 resource "harness_platform_connector_github" "connector_ssh" {
@@ -191,6 +194,12 @@ resource "harness_platform_connector_github" "connector_ssh" {
   credentials {
     ssh {
       ssh_key_ref = each.value.credentials.ssh.ssh_key_ref_id
+    }
+  }
+  dynamic "api_authentication" {
+    for_each = each.value.api_authentication
+    content {
+      token_ref = api_authentication.value.token_ref_id
     }
   }
 }

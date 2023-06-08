@@ -74,9 +74,11 @@ locals {
       tags               = concat(try(details.tags, []), var.tags)
       org_id             = try(local.connector_org_id["github_${name}"], "") != "" ? local.connector_org_id["github_${name}"] : try(details.org_id, var.common_values.org_id)
       project_id         = try(local.connector_prj_id["github_${name}"], "") != "" ? local.connector_prj_id["github_${name}"] : try(details.project_id, var.common_values.project_id)
-      api_authentication = {
-        token_ref_id = try(details.api_authentication.token_ref_id, "")
-      }
+      api_authentication = can(details.api_authentication) ? {
+        token = {
+          token_ref_id = try(details.api_authentication.token_ref_id, "")
+        }
+      } : {}
     }
   ) if details.enable && keys(details.credentials)[0] == "http" }
 
@@ -89,9 +91,11 @@ locals {
       tags               = concat(try(details.tags, []), var.tags)
       org_id             = try(local.connector_org_id["github_${name}"], "") != "" ? local.connector_org_id["github_${name}"] : try(details.org_id, var.common_values.org_id)
       project_id         = try(local.connector_prj_id["github_${name}"], "") != "" ? local.connector_prj_id["github_${name}"] : try(details.project_id, var.common_values.project_id)
-      api_authentication = {
-        token_ref_id = try(details.api_authentication.token_ref_id, "")
-      }
+      api_authentication = can(details.api_authentication) ? {
+        token = {
+          token_ref_id = try(details.api_authentication.token_ref_id, "")
+        }
+      } : {}
     }
   ) if details.enable && keys(details.credentials)[0] == "ssh" }
 
