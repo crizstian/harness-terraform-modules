@@ -12,7 +12,6 @@ resource "harness_platform_environment" "environment" {
 
 resource "harness_platform_environment_service_overrides" "example" {
   for_each   = local.environments_service_overrides
-  name       = each.key
   identifier = each.value.vars.identifier
   org_id     = each.value.vars.org_id
   env_id     = each.value.vars.env_id
