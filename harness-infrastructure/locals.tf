@@ -56,6 +56,7 @@ locals {
     for type, values in var.harness_platform_infrastructures : {
       for infra, details in values.infrastructure : infra => {
         vars = merge(
+          try(local.infrastructure_tpl_dp_id[name], {}),
           values,
           details,
           {
@@ -65,6 +66,7 @@ locals {
             org_id     = try(local.infrastructure_org_id[infra], "") != "" ? local.infrastructure_org_id[infra] : try(values.vars.org_id, var.common_values.org_id)
             project_id = try(local.infrastructure_prj_id[infra], "") != "" ? local.infrastructure_prj_id[infra] : try(values.vars.project_id, var.common_values.project_id)
             env_id     = harness_platform_environment.environment[details.environment].identifier
+
           },
         )
       } if details.enable && values.type != "KubernetesDirect"
@@ -76,3 +78,4 @@ locals {
     local.infrastructure_not_k8s
   )
 }
+
