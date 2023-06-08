@@ -18,7 +18,7 @@ resource "harness_platform_environment_service_overrides" "example" {
   env_id     = each.value.vars.env_id
   project_id = each.value.vars.project_id
   service_id = each.value.vars.service_id
-  yaml       = teach.value.vars.yaml != "" ? templatefile(each.value.vars.yaml, each.value.vars) : ""
+  yaml       = each.value.vars.yaml != "" ? templatefile(each.value.vars.yaml, each.value.vars) : ""
 
 }
 
