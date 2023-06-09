@@ -7,7 +7,7 @@ resource "harness_platform_environment_service_overrides" "overrides" {
   service_id = each.value.vars.service_id
   yaml       = <<-EOT
           serviceOverrides:
-            environmentRef: org.${each.value.vars.env_id}
+            environmentRef: ${each.value.vars.env_id}
             serviceRef: ${each.value.vars.service_id}
             variables:    
                 - name: testVar
