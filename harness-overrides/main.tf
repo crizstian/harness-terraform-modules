@@ -10,8 +10,6 @@ resource "harness_platform_environment_service_overrides" "overrides" {
             environmentRef: ${each.value.vars.env_id}
             serviceRef: ${each.value.vars.service_id}
             variables:    
-                - name: address_public
-                  type: String
-                  value: bff-alvi-web.alvi.cl                
+                ${indent(6, yamlencode(variables))}               
           EOT
 }
