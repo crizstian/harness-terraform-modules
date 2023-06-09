@@ -2,7 +2,7 @@ locals {
   environments_service_overrides_org_id = merge([for environment, values in var.harness_platform_environments : { for org, details in var.organizations : environment => details.identifier if lower(org) == lower(try(values.organization, "NOT_FOUND")) }]...)
   environments_service_overrides_prj_id = merge([for environment, values in var.harness_platform_environments : { for prj, details in var.projects : environment => details.identifier if lower(prj) == lower(try(values.project, "NOT_FOUND")) }]...)
 
-  environments_service_overrides = [
+  environments_service_overrides = merge([
     for svc, variables in var.harness_platform_services : {
       for env, values in try(variables.OVERRIDES.ENV, {}) : "${svc}_${env}" => {
         vars = merge(
@@ -17,6 +17,6 @@ locals {
         )
       }
     }
-  ]
+  ]...)
 }
 
