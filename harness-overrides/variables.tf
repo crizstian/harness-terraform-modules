@@ -1,10 +1,7 @@
-variable "harness_platform_services" {
+variable "harness_platform_overrides" {
   default = {}
 }
-variable "harness_platform_environments" {
-  default = {}
-}
-variable "harness_platform_infrastructures" {
+variable "environments" {
   default = {}
 }
 variable "suffix" {}
