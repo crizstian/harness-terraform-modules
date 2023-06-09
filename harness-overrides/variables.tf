@@ -4,6 +4,9 @@ variable "harness_platform_overrides" {
 variable "environments" {
   default = {}
 }
+variable "services" {
+  default = {}
+}
 variable "suffix" {}
 variable "org_id" {
   default = ""
