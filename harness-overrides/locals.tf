@@ -4,7 +4,7 @@ locals {
 
   environments_service_overrides = [
     for svc, variables in var.harness_platform_services : {
-      for env, values in variables.OVERRIDES.ENV : "${svc}_${env}" => {
+      for env, values in try(variables.OVERRIDES.ENV, {}) : "${svc}_${env}" => {
         vars = merge(
           values,
           {
