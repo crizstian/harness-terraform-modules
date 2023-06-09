@@ -15,7 +15,7 @@ locals {
             service_id = "${lower(replace(svc, "/[\\s-.]/", "_"))}_${var.suffix}"
           }
         )
-      }
+      } if variables.SERVICE_DEFINITION.enable
     }
   ]...)
 }
