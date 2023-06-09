@@ -17,8 +17,6 @@ locals {
     } if details.enable
   }
 
-  environments_service_overrides = {}
-
   infrastructure_org_id = merge([for infrastructure, values in var.harness_platform_infrastructures : { for org, details in var.organizations : infrastructure => details.identifier if lower(org) == lower(try(values.organization, "NOT_FOUND")) }]...)
   infrastructure_prj_id = merge([for infrastructure, values in var.harness_platform_infrastructures : { for prj, details in var.projects : infrastructure => details.identifier if lower(prj) == lower(try(values.project, "NOT_FOUND")) }]...)
   infrastructure_env_id = merge([for infrastructure, values in var.harness_platform_infrastructures : { for env, details in harness_platform_environment.environment : infrastructure => details.identifier if lower(env) == lower(try(values.vars.environment, "NOT_FOUND")) }]...)
@@ -78,5 +76,22 @@ locals {
     local.infrastructure_k8s,
     local.infrastructure_not_k8s
   )
+
+  environments_service_overrides = [
+    for svc, variables in var.harness_platform_services : {
+      for env, values in variables.OVERRIDES.ENV : "${svc}_${env}" => {
+        vars = merge(
+          values,
+          {
+            identifier = "${lower(replace("${svc}_${env}", "/[\\s-.]/", "_"))}_${var.suffix}"
+            org_id     = try(local.environment_org_id[env], "") != "" ? local.environment_org_id[env] : try(details.org_id, var.common_values.org_id)
+            project_id = try(local.environment_prj_id[env], "") != "" ? local.environment_prj_id[env] : try(details.project_id, var.common_values.project_id)
+            env_id     = "${lower(replace(env, "/[\\s-.]/", "_"))}_${var.suffix}"
+            service_id = "${lower(replace(svc, "/[\\s-.]/", "_"))}_${var.suffix}"
+          }
+        )
+      }
+    }
+  ]
 }
 
