@@ -5,11 +5,5 @@ resource "harness_platform_environment_service_overrides" "overrides" {
   env_id     = each.value.vars.env_id
   project_id = each.value.vars.project_id
   service_id = each.value.vars.service_id
-  yaml       = <<-EOT
-          serviceOverrides:
-            environmentRef: ${each.value.vars.env_id}
-            serviceRef: ${each.value.vars.service_id}
-            variables:    
-                ${indent(6, yamlencode(each.value.vars.variables))}               
-          EOT
+  yaml       = can(each.value.vars.yaml) ? templatefile(each.value.vars.yaml, each.value.vars) : ""
 }
