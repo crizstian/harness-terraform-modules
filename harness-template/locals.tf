@@ -25,7 +25,9 @@ locals {
   ) if details.enable }
 
 
-  steps = { for name, details in local.template_commons : name => details if details.type == "step" }
+  steps               = { for name, details in local.template_commons : name => details if details.type == "step" }
+  template_deployment = { for name, details in local.template_commons : name => details if details.type == "template-deployment" }
+  definitions         = { for name, details in local.template_commons : name => details if details.type != "step" && details.type != "step-group" && details.type != "stage" && details.type != "template-deployment" && details.type != "pipeline" }
 
   step_groups = { for name, details in local.template_commons : name => {
     vars = merge(
@@ -40,9 +42,26 @@ locals {
     })
     } if details.type == "step-group"
   }
-  stages              = { for name, details in local.template_commons : name => details if details.type == "stage" }
-  template_deployment = { for name, details in local.template_commons : name => details if details.type == "template-deployment" }
-  definitions         = { for name, details in local.template_commons : name => details if details.type != "step" && details.type != "step-group" && details.type != "stage" && details.type != "template-deployment" && details.type != "pipeline" }
+  stages = {
+    for name, details in local.template_commons : name => {
+      vars = merge(
+        details.vars,
+        {
+          step = {
+            for k, v in details.template : k => {
+              template_id      = "${try(v.template_level, "project") == "project" ? "" : "${v.template_level}."}${try(harness_platform_template.step[v.template_name].identifier, "NOT_DEFINED")}"
+              template_version = try(v.template_version, "1")
+            } if try(v.type, "") == "step"
+          }
+          step_group = {
+            for k, v in details.template : k => {
+              template_id      = "${try(v.template_level, "project") == "project" ? "" : "${v.template_level}."}${try(harness_platform_template.step-group[v.template_name].identifier, "NOT_DEFINED")}"
+              template_version = try(v.template_version, "1")
+            } if try(v.type, "") == "step-group"
+          }
+      })
+    }
+  if details.type == "stage" }
 
   pipelines = {
     for name, details in local.template_commons : name => {
@@ -55,7 +74,18 @@ locals {
               template_version = try(v.template_version, "1")
             } if try(v.type, "") == "step"
           }
-          stages = {}
+          step_group = {
+            for k, v in details.template : k => {
+              template_id      = "${try(v.template_level, "project") == "project" ? "" : "${v.template_level}."}${try(harness_platform_template.step-group[v.template_name].identifier, "NOT_DEFINED")}"
+              template_version = try(v.template_version, "1")
+            } if try(v.type, "") == "step-group"
+          }
+          stages = {
+            for k, v in details.template : k => {
+              template_id      = "${try(v.template_level, "project") == "project" ? "" : "${v.template_level}."}${try(harness_platform_template.stage[v.template_name].identifier, "NOT_DEFINED")}"
+              template_version = try(v.template_version, "1")
+            } if try(v.type, "") == "stage"
+          }
           template-deployment = {
             template_id      = "${try(details.template.template-deployment.template_level, "project") == "project" ? "" : "${details.template.template-deployment.template_level}."}${try(harness_platform_template.template_deployment[try(details.template.template-deployment.template_name, "NOT_DEFINED")].identifier, "NOT_DEFINED")}"
             template_version = try(details.template.template-deployment.template_version, "1")
