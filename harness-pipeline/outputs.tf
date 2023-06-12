@@ -5,3 +5,6 @@ output "pipelines" {
     project_id = details.project_id
   } }
 }
+output "verbose" {
+  value = { for key, details in local.pipelines : key => details }
+}
