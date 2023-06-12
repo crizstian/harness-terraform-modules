@@ -24,19 +24,39 @@ locals {
   if details.enable } */
 
   pipeline_tpl_id = { for pipeline, values in var.harness_platform_pipelines : pipeline =>
-    {
-      pipeline = {
-        template_id      = try(var.templates.pipelines[values.template.pipeline.template_name].identifier, "")
-        template_version = try(values.template.pipeline.template_version, "")
+    merge(
+      {
+        for k, v in try(values.template) : k =>
+        {
+          template_id      = try(var.templates.stages[v.template_name].identifier, "")
+          template_version = try(v.template_version, "")
+        } if v.type == "stage"
+      },
+      {
+        pipeline = {
+          template_id      = try(var.templates.pipelines[values.template.pipeline.template_name].identifier, "")
+          template_version = try(values.template.pipeline.template_version, "")
+        }
       }
-    }
+    )
+  }
+
+  pipeline_tpl_default_values = { for pipeline, values in var.harness_platform_pipelines : pipeline =>
+    merge(
+      {
+        for k, v in try(values.template) : k => try(var.templates.stages[v.template_name].default_values, {}) if v.type == "stage"
+      },
+      {
+        for k, v in try(values.template) : k => try(var.templates.pipeline[v.template_name].default_values, {})
+      }
+    )
   }
 
   pipelines = { for name, details in var.harness_platform_pipelines : name => {
     vars = merge(
       details.vars,
       try(local.pipeline_tpl_id[name], {}),
-      try(var.templates.stages[details.template.pipeline.template_name].default_values, try(var.templates.pipelines[details.template.pipeline.template_name].default_values, {})),
+      try(local.pipeline_tpl_default_values[name], {}),
       {
         suffix      = var.suffix
         name        = "${name}"
