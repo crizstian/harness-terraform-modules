@@ -42,6 +42,7 @@ locals {
     })
     } if details.type == "step-group"
   }
+
   stages = {
     for name, details in local.template_commons : name => {
       vars = merge(
@@ -61,7 +62,8 @@ locals {
           }
       })
     }
-  if details.type == "stage" }
+    if details.type == "stage"
+  }
 
   pipelines = {
     for name, details in local.template_commons : name => {
