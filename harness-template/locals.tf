@@ -33,7 +33,7 @@ locals {
       {
         step = {
           for k, v in details.template : k => {
-            template_id      = "${try(v.template_level, "project") == "project" ? "" : "${v.template_level}."}${try(harness_platform_template.template_deployment[try(v.template_name, "null")].identifier, "null")}"
+            template_id      = "${try(v.template_level, "project") == "project" ? "" : "${v.template_level}."}${try(harness_platform_template.step[try(v.template_name, "null")].identifier, "null")}"
             template_version = try(v.template_version, "1")
           } if try(v.type, "") == "step"
         }
@@ -51,7 +51,7 @@ locals {
         {
           step = {
             for k, v in details.template : k => {
-              template_id      = "${try(v.template_level, "project") == "project" ? "" : "${v.template_level}."}${try(harness_platform_template.template_deployment[try(v.template_name, "null")].identifier, "null")}"
+              template_id      = "${try(v.template_level, "project") == "project" ? "" : "${v.template_level}."}${try(harness_platform_template.step[try(v.template_name, "null")].identifier, "null")}"
               template_version = try(v.template_version, "1")
             } if try(v.type, "") == "step"
           }
