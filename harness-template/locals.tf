@@ -34,7 +34,12 @@ locals {
       vars = merge(
         details.vars,
         {
-          steps  = {}
+          step = {
+            for k, v in details.template : k => {
+              template_id      = "${try(v.template_level, "project") == "project" ? "" : "${v.template_level}."}${try(harness_platform_template.template_deployment[try(v.template_name, "null")].identifier, "null")}"
+              template_version = try(v.template_version, "1")
+            } if v.type == "step"
+          }
           stages = {}
           template-deployment = {
             template_id      = "${try(details.template.template-deployment.template_level, "project") == "project" ? "" : "${details.template.template-deployment.template_level}."}${try(harness_platform_template.template_deployment[try(details.template.template-deployment.template_name, "null")].identifier, "null")}"
