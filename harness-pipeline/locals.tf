@@ -26,11 +26,7 @@ locals {
   pipeline_tpl_id = { for pipeline, values in var.harness_platform_pipelines : pipeline =>
     merge(
       {
-        for k, v in try(values.template, {}) : k =>
-        {
-          template_id      = try(var.templates.stages[v.template_name].identifier, "NOT_DEFINED")
-          template_version = try(v.template_version, "NOT_DEFINED")
-        }
+        for k, v in try(values.template, {}) : k => true
       },
       /* {
         pipeline = {
