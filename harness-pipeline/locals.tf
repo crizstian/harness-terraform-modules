@@ -26,25 +26,30 @@ locals {
   pipeline_tpl_id = { for pipeline, values in var.harness_platform_pipelines : pipeline =>
     merge(
       {
-        for k, v in try(values.template, {}) : k => true
+        for k, v in try(values.template, {}) : k =>
+        {
+          template_id      = try(var.templates.stages[v.template_name].identifier, "NOT_DEFINED")
+          template_version = try(v.template_version, "NOT_DEFINED")
+        } if v.type == "stage"
       },
-      /* {
+      {
         pipeline = {
           template_id      = try(var.templates.pipelines[values.template.pipeline.template_name].identifier, "NOT_DEFINED")
           template_version = try(values.template.pipeline.template_version, "NOT_DEFINED")
         }
-      } */
+      }
     ) if values.enable
   }
 
   pipeline_tpl_default_values = { for pipeline, values in var.harness_platform_pipelines : pipeline =>
     merge(
-      {
-        for k, v in try(values.template) : k => try(var.templates.stages[v.template_name].default_values, {}) if v.type == "stage"
-      },
-      {
-        for k, v in try(values.template) : k => try(var.templates.pipeline[v.template_name].default_values, {})
-      }
+      concat(
+        [
+          for k, v in try(values.template) : try(var.templates.stages[v.template_name].default_values, {}) if v.type == "stage"
+        ],
+        [
+          for k, v in try(values.template) : try(var.templates.pipeline[v.template_name].default_values, {})
+      ])...
     )
   }
 
