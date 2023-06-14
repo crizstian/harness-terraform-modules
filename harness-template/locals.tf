@@ -8,7 +8,7 @@ locals {
   template_connectors = { for name, details in var.harness_platform_templates : name => {
     connector = merge(
       flatten([
-        for type, connectors in var.connectors.all : {
+        for type, connectors in var.connectors : {
           for tipo, connector in try(details.connector, {}) : tipo => {
             for key, value in connector : key => {
               connector_id = connectors[key].identifier
