@@ -4,6 +4,7 @@ output "environment" {
       identifier = details.identifier
       org_id     = details.org_id
       project_id = details.project_id
+      type       = details.type
     }
   }
 }

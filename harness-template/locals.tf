@@ -3,8 +3,6 @@ locals {
   template_org_id = merge([for template, values in var.harness_platform_templates : { for org, details in var.organizations : template => details.identifier if lower(org) == lower(try(values.vars.organization, "")) }]...)
   template_prj_id = merge([for template, values in var.harness_platform_templates : { for prj, details in var.projects : template => details.identifier if lower(prj) == lower(try(values.vars.project, "")) }]...)
 
-  /* connector_id = merge([for infrastructure, values in var.harness_platform_infrastructures : { for cnt, details in var.connectors.kubernetes_connectors : infrastructure => details.identifier if lower(cnt) == lower(infrastructure) }]...) */
-
   template_connectors = { for name, details in var.harness_platform_templates : name => {
     connector = merge(
       flatten([
@@ -16,41 +14,6 @@ locals {
           } if "${tipo}_connectors" == type
         }
       ])...
-      /* {
-      gitlab_connectors = {
-        for k, v in details.connectors : k => var.connectors.all.gitlab_connectors[v.name].identifier if v.type == "gitlab"
-      }
-      artifactory_connectors = {
-        for k, v in details.connectors : k => var.connectors.all.artifactory_connectors[v.name].identifier if v.type == "artifactory"
-      }
-      github_connectors = {
-        for k, v in details.connectors : k => var.connectors.all.github_connectors[v.name].identifier if v.type == "github"
-      }
-      docker_connectors = {
-        for k, v in details.connectors : k => var.connectors.all.docker_connectors[v.name].identifier if v.type == "docker"
-      }
-      gcp_connectors = {
-        for k, v in details.connectors : k => var.connectors.all.gcp_connectors[v.name].identifier if v.type == "gcp"
-      }
-      nexus_connectors = {
-        for k, v in details.connectors : k => var.connectors.all.nexus_connectors[v.name].identifier if v.type == "nexus"
-      }
-      service_now_connectors = {
-        for k, v in details.connectors : k => var.connectors.all.service_now_connectors[v.name].identifier if v.type == "service_now"
-      }
-      dynatrace_connectors = {
-        for k, v in details.connectors : k => var.connectors.all.dynatrace_connectors[v.name].identifier if v.type == "dynatrace"
-      }
-      kubernetes_connectors = {
-        for k, v in details.connectors : k => var.connectors.all.kubernetes_connectors[v.name].identifier if v.type == "kubernetes"
-      }
-      aws_connectors = {
-        for k, v in details.connectors : k => var.connectors.all.aws_connectors[v.name].identifier if v.type == "aws"
-      }
-      helm_connectors = {
-        for k, v in details.connectors : k => var.connectors.all.helm_connectors[v.name].identifier if v.type == "helm"
-      }
-    } */
   ) } if details.enable }
 
 

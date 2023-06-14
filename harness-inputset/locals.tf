@@ -52,10 +52,11 @@ locals {
               infra,
               local.inpt_by_svc["${svc}_${name}_${inpt}"],
               {
-                env    = "${env}"
-                env_id = "${lower(env)}_${var.suffix}"
+                env               = "${env}"
+                env_id            = var.environments[env].identifier
+                infrastructure_id = var.infrastructures[infra.infrastructure].identifier
               }
-            ) if infra.enable
+            ) if infra.enable && lower(var.environments[env].type) == lower(set.type)
           } if set.enable && name == pipe
         ] #if values.enable
       ] if variables.SERVICE_DEFINITION.enable
