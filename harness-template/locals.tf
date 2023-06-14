@@ -13,7 +13,7 @@ locals {
             for key, value in connector : key => {
               connector_id = connectors[key].identifier
             }
-          } if tipo == type
+          } if "${tipo}_connectors" == type
         }
       ])...
       /* {
