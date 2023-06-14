@@ -45,7 +45,7 @@ locals {
   inpt_by_infra = merge(flatten([
     for name, details in var.harness_platform_inputsets : [
       for svc, variables in var.harness_platform_services : [
-        for pipe, values in variables.PIPELINE : [
+        for pipe, values in try(variables.PIPELINE, {}) : [
           for inpt, set in values.INPUTSET : {
             for env, infra in variables.CD.ENV : "${svc}_${name}_${env}" =>
             merge(
