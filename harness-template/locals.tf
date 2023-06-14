@@ -5,6 +5,54 @@ locals {
 
   /* connector_id = merge([for infrastructure, values in var.harness_platform_infrastructures : { for cnt, details in var.connectors.kubernetes_connectors : infrastructure => details.identifier if lower(cnt) == lower(infrastructure) }]...) */
 
+  template_connectors = { for name, details in var.harness_platform_templates : name => merge(
+    flatten([
+      for type, connectors in var.connectors.all : [
+        for tipo, connector in try(details.connector, {}) : {
+          for key, value in connector : key => {
+            connector_id = connectors[key].identifier
+          }
+        } if tipo == type
+      ]
+    ])...
+    /* {
+      gitlab_connectors = {
+        for k, v in details.connectors : k => var.connectors.all.gitlab_connectors[v.name].identifier if v.type == "gitlab"
+      }
+      artifactory_connectors = {
+        for k, v in details.connectors : k => var.connectors.all.artifactory_connectors[v.name].identifier if v.type == "artifactory"
+      }
+      github_connectors = {
+        for k, v in details.connectors : k => var.connectors.all.github_connectors[v.name].identifier if v.type == "github"
+      }
+      docker_connectors = {
+        for k, v in details.connectors : k => var.connectors.all.docker_connectors[v.name].identifier if v.type == "docker"
+      }
+      gcp_connectors = {
+        for k, v in details.connectors : k => var.connectors.all.gcp_connectors[v.name].identifier if v.type == "gcp"
+      }
+      nexus_connectors = {
+        for k, v in details.connectors : k => var.connectors.all.nexus_connectors[v.name].identifier if v.type == "nexus"
+      }
+      service_now_connectors = {
+        for k, v in details.connectors : k => var.connectors.all.service_now_connectors[v.name].identifier if v.type == "service_now"
+      }
+      dynatrace_connectors = {
+        for k, v in details.connectors : k => var.connectors.all.dynatrace_connectors[v.name].identifier if v.type == "dynatrace"
+      }
+      kubernetes_connectors = {
+        for k, v in details.connectors : k => var.connectors.all.kubernetes_connectors[v.name].identifier if v.type == "kubernetes"
+      }
+      aws_connectors = {
+        for k, v in details.connectors : k => var.connectors.all.aws_connectors[v.name].identifier if v.type == "aws"
+      }
+      helm_connectors = {
+        for k, v in details.connectors : k => var.connectors.all.helm_connectors[v.name].identifier if v.type == "helm"
+      }
+    } */
+  ) if details.enable }
+
+
   template_commons = { for name, details in var.harness_platform_templates : name => merge(
     details,
     {
@@ -12,6 +60,7 @@ locals {
         details.vars,
         try(details.template, {}),
         try(details.default_values, {}),
+        try(local.template_connectors[name], {}),
         {
           name        = "${name}"
           identifier  = "${lower(replace(name, "/[\\s-.]/", "_"))}_${var.suffix}"
@@ -21,7 +70,8 @@ locals {
           project_id  = try(local.template_prj_id[name], "") != "" ? local.template_prj_id[name] : try(details.project_id, var.project_id)
           git_details = try(details.vars.git_details, {})
         }
-    ) }
+      )
+    }
   ) if details.enable }
 
 
@@ -39,7 +89,8 @@ locals {
             template_version = try(v.template_version, "1")
           } if try(v.type, "") == "step"
         }
-    })
+      }
+    )
     } if details.type == "step-group"
   }
 
