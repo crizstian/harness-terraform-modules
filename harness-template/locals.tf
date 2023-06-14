@@ -5,17 +5,18 @@ locals {
 
   /* connector_id = merge([for infrastructure, values in var.harness_platform_infrastructures : { for cnt, details in var.connectors.kubernetes_connectors : infrastructure => details.identifier if lower(cnt) == lower(infrastructure) }]...) */
 
-  template_connectors = { for name, details in var.harness_platform_templates : name => merge(
-    flatten([
-      for type, connectors in var.connectors.all : [
-        for tipo, connector in try(details.connector, {}) : {
-          for key, value in connector : key => {
-            connector_id = connectors[key].identifier
-          }
-        } if tipo == type
-      ]
-    ])...
-    /* {
+  template_connectors = { for name, details in var.harness_platform_templates : name => {
+    connector = merge(
+      flatten([
+        for type, connectors in var.connectors.all : {
+          for tipo, connector in try(details.connector, {}) : tipo => {
+            for key, value in connector : key => {
+              connector_id = connectors[key].identifier
+            }
+          } if tipo == type
+        }
+      ])...
+      /* {
       gitlab_connectors = {
         for k, v in details.connectors : k => var.connectors.all.gitlab_connectors[v.name].identifier if v.type == "gitlab"
       }
@@ -50,7 +51,7 @@ locals {
         for k, v in details.connectors : k => var.connectors.all.helm_connectors[v.name].identifier if v.type == "helm"
       }
     } */
-  ) if details.enable }
+  ) } if details.enable }
 
 
   template_commons = { for name, details in var.harness_platform_templates : name => merge(
