@@ -4,7 +4,7 @@ locals {
   inpt_by_svc = merge(flatten([
     for name, details in var.harness_platform_inputsets : [
       for svc, variables in var.harness_platform_services : [
-        for pipe, values in variables.PIPELINE : {
+        for pipe, values in try(variables.PIPELINE, {}) : {
           for inpt, set in values.INPUTSET : "${svc}_${name}_${inpt}" =>
           merge(
             try(var.templates.stages[name].default_values, try(var.templates.pipelines[pipe].default_values, {})),
