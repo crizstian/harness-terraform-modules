@@ -12,6 +12,7 @@ locals {
             try(variables.CONNECTORS, {}),
             try(variables.CI, {}),
             details,
+            var.pipelines[pipe].default_values,
             set.VALUES,
             {
               svc         = "${svc}"
