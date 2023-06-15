@@ -31,7 +31,7 @@ locals {
               service_id       = try("${replace(svc, "-", "_")}_${var.suffix}", "")
               TRIGGER_INPUTSET = try(definition.TRIGGER_INPUTSET, {})
             }
-          ) if definition.enable && name == pipe
+          ) if try(definition.enable, false) && name == pipe
         } #if values.enable
       ] if variables.SERVICE_DEFINITION.enable
     ] if details.enable
