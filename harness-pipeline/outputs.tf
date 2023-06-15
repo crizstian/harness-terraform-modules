@@ -1,4 +1,4 @@
-output "pipelines" {
+output "pipeline" {
   value = { for key, details in harness_platform_pipeline.pipeline : key => {
     identifier     = details.identifier
     org_id         = details.org_id
