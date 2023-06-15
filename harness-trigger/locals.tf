@@ -61,8 +61,9 @@ locals {
               infra,
               local.trg_by_svc["${svc}_${name}_${trg}"],
               {
-                env    = "${env}"
-                env_id = "${lower(env)}_${var.suffix}"
+                env              = "${env}"
+                env_id           = "${lower(env)}_${var.suffix}"
+                TRIGGER_INPUTSET = try(definition.TRIGGER_INPUTSET, {})
               }
             ) if infra.enable && lower(var.environments[env].type) == lower(definition.type)
           } if try(definition.enable, false) && name == pipe
