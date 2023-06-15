@@ -64,7 +64,7 @@ locals {
     ] if details.enable && details.type == "CD"
   ])...)
 
-  cd = { for name, values in local.inpt_by_infra : name =>
+  cd = { for name, values in local.inpt_by_infra : "${values.svc}_${values.inpt}_${values.env}" =>
     {
       vars = merge(
         values,
