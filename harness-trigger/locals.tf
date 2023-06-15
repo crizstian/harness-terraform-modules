@@ -29,7 +29,7 @@ locals {
               project_id       = try(var.pipelines[pipe].project_id, "") != "" ? var.pipelines[pipe].project_id : try(details.project_id, var.project_id)
               pipeline_id      = try(var.pipelines[pipe].identifier, "")
               service_id       = try("${replace(svc, "-", "_")}_${var.suffix}", "")
-              TRIGGER_INPUTSET = try(definition.TRIGGER_INPUTSET, {})
+              TRIGGER_INPUTSET = definition.TRIGGER_INPUTSET
             }
           ) if try(definition.enable, false) && name == pipe
         } #if values.enable
@@ -63,7 +63,7 @@ locals {
               {
                 env              = "${env}"
                 env_id           = "${lower(env)}_${var.suffix}"
-                TRIGGER_INPUTSET = try(definition.TRIGGER_INPUTSET, {})
+                TRIGGER_INPUTSET = definition
               }
             ) if infra.enable && lower(var.environments[env].type) == lower(definition.type)
           } if try(definition.enable, false) && name == pipe
