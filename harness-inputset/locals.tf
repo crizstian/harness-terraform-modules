@@ -25,7 +25,7 @@ locals {
               project_id  = try(var.pipelines[pipe].project_id, "") != "" ? var.pipelines[pipe].project_id : try(details.project_id, var.project_id)
               pipeline_id = try(var.pipelines[pipe].identifier, "")
             }
-          ) if set.enable && name == pipe
+          ) if try(set.enable, false) && name == pipe
         } #if values.enable
       ] if variables.SERVICE_DEFINITION.enable
     ] if details.enable
@@ -58,7 +58,7 @@ locals {
                 infrastructure_id = var.infrastructures[infra.infrastructure].identifier
               }
             ) if infra.enable && lower(var.environments[env].type) == lower(set.type)
-          } if set.enable && name == pipe
+          } if try(set.enable, false) && name == pipe
         ] #if values.enable
       ] if variables.SERVICE_DEFINITION.enable
     ] if details.enable && details.type == "CD"
