@@ -10,6 +10,7 @@ locals {
         for pipe, values in try(variables.PIPELINE, {}) : {
           for trg, definition in values.TRIGGER : "${svc}_${name}_${trg}" =>
           merge(
+            variables.SERVICE_DEFINITION,
             try(var.templates.stages[name].default_values, try(var.templates.pipelines[pipe].default_values, {})),
             try(var.connectors.default_connectors, {}),
             merge([for inpt, enable in try(definition.TRIGGER_INPUTSET, {}) : values.INPUTSET[inpt].VALUES if try(enable, false)]...),
@@ -18,7 +19,6 @@ locals {
             try(definition.VALUES, {}),
             try(definition.TRIGGER_SETUP, {}),
             details,
-            variables.SERVICE_DEFINITION,
             {
               svc              = "${svc}"
               trg              = "${trg}"
