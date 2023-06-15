@@ -227,3 +227,6 @@ locals {
 }
 
 
+output "test" {
+  value = local.triggers
+}
