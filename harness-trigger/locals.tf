@@ -60,6 +60,7 @@ locals {
             merge(
               infra,
               local.trg_by_svc["${svc}_${name}_${trg}"],
+              definition,
               {
                 env    = "${env}"
                 env_id = "${lower(env)}_${var.suffix}"
