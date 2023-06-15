@@ -18,6 +18,7 @@ locals {
             try(definition.VALUES, {}),
             try(definition.TRIGGER_SETUP, {}),
             details,
+            variables.SERVICE_DEFINITION,
             {
               svc              = "${svc}"
               trg              = "${trg}"
