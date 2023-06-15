@@ -35,6 +35,9 @@ variable "connectors" {
 variable "templates" {
   default = {}
 }
+variable "environments" {
+  default = {}
+}
 variable "common_values" {
   default = {
     org_id     = ""
