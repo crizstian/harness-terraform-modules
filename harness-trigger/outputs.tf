@@ -9,7 +9,7 @@ output "trigger" {
     identifier   = details.identifier
     org_id       = details.org_id
     project_id   = details.project_id
-    test         = "${local.trg_by_infra[key].svc}_${inpt}_${local.trg_by_infra[key].env}"
+    test         = "${local.trg_by_infra[key].svc}__${local.trg_by_infra[key].env}"
     inputset_ids = local.trg_by_infra[key].TRIGGER_INPUTSET
   } }
 }
