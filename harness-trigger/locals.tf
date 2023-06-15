@@ -29,7 +29,7 @@ locals {
               project_id       = try(var.pipelines[pipe].project_id, "") != "" ? var.pipelines[pipe].project_id : try(details.project_id, var.project_id)
               pipeline_id      = try(var.pipelines[pipe].identifier, "")
               service_id       = try("${replace(svc, "-", "_")}_${var.suffix}", "")
-              TRIGGER_INPUTSET = definition.TRIGGER_INPUTSET
+              TRIGGER_INPUTSET = definition
             }
           ) if try(definition.enable, false) && name == pipe
         } #if values.enable
