@@ -225,8 +225,3 @@ locals {
     local.cd,
   )
 }
-
-
-output "test" {
-  value = local.triggers
-}
