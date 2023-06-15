@@ -7,7 +7,7 @@ locals {
   trg_by_svc = merge(flatten([
     for name, details in var.harness_platform_triggers : [
       for svc, variables in var.harness_platform_services : [
-        for pipe, values in variables.PIPELINE : {
+        for pipe, values in try(variables.PIPELINE, {}) : {
           for trg, definition in values.TRIGGER : "${svc}_${name}_${trg}" =>
           merge(
             try(var.templates.stages[name].default_values, try(var.templates.pipelines[pipe].default_values, {})),
@@ -53,7 +53,7 @@ locals {
   trg_by_infra = merge(flatten([
     for name, details in var.harness_platform_triggers : [
       for svc, variables in var.harness_platform_services : [
-        for pipe, values in variables.PIPELINE : [
+        for pipe, values in try(variables.PIPELINE, {}) : [
           for trg, definition in values.TRIGGER : {
             for env, infra in variables.CD.ENV : "${svc}_${name}_${env}" =>
             merge(
