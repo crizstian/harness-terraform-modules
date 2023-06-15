@@ -65,7 +65,7 @@ locals {
                 env_id = "${lower(env)}_${var.suffix}"
               }
             ) if infra.enable && lower(var.environments[env].type) == lower(definition.type)
-          } if definition.enable && name == pipe
+          } if try(definition.enable, false) && name == pipe
         ] #if values.enable
       ] if variables.SERVICE_DEFINITION.enable
     ] if details.enable && details.type == "CD"
