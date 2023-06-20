@@ -120,8 +120,8 @@ locals {
       project_id         = try(local.connector_prj_id["gcp_${name}"], "") != "" ? local.connector_prj_id["gcp_${name}"] : try(details.project_id, var.common_values.project_id)
       manual             = try(details.manual, {})
       inherit_from_delegate = can(details.inherit_from_delegate) ? {
-        token = {
-          token_ref_id = details.inherit_from_delegate
+        selectors = {
+          delegate_selectors = details.inherit_from_delegate
         }
       } : {}
   }) if details.enable }
@@ -136,8 +136,8 @@ locals {
       project_id         = try(local.connector_prj_id["aws_${name}"], "") != "" ? local.connector_prj_id["aws_${name}"] : try(details.project_id, var.common_values.project_id)
       manual             = try(details.manual, {})
       inherit_from_delegate = can(details.inherit_from_delegate) ? {
-        token = {
-          token_ref_id = details.inherit_from_delegate
+        selectors = {
+          delegate_selectors = details.inherit_from_delegate
         }
       } : {}
   }) if details.enable }
@@ -194,8 +194,8 @@ locals {
       service_account    = try(details.service_account, {})
       username_password  = try(details.username_password, {})
       inherit_from_delegate = can(details.inherit_from_delegate) ? {
-        token = {
-          token_ref_id = details.inherit_from_delegate
+        selectors = {
+          delegate_selectors = details.inherit_from_delegate
         }
       } : {}
   }) if details.enable }
