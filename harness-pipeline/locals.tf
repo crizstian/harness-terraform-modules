@@ -51,7 +51,7 @@ locals {
           for k, v in try(values.template) : try(var.templates.pipeline[v.template_name].default_values, {})
       ])...
       ),
-      try(values.default_values)
+      try(values.default_values, {})
     )
   }
 
