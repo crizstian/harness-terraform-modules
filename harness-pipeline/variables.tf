@@ -32,3 +32,12 @@ variable "common_values" {
     project_id = ""
   }
 }
+variable "services" {
+  default = {}
+}
+variable "environments" {
+  default = {}
+}
+variable "infrastructures" {
+  default = {}
+}

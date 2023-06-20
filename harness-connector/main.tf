@@ -242,6 +242,12 @@ resource "harness_platform_connector_aws" "connector" {
       delegate_selectors = manual.value.delegate_selectors
     }
   }
+  dynamic "inherit_from_delegate" {
+    for_each = each.value.inherit_from_delegate
+    content {
+      delegate_selectors = inherit_from_delegate.value.delegate_selectors
+    }
+  }
 }
 
 resource "harness_platform_connector_newrelic" "connector" {

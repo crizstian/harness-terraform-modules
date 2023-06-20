@@ -42,7 +42,7 @@ locals {
   }
 
   pipeline_tpl_default_values = { for pipeline, values in var.harness_platform_pipelines : pipeline =>
-    merge(
+    merge(merge(
       concat(
         [
           for k, v in try(values.template) : try(var.templates.stages[v.template_name].default_values, {}) if v.type == "stage"
@@ -50,8 +50,24 @@ locals {
         [
           for k, v in try(values.template) : try(var.templates.pipeline[v.template_name].default_values, {})
       ])...
+      ),
+      try(values.default_values)
     )
   }
+
+  /* pipeline_env = {
+    for pipeline, values in var.harness_platform_pipelines : pipeline => [
+      for env, infra in values.environment : merge(
+        infra,
+        local.inpt_by_svc["${svc}_${name}_${inpt}"],
+        {
+          env               = "${env}"
+          env_id            = var.environments[env].identifier
+          infrastructure_id = var.infrastructures[infra.infrastructure].identifier
+        }
+      )
+    ]
+  } */
 
   pipelines = { for name, details in var.harness_platform_pipelines : name => {
     default_values = try(local.pipeline_tpl_default_values[name], {})
