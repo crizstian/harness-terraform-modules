@@ -121,7 +121,7 @@ locals {
       manual             = try(details.manual, {})
       inherit_from_delegate = can(details.inherit_from_delegate) ? {
         selectors = {
-          delegate_selectors = details.inherit_from_delegate
+          delegate_selectors = details.inherit_from_delegate.delegate_selectors
         }
       } : {}
   }) if details.enable }
@@ -137,7 +137,7 @@ locals {
       manual             = try(details.manual, {})
       inherit_from_delegate = can(details.inherit_from_delegate) ? {
         selectors = {
-          delegate_selectors = details.inherit_from_delegate
+          delegate_selectors = details.inherit_from_delegate.delegate_selectors
         }
       } : {}
   }) if details.enable }
@@ -195,7 +195,7 @@ locals {
       username_password  = try(details.username_password, {})
       inherit_from_delegate = can(details.inherit_from_delegate) ? {
         selectors = {
-          delegate_selectors = details.inherit_from_delegate
+          delegate_selectors = details.inherit_from_delegate.delegate_selectors
         }
       } : {}
   }) if details.enable }
