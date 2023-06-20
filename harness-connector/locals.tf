@@ -113,25 +113,33 @@ locals {
   gcp_connectors = { for name, details in var.harness_platform_gcp_connectors : name => merge(
     details,
     {
-      delegate_selectors    = try(details.delegate_selectors, var.delegate_selectors)
-      tags                  = concat(try(details.tags, []), var.tags)
-      identifier            = "${lower(replace(name, "/[\\s-.]/", "_"))}_gcp_connector_${var.suffix}"
-      org_id                = try(local.connector_org_id["gcp_${name}"], "") != "" ? local.connector_org_id["gcp_${name}"] : try(details.org_id, var.common_values.org_id)
-      project_id            = try(local.connector_prj_id["gcp_${name}"], "") != "" ? local.connector_prj_id["gcp_${name}"] : try(details.project_id, var.common_values.project_id)
-      manual                = try(details.manual, {})
-      inherit_from_delegate = try(details.inherit_from_delegate, {})
+      delegate_selectors = try(details.delegate_selectors, var.delegate_selectors)
+      tags               = concat(try(details.tags, []), var.tags)
+      identifier         = "${lower(replace(name, "/[\\s-.]/", "_"))}_gcp_connector_${var.suffix}"
+      org_id             = try(local.connector_org_id["gcp_${name}"], "") != "" ? local.connector_org_id["gcp_${name}"] : try(details.org_id, var.common_values.org_id)
+      project_id         = try(local.connector_prj_id["gcp_${name}"], "") != "" ? local.connector_prj_id["gcp_${name}"] : try(details.project_id, var.common_values.project_id)
+      manual             = try(details.manual, {})
+      inherit_from_delegate = can(details.inherit_from_delegate) ? {
+        token = {
+          token_ref_id = details.inherit_from_delegate
+        }
+      } : {}
   }) if details.enable }
 
   aws_connectors = { for name, details in var.harness_platform_aws_connectors : name => merge(
     details,
     {
-      delegate_selectors    = try(details.delegate_selectors, var.delegate_selectors)
-      tags                  = concat(try(details.tags, []), var.tags)
-      identifier            = "${lower(replace(name, "/[\\s-.]/", "_"))}_aws_connector_${var.suffix}"
-      org_id                = try(local.connector_org_id["aws_${name}"], "") != "" ? local.connector_org_id["aws_${name}"] : try(details.org_id, var.common_values.org_id)
-      project_id            = try(local.connector_prj_id["aws_${name}"], "") != "" ? local.connector_prj_id["aws_${name}"] : try(details.project_id, var.common_values.project_id)
-      manual                = try(details.manual, {})
-      inherit_from_delegate = try(details.inherit_from_delegate, {})
+      delegate_selectors = try(details.delegate_selectors, var.delegate_selectors)
+      tags               = concat(try(details.tags, []), var.tags)
+      identifier         = "${lower(replace(name, "/[\\s-.]/", "_"))}_aws_connector_${var.suffix}"
+      org_id             = try(local.connector_org_id["aws_${name}"], "") != "" ? local.connector_org_id["aws_${name}"] : try(details.org_id, var.common_values.org_id)
+      project_id         = try(local.connector_prj_id["aws_${name}"], "") != "" ? local.connector_prj_id["aws_${name}"] : try(details.project_id, var.common_values.project_id)
+      manual             = try(details.manual, {})
+      inherit_from_delegate = can(details.inherit_from_delegate) ? {
+        token = {
+          token_ref_id = details.inherit_from_delegate
+        }
+      } : {}
   }) if details.enable }
 
   nexus_connectors = { for name, details in var.harness_platform_nexus_connectors : name => merge(
@@ -178,13 +186,17 @@ locals {
   kubernetes_connectors = { for name, details in var.harness_platform_kubernetes_connectors : name => merge(
     details,
     {
-      delegate_selectors    = can(details.inherit_from_delegate) ? null : try(details.delegate_selectors, var.delegate_selectors)
-      tags                  = concat(try(details.tags, []), var.tags)
-      identifier            = "${lower(replace(name, "/[\\s-.]/", "_"))}_kubernetes_connector_${var.suffix}"
-      org_id                = try(local.connector_org_id["kubernetes_${name}"], "") != "" ? local.connector_org_id["kubernetes_${name}"] : try(details.org_id, var.common_values.org_id)
-      project_id            = try(local.connector_prj_id["kubernetes_${name}"], "") != "" ? local.connector_prj_id["kubernetes_${name}"] : try(details.project_id, var.common_values.project_id)
-      service_account       = try(details.service_account, {})
-      username_password     = try(details.username_password, {})
-      inherit_from_delegate = try(details.inherit_from_delegate, {})
+      delegate_selectors = can(details.inherit_from_delegate) ? null : try(details.delegate_selectors, var.delegate_selectors)
+      tags               = concat(try(details.tags, []), var.tags)
+      identifier         = "${lower(replace(name, "/[\\s-.]/", "_"))}_kubernetes_connector_${var.suffix}"
+      org_id             = try(local.connector_org_id["kubernetes_${name}"], "") != "" ? local.connector_org_id["kubernetes_${name}"] : try(details.org_id, var.common_values.org_id)
+      project_id         = try(local.connector_prj_id["kubernetes_${name}"], "") != "" ? local.connector_prj_id["kubernetes_${name}"] : try(details.project_id, var.common_values.project_id)
+      service_account    = try(details.service_account, {})
+      username_password  = try(details.username_password, {})
+      inherit_from_delegate = can(details.inherit_from_delegate) ? {
+        token = {
+          token_ref_id = details.inherit_from_delegate
+        }
+      } : {}
   }) if details.enable }
 }
