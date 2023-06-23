@@ -17,7 +17,21 @@ locals {
     } */
 
   svc_manifest_helm_chart = { for svc, value in var.harness_platform_services : svc => [
-    for k, v in value.SERVICE_DEFINITION.manifests : {
+    for k, v in value.SERVICE_DEFINITION.manifests : <<-EOT
+    manifest:
+      identifier: ${k}
+      type: ${v.type}
+      spec:
+        store:
+          spec:
+            connectorRef: ${value.CONNECTORS.helm_connector_id}
+          type: Http
+        chartName: ${v.chartName}
+        chartVersion: ${v.chartVersion}
+        helmVersion: ${v.helmVersion}
+        skipResourceVersioning: false
+    EOT
+    /* {
       manifest = {
         identifier = k
         type       = "HelmChart"
@@ -34,11 +48,26 @@ locals {
           skipResourceVersioning = "false"
         }
       }
-    } if v.type == "HelmChart"
+    }  */
+    if v.type == "HelmChart"
     ]
   }
   svc_manifest_k8s = { for svc, value in var.harness_platform_services : svc => [
-    for k, v in value.SERVICE_DEFINITION.manifests : {
+    for k, v in value.SERVICE_DEFINITION.manifests : <<-EOT
+    manifest:
+      identifier: ${k}
+      type: ${v.type}
+      spec:
+        store:
+          spec:
+            connectorRef: ${value.CONNECTORS.git_connector_id}
+            gitFetchType: Branch
+            branch: ${v.branch}
+            paths:
+              - ${v.manifest_path}
+          type: Git
+    EOT
+    /* {
       manifest = {
         identifier = k
         type       = "K8sManifest"
@@ -55,25 +84,26 @@ locals {
           skipResourceVersioning = false
         }
       }
-    } if v.type == "K8sManifest"
+    }  */
+    if v.type == "K8sManifest"
     ]
   }
   svc_manifest_values = { for svc, value in var.harness_platform_services : svc => [
-    for k, v in value.SERVICE_DEFINITION.manifests : {
-      identifier = k
-      type       = v.type
-      spec = {
-        store = {
-          spec = {
-            connectorRef = value.CONNECTORS.git_connector_id
-            gitFetchType = "Branch"
-            branch       = v.branch
-            paths        = [v.manifest_path]
-          }
-          type = v.git_provider
-        }
-      }
-    } if v.type == "Values"
+    for k, v in value.SERVICE_DEFINITION.manifests : <<-EOT
+    manifest:
+      identifier: ${k}
+      type: ${v.type}
+      spec:
+        store:
+          spec:
+            connectorRef: ${value.CONNECTORS.git_connector_id}
+            gitFetchType: Branch
+            branch: ${v.branch}
+            paths:
+              - ${v.manifest_path}
+          type: ${v.git_provider}
+    EOT
+    if v.type == "Values"
     ]
   }
 
@@ -96,3 +126,21 @@ locals {
       }
   ) } if details.SERVICE_DEFINITION.enable }
 }
+
+
+
+/* {
+      identifier = k
+      type       = v.type
+      spec = {
+        store = {
+          spec = {
+            connectorRef = value.CONNECTORS.git_connector_id
+            gitFetchType = "Branch"
+            branch       = v.branch
+            paths        = [v.manifest_path]
+          }
+          type = v.git_provider
+        }
+      }
+    } */
