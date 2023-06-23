@@ -122,7 +122,7 @@ locals {
         tags       = concat(try(details.SERVICE_DEFINITION.tags, []), var.tags)
         org_id     = try(local.service_org_id[name], "") != "" ? local.service_org_id[name] : try(details.org_id, var.common_values.org_id)
         project_id = try(local.service_prj_id[name], "") != "" ? local.service_prj_id[name] : try(details.project_id, var.common_values.project_id)
-        manifests  = yamlencode(flatten(concat(try(local.svc_manifest_helm_chart[name], []), try(local.svc_manifest_k8s[name], []), try(local.svc_manifest_values[name], []))))
+        manifests  = flatten(concat(try(local.svc_manifest_helm_chart[name], []), try(local.svc_manifest_k8s[name], []), try(local.svc_manifest_values[name], [])))
       }
   ) } if details.SERVICE_DEFINITION.enable }
 }
