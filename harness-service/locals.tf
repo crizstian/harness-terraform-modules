@@ -16,7 +16,7 @@ locals {
     ]...)
     } */
 
-  svc_manifest_helm_chart = { for svc, value in local.harness_platform_services : svc => [
+  svc_manifest_helm_chart = { for svc, value in var.harness_platform_services : svc => [
     for k, v in value.SERVICE_DEFINITION.manifests : {
       manifest = {
         identifier = k
@@ -37,7 +37,7 @@ locals {
     } if v.type == "HelmChart"
     ]
   }
-  svc_manifest_k8s = { for svc, value in local.harness_platform_services : svc => [
+  svc_manifest_k8s = { for svc, value in var.harness_platform_services : svc => [
     for k, v in value.SERVICE_DEFINITION.manifests : {
       manifest = {
         identifier = k
@@ -58,7 +58,7 @@ locals {
     } if v.type == "K8sManifest"
     ]
   }
-  svc_manifest_values = { for svc, value in local.harness_platform_services : svc => [
+  svc_manifest_values = { for svc, value in var.harness_platform_services : svc => [
     for k, v in value.SERVICE_DEFINITION.manifests : {
       identifier = k
       type       = v.type
