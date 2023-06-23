@@ -16,6 +16,69 @@ locals {
     ]...)
     } */
 
+  svc_manifest_helm_chart = { for svc, value in local.harness_platform_services : svc => [
+    for k, v in value.SERVICE_DEFINITION.manifests : {
+      manifest = {
+        identifier = k
+        type       = "HelmChart"
+        spec = {
+          store = {
+            spec = {
+              connectorRef = value.CONNECTORS.helm_connector_id
+            }
+            type = "Http"
+          }
+          chartName              = v.chartName
+          chartVersion           = v.chartVersion
+          helmVersion            = v.helmVersion
+          skipResourceVersioning = "false"
+        }
+      }
+    } if v.type == "HelmChart"
+    ]
+  }
+  svc_manifest_k8s = { for svc, value in local.harness_platform_services : svc => [
+    for k, v in value.SERVICE_DEFINITION.manifests : {
+      manifest = {
+        identifier = k
+        type       = "K8sManifest"
+        spec = {
+          store = {
+            spec = {
+              connectorRef = value.CONNECTORS.git_connector_id
+              gitFetchType = "Branch"
+              branch       = v.branch
+              paths        = [v.manifest_path]
+            }
+            type = v.git_provider
+          }
+          skipResourceVersioning = false
+        }
+      }
+    } if v.type == "K8sManifest"
+    ]
+  }
+  svc_manifest_values = { for svc, value in local.harness_platform_services : svc => [
+    for k, v in value.SERVICE_DEFINITION.manifests : {
+      identifier = k
+      type       = v.type
+      spec = {
+        store = {
+          spec = {
+            connectorRef = value.CONNECTORS.git_connector_id
+            gitFetchType = "Branch"
+            branch       = v.branch
+            paths        = [v.manifest_path]
+          }
+          type = v.git_provider
+        }
+      }
+    } if v.type == "Values"
+    ]
+  }
+
+
+
   services = { for name, details in var.harness_platform_services : name => {
     vars = merge(
       try(details.CI, {}),
@@ -29,6 +92,7 @@ locals {
         tags       = concat(try(details.SERVICE_DEFINITION.tags, []), var.tags)
         org_id     = try(local.service_org_id[name], "") != "" ? local.service_org_id[name] : try(details.org_id, var.common_values.org_id)
         project_id = try(local.service_prj_id[name], "") != "" ? local.service_prj_id[name] : try(details.project_id, var.common_values.project_id)
+        manifests  = flatten(concat(try(local.HelmChart[name], []), try(local.K8sManifest[name], []), try(local.Values[name], [])))
       }
   ) } if details.SERVICE_DEFINITION.enable }
 }
