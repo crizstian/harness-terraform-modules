@@ -6,22 +6,7 @@ locals {
 
   /* connector_id = merge([for infrastructure, values in var.harness_platform_infrastructures : { for cnt, details in var.connectors.kubernetes_connectors : infrastructure => details.identifier if lower(cnt) == lower(infrastructure) }]...) */
 
-  /* templates = { for name, details in var.harness_platform_pipelines : name =>
-    {
-      org_id           = try(local.pipeline_org_id[name], "") != "" ? local.pipeline_org_id[name] : try(details.org_id, var.org_id)
-      project_id       = ""
-      template_id      = try(element(split(".", details.vars.template.id), 1), {})
-      template_version = try(details.vars.template.version, {})
-    }
-  if details.enable } */
-
   templates = {}
-  /* 
-  templated_pipeline = { for name, details in var.harness_platform_pipelines : name =>
-    {
-
-    }
-  if details.enable } */
 
   pipeline_tpl_id = { for pipeline, values in var.harness_platform_pipelines : pipeline =>
     merge(
@@ -33,10 +18,11 @@ locals {
         } if v.type == "stage"
       },
       {
-        pipeline = {
-          template_id      = try(var.templates.pipelines[values.template.pipeline.template_name].identifier, "NOT_DEFINED")
-          template_version = try(values.template.pipeline.template_version, "NOT_DEFINED")
-        }
+        for k, v in try(values.template, {}) : k =>
+        {
+          template_id      = try(var.templates.pipelines[v.template_name].identifier, "NOT_DEFINED")
+          template_version = try(v.template_version, "NOT_DEFINED")
+        } if v.type == "pipeline"
       }
     ) if values.enable
   }
@@ -48,8 +34,9 @@ locals {
           for k, v in try(values.template) : try(var.templates.stages[v.template_name].default_values, {}) if v.type == "stage"
         ],
         [
-          for k, v in try(values.template) : try(var.templates.pipeline[v.template_name].default_values, {})
-      ])...
+          for k, v in try(values.template) : try(var.templates.pipeline[v.template_name].default_values, {}) if v.type == "pipeline"
+        ]
+      )...
       ),
       try(values.default_values, {})
     )
