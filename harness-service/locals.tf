@@ -17,7 +17,7 @@ locals {
     } */
 
   svc_manifest_helm_chart = { for svc, value in var.harness_platform_services : svc => [
-    for k, v in value.SERVICE_DEFINITION.manifests : <<-EOT
+    for k, v in try(value.SERVICE_DEFINITION.manifests, {}) : <<-EOT
     manifest:
       identifier: ${k}
       type: ${v.type}
@@ -31,29 +31,11 @@ locals {
         helmVersion: ${v.helmVersion}
         skipResourceVersioning: false
     EOT
-    /* {
-      manifest = {
-        identifier = k
-        type       = "HelmChart"
-        spec = {
-          store = {
-            spec = {
-              connectorRef = value.CONNECTORS.helm_connector_id
-            }
-            type = "Http"
-          }
-          chartName              = v.chartName
-          chartVersion           = v.chartVersion
-          helmVersion            = v.helmVersion
-          skipResourceVersioning = "false"
-        }
-      }
-    }  */
     if v.type == "HelmChart"
     ]
   }
   svc_manifest_k8s = { for svc, value in var.harness_platform_services : svc => [
-    for k, v in value.SERVICE_DEFINITION.manifests : <<-EOT
+    for k, v in try(value.SERVICE_DEFINITION.manifests, {}) : <<-EOT
     manifest:
       identifier: ${k}
       type: ${v.type}
@@ -67,29 +49,11 @@ locals {
               - ${v.manifest_path}
           type: Git
     EOT
-    /* {
-      manifest = {
-        identifier = k
-        type       = "K8sManifest"
-        spec = {
-          store = {
-            spec = {
-              connectorRef = value.CONNECTORS.git_connector_id
-              gitFetchType = "Branch"
-              branch       = v.branch
-              paths        = [v.manifest_path]
-            }
-            type = v.git_provider
-          }
-          skipResourceVersioning = false
-        }
-      }
-    }  */
     if v.type == "K8sManifest"
     ]
   }
   svc_manifest_values = { for svc, value in var.harness_platform_services : svc => [
-    for k, v in value.SERVICE_DEFINITION.manifests : <<-EOT
+    for k, v in try(value.SERVICE_DEFINITION.manifests, {}) : <<-EOT
     manifest:
       identifier: ${k}
       type: ${v.type}
