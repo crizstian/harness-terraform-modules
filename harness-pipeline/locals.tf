@@ -101,3 +101,7 @@ locals {
       }
   ) } if details.enable && details.type == "chained-pipeline" }
 }
+
+output "pipeline_tpl_default_values" {
+  value = local.pipeline_tpl_default_values
+}
