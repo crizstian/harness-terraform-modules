@@ -72,14 +72,14 @@ locals {
     ] if details.enable && details.type == "CD"
   ])...)
 
-  cd = { for name, values in local.trg_by_infra : "${values.svc}_${values.trg}_${values.env}" =>
+  cd = { for name, values in local.trg_by_infra : name =>
     {
       vars = merge(
         # merge([for inpt, enable in values.TRIGGER_INPUTSET : try(local.inputsets_verbose["${values.svc}_${values.name}_${inpt}"], {}) if enable]...),
         values,
         {
           name         = "${values.svc}_${values.trg}_${values.env}"
-          identifier   = "${lower(replace("${values.svc}_${values.trg}_${values.env}", "/[\\s-.]/", "_"))}_${var.suffix}"
+          identifier   = "${lower(replace(name, "/[\\s-.]/", "_"))}_${var.suffix}"
           inputset_ids = try([for inpt, enable in values.TRIGGER_INPUTSET : local.inputsets["${values.svc}_${inpt}_${values.env}"].identifier if enable], ["NOT_DEFINED"])
         }
       )
