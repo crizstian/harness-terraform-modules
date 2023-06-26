@@ -48,7 +48,7 @@ locals {
       for svc, variables in var.harness_platform_services : [
         for pipe, values in try(variables.PIPELINE, {}) : [
           for inpt, set in values.INPUTSET : {
-            for env, infra in variables.CD.ENV : "${svc}_${name}_${env}" =>
+            for env, infra in variables.CD.ENV : "${svc}_${name}_${inpt}_${env}" =>
             merge(
               infra,
               local.inpt_by_svc["${svc}_${name}_${inpt}"],
@@ -64,13 +64,13 @@ locals {
     ] if details.enable && details.type == "CD"
   ])...)
 
-  cd = { for name, values in local.inpt_by_infra : "${values.svc}_${values.inpt}_${values.env}" =>
+  cd = { for name, values in local.inpt_by_infra : name =>
     {
       vars = merge(
         values,
         {
           name       = "${values.svc}_${values.inpt}_${values.env}"
-          identifier = "${lower(replace("${values.svc}_${values.inpt}_${values.env}", "/[\\s-.]/", "_"))}_${var.suffix}"
+          identifier = "${lower(replace(name, "/[\\s-.]/", "_"))}_${var.suffix}"
         }
       )
     } if values.type == "CD"
