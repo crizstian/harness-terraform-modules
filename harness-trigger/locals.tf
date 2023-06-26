@@ -2,7 +2,6 @@
 locals {
   inputsets         = var.inputsets.inputset
   inputsets_verbose = var.inputsets.verbose
-  #inputset = var.inputsets.inputset
 
   trg_by_svc = merge(flatten([
     for name, details in var.harness_platform_triggers : [
@@ -40,7 +39,8 @@ locals {
   ci = { for name, values in local.trg_by_svc : name =>
     {
       vars = merge(
-        #merge([for inpt, enable in values.TRIGGER_INPUTSET : try(local.inputsets_verbose["${values.svc}_${values.name}_${inpt}"], {}) if enable]...),
+        merge([for inpt, enable in values.TRIGGER_INPUTSET :
+        try(local.inputsets_verbose["${values.svc}_${values.name}_${inpt}"], {}) if enable]...),
         values,
         {
           name         = "${values.svc}_${values.trg}"
@@ -75,7 +75,8 @@ locals {
   cd = { for name, values in local.trg_by_infra : name =>
     {
       vars = merge(
-        # merge([for inpt, enable in values.TRIGGER_INPUTSET : try(local.inputsets_verbose["${values.svc}_${values.name}_${inpt}"], {}) if enable]...),
+        merge([for inpt, enable in values.TRIGGER_INPUTSET :
+        try(local.inputsets_verbose["${values.svc}_${values.name}_${inpt}_${values.env}"], {}) if enable]...),
         values,
         {
           name         = "${values.svc}_${values.trg}_${values.env}"
