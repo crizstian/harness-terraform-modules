@@ -62,7 +62,7 @@ locals {
               local.trg_by_svc["${svc}_${name}_${trg}"],
               {
                 env               = "${env}"
-                env_id            = "${lower(env)}_${var.suffix}"
+                env_id            = var.environments[env].identifier
                 infrastructure_id = var.infrastructures[infra.infrastructure].identifier
               }
             ) if infra.enable && lower(var.environments[env].type) == lower(definition.type)
