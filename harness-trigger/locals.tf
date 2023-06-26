@@ -1,7 +1,8 @@
 # github pipelines
 locals {
-  inputsets         = var.inputsets.inputset
-  inputsets_verbose = var.inputsets.verbose
+  inputsets                  = var.inputsets.inputset
+  inputsets_verbose          = var.inputsets.verbose
+  inputsets_verbose_by_infra = var.inputsets.verbose_by_infra
 
   trg_by_svc = merge(flatten([
     for name, details in var.harness_platform_triggers : [
@@ -76,7 +77,7 @@ locals {
     {
       vars = merge(
         merge([for inpt, enable in values.TRIGGER_INPUTSET :
-        try(local.inputsets_verbose["${values.svc}_${values.name}_${inpt}_${values.env}"], {}) if enable]...),
+        try(local.inputsets_verbose_by_infra["${values.svc}_${values.name}_${inpt}_${values.env}"], {}) if enable]...),
         values,
         {
           name         = "${values.svc}_${values.trg}_${values.env}"
