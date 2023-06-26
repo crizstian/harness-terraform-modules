@@ -46,7 +46,7 @@ locals {
         {
           name         = "${values.svc}_${values.trg}"
           identifier   = "${lower(replace("${values.svc}_${values.trg}", "/[\\s-.]/", "_"))}_${var.suffix}"
-          inputset_ids = try([for inpt, enable in values.TRIGGER_INPUTSET : local.inputsets["${values.svc}_${values.name}_${values.inpt}"].identifier if enable], ["NOT_DEFINED"])
+          inputset_ids = try([for inpt, enable in values.TRIGGER_INPUTSET : local.inputsets["${values.svc}_${values.name}_${inpt}"].identifier if enable], ["NOT_DEFINED"])
         }
       )
     } if values.type == "CI"
@@ -82,7 +82,7 @@ locals {
         {
           name         = "${values.svc}_${values.trg}_${values.env}"
           identifier   = "${lower(replace(name, "/[\\s-.]/", "_"))}_${var.suffix}"
-          inputset_ids = try([for inpt, enable in values.TRIGGER_INPUTSET : local.inputsets["${values.svc}_${values.name}_${values.inpt}_${values.env}"].identifier if enable], ["NOT_DEFINED"])
+          inputset_ids = try([for inpt, enable in values.TRIGGER_INPUTSET : local.inputsets["${values.svc}_${values.name}_${inpt}_${values.env}"].identifier if enable], ["NOT_DEFINED"])
         }
       )
     } if values.type == "CD"
