@@ -37,7 +37,7 @@ locals {
         values,
         {
           name       = "${values.svc}_${values.inpt}"
-          identifier = "${lower(replace("${values.svc}_${values.inpt}", "/[\\s-.]/", "_"))}_${var.suffix}"
+          identifier = "${lower(replace(name, "/[\\s-.]/", "_"))}_${var.suffix}"
         }
       )
     } if values.type == "CI"

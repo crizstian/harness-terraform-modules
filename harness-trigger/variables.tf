@@ -38,6 +38,9 @@ variable "templates" {
 variable "environments" {
   default = {}
 }
+variable "infrastructures" {
+  default = {}
+}
 variable "common_values" {
   default = {
     org_id     = ""
