@@ -53,9 +53,9 @@ locals {
               infra,
               local.inpt_by_svc["${svc}_${name}_${inpt}"],
               {
-                env               = "${env}"
-                env_id            = var.environments[env].identifier
-                infrastructure_id = var.infrastructures[infra.infrastructure].identifier
+                env                               = "${env}"
+                env_id                            = var.environments[env].identifier
+                "${infra.type}_infrastructure_id" = var.infrastructures["${infra.type}_${infra.infrastructure}"].identifier
               }
             ) if infra.enable && lower(var.environments[env].type) == lower(set.type)
           } if try(set.enable, false) && name == pipe

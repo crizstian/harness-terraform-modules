@@ -62,9 +62,9 @@ locals {
               infra,
               local.trg_by_svc["${svc}_${name}_${trg}"],
               {
-                env               = "${env}"
-                env_id            = var.environments[env].identifier
-                infrastructure_id = var.infrastructures[infra.infrastructure].identifier
+                env                               = "${env}"
+                env_id                            = var.environments[env].identifier
+                "${infra.type}_infrastructure_id" = var.infrastructures["${infra.type}_${infra.infrastructure}"].identifier
               }
             ) if infra.enable && lower(var.environments[env].type) == lower(definition.type)
           } if try(definition.enable, false) && name == pipe
