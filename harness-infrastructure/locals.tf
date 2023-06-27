@@ -39,7 +39,7 @@ locals {
             values,
             details,
             {
-              name         = "${type}_${infra}"
+              name         = infra
               identifier   = "${lower(replace("${type}_${infra}", "/[\\s-.]/", "_"))}_${var.suffix}"
               tags         = concat(try(values.vars.tags, []), var.tags)
               org_id       = try(local.infrastructure_org_id[type], "") != "" ? local.infrastructure_org_id[type] : try(values.vars.org_id, var.common_values.org_id)
