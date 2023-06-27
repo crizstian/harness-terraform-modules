@@ -15,15 +15,15 @@ locals {
             var.pipelines[pipe].default_values,
             set.VALUES,
             {
-              svc         = "${svc}"
-              inpt        = "${inpt}"
-              suffix      = var.suffix
-              tags        = concat(try(variables.SERVICE_DEFINITION.tags, []), var.tags)
-              git_details = try(variables.SERVICE_DEFINITION.git_details, {})
-              service_id  = try("${replace(svc, "-", "_")}_${var.suffix}", "")
-              org_id      = try(var.pipelines[pipe].org_id, "") != "" ? var.pipelines[pipe].org_id : try(details.org_id, var.org_id)
-              project_id  = try(var.pipelines[pipe].project_id, "") != "" ? var.pipelines[pipe].project_id : try(details.project_id, var.project_id)
-              pipeline_id = try(var.pipelines[pipe].identifier, "")
+              svc                               = "${svc}"
+              inpt                              = "${inpt}"
+              suffix                            = var.suffix
+              tags                              = concat(try(variables.SERVICE_DEFINITION.tags, []), var.tags)
+              git_details                       = try(variables.SERVICE_DEFINITION.git_details, {})
+              "${variables.type}_${service_id}" = try("${replace(svc, "-", "_")}_${var.suffix}", "")
+              org_id                            = try(var.pipelines[pipe].org_id, "") != "" ? var.pipelines[pipe].org_id : try(details.org_id, var.org_id)
+              project_id                        = try(var.pipelines[pipe].project_id, "") != "" ? var.pipelines[pipe].project_id : try(details.project_id, var.project_id)
+              pipeline_id                       = try(var.pipelines[pipe].identifier, "")
             }
           ) if try(set.enable, false) && name == pipe
         } #if values.enable
@@ -53,9 +53,9 @@ locals {
               infra,
               local.inpt_by_svc["${svc}_${name}_${inpt}"],
               {
-                env                               = "${env}"
-                env_id                            = var.environments[env].identifier
-                "${infra.type}_infrastructure_id" = var.infrastructures["${infra.type}_${infra.infrastructure}"].identifier
+                env                                   = "${env}"
+                env_id                                = var.environments[env].identifier
+                "${variables.type}_infrastructure_id" = var.infrastructures["${variables.type}_${infra.infrastructure}"].identifier
               }
             ) if infra.enable && lower(var.environments[env].type) == lower(set.type)
           } if try(set.enable, false) && name == pipe
