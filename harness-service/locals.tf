@@ -47,7 +47,7 @@ locals {
             branch: ${v.branch}
             paths:
               - ${v.manifest_path}
-          type: Git
+          type: ${v.git_provider}
     EOT
     if v.type == "K8sManifest"
     ]
