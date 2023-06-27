@@ -38,6 +38,7 @@ locals {
           vars = merge(
             values,
             details,
+            try(local.infrastructure_tpl_dp_id[type], {}),
             {
               name         = "${type}_${infra}"
               identifier   = "${lower(replace("${type}_${infra}", "/[\\s-.]/", "_"))}_${var.suffix}"
