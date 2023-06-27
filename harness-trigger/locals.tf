@@ -20,16 +20,16 @@ locals {
             try(definition.TRIGGER_SETUP, {}),
             details,
             {
-              svc                               = "${svc}"
-              trg                               = "${trg}"
-              name                              = "${name}"
-              suffix                            = var.suffix
-              tags                              = concat(try(variables.SERVICE_DEFINITION.tags, []), var.tags)
-              org_id                            = try(var.pipelines[pipe].org_id, "") != "" ? var.pipelines[pipe].org_id : try(details.org_id, var.org_id)
-              project_id                        = try(var.pipelines[pipe].project_id, "") != "" ? var.pipelines[pipe].project_id : try(details.project_id, var.project_id)
-              pipeline_id                       = try(var.pipelines[pipe].identifier, "")
-              "${variables.type}_${service_id}" = try("${replace(svc, "-", "_")}_${var.suffix}", "")
-              TRIGGER_INPUTSET                  = try(definition.TRIGGER_INPUTSET, {})
+              svc                            = "${svc}"
+              trg                            = "${trg}"
+              name                           = "${name}"
+              suffix                         = var.suffix
+              tags                           = concat(try(variables.SERVICE_DEFINITION.tags, []), var.tags)
+              org_id                         = try(var.pipelines[pipe].org_id, "") != "" ? var.pipelines[pipe].org_id : try(details.org_id, var.org_id)
+              project_id                     = try(var.pipelines[pipe].project_id, "") != "" ? var.pipelines[pipe].project_id : try(details.project_id, var.project_id)
+              pipeline_id                    = try(var.pipelines[pipe].identifier, "")
+              "${variables.type}_service_id" = try("${replace(svc, "-", "_")}_${var.suffix}", "")
+              TRIGGER_INPUTSET               = try(definition.TRIGGER_INPUTSET, {})
             }
           ) if try(definition.enable, false) && name == pipe
         } #if values.enable
