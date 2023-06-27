@@ -12,7 +12,7 @@ resource "harness_platform_environment" "environment" {
 
 resource "harness_platform_infrastructure" "infrastructure" {
   for_each    = local.infrastructures
-  name        = each.value.vars.name
+  name        = each.key
   description = each.value.vars.description
   identifier  = each.value.vars.identifier
   org_id      = each.value.vars.org_id
