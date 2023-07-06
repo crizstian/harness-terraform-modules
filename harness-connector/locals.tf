@@ -186,7 +186,7 @@ locals {
   kubernetes_connectors = { for name, details in var.harness_platform_kubernetes_connectors : name => merge(
     details,
     {
-      delegate_selectors = can(details.inherit_from_delegate) ? details.inherit_from_delegate.delegate_selectors : try(details.delegate_selectors, var.delegate_selectors)
+      delegate_selectors = can(details.inherit_from_delegate) ? null : try(details.delegate_selectors, var.delegate_selectors)
       tags               = concat(try(details.tags, []), var.tags)
       identifier         = "${lower(replace(name, "/[\\s-.]/", "_"))}_kubernetes_connector_${var.suffix}"
       org_id             = try(local.connector_org_id["kubernetes_${name}"], "") != "" ? local.connector_org_id["kubernetes_${name}"] : try(details.org_id, var.common_values.org_id)
