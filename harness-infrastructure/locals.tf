@@ -40,13 +40,14 @@ locals {
             details,
             try(local.infrastructure_tpl_dp_id[type], {}),
             {
-              name         = "${type}_${infra}"
-              identifier   = "${lower(replace("${type}_${infra}", "/[\\s-.]/", "_"))}_${var.suffix}"
-              tags         = concat(try(values.vars.tags, []), var.tags)
-              org_id       = try(local.infrastructure_org_id[type], "") != "" ? local.infrastructure_org_id[type] : try(values.vars.org_id, var.common_values.org_id)
-              project_id   = try(local.infrastructure_prj_id[type], "") != "" ? local.infrastructure_prj_id[type] : try(values.vars.project_id, var.common_values.project_id)
-              connector_id = try(var.connectors.kubernetes_connectors[infra].identifier, "NOT_FOUND")
-              env_id       = harness_platform_environment.environment[details.environment].identifier
+              name               = "${type}_${infra}"
+              identifier         = "${lower(replace("${type}_${infra}", "/[\\s-.]/", "_"))}_${var.suffix}"
+              tags               = concat(try(values.vars.tags, []), var.tags)
+              env_id             = harness_platform_environment.environment[details.environment].identifier
+              org_id             = try(local.infrastructure_org_id[type], "") != "" ? local.infrastructure_org_id[type] : try(values.vars.org_id, var.common_values.org_id)
+              project_id         = try(local.infrastructure_prj_id[type], "") != "" ? local.infrastructure_prj_id[type] : try(values.vars.project_id, var.common_values.project_id)
+              connector_id       = try(var.connectors.kubernetes_connectors[infra].identifier, "NOT_FOUND")
+              delegate_selectors = try(var.connectors.kubernetes_connectors[infra].delegate_selectors, [])
             }
           )
         } if details.enable
