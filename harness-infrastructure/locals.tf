@@ -31,7 +31,7 @@ locals {
     }
   }
 
-  infrastructure_k8s = merge(
+  infrastructures = merge(
     [
       for type, values in var.harness_platform_infrastructures : {
         for infra, details in values.infrastructure : "${type}_${infra}" => {
@@ -74,10 +74,5 @@ locals {
       } if details.enable && values.type != "KubernetesDirect"
     }
   ]...) */
-
-  infrastructures = merge(
-    local.infrastructure_k8s,
-    /* local.infrastructure_not_k8s */
-  )
 }
 
