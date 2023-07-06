@@ -75,7 +75,8 @@ locals {
   }
   kubernetes_connectors_output = { for key, value in harness_platform_connector_kubernetes.connector : key =>
     {
-      identifier = value.project_id != "" ? value.identifier : value.org_id != "" ? "org.${value.identifier}" : "account.${value.identifier}"
+      identifier         = value.project_id != "" ? value.identifier : value.org_id != "" ? "org.${value.identifier}" : "account.${value.identifier}"
+      delegate_selectors = try(value.manual.delegate_selectors, try(value.inherit_from_delegate.delegate_selectors, []))
     }
   }
   aws_connectors_output = { for key, value in harness_platform_connector_aws.connector : key =>
