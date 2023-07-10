@@ -90,11 +90,11 @@ locals {
         git_details = try(details.vars.git_details, {})
         template = {
           for temp, values in details.template : temp => {
-            id = temp == "chained" ? try(harness_platform_pipeline.pipeline[values.name].identifier, "") : try(
-              var.templates.stages[values.name].identifier,
-              try(var.templates.pipelines[values.name].identifier, "")
+            template_id = temp == "chained" ? try(harness_platform_pipeline.pipeline[values.template_name].identifier, "") : try(
+              var.templates.stages[values.template_name].identifier,
+              try(var.templates.pipelines[values.template_name].identifier, "")
             )
-            version = values.version
+            version = values.template_version
           }
         }
         /* template_variables = try(yamldecode(data.harness_platform_template.template[name].template_yaml).template.spec.variables, {}) */
