@@ -62,6 +62,7 @@ locals {
       details.vars,
       try(local.pipeline_tpl_id[name], {}),
       try(local.pipeline_tpl_default_values[name], {}),
+      try(details.vars.usergroups_required, false) ? { usergroups = var.usergroups } : {},
       {
         suffix      = var.suffix
         name        = "${name}"
@@ -84,6 +85,7 @@ locals {
       )]...),
       try(local.pipeline_tpl_id[name], {}),
       try(local.pipeline_tpl_default_values[name], {}),
+      try(details.vars.usergroups_required, false) ? { usergroups = var.usergroups } : {},
       {
         for temp, values in details.template : temp =>
         {

@@ -38,6 +38,9 @@ variable "services" {
 variable "environments" {
   default = {}
 }
+variable "usergroups" {
+  default = {}
+}
 variable "infrastructures" {
   default = {}
 }
