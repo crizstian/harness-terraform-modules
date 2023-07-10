@@ -80,6 +80,8 @@ locals {
       merge([for temp, values in details.template : merge(
         try(var.templates.stages[values.name].default_values, try(var.templates.pipelines[values.name].default_values, {})),
       )]...),
+      try(local.pipeline_tpl_id[name], {}),
+      try(local.pipeline_tpl_default_values[name], {}),
       {
         suffix      = var.suffix
         name        = "${name}"
