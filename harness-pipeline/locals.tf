@@ -74,6 +74,8 @@ locals {
       }
   ) } if details.enable && details.type == "pipeline" }
 
+
+
   chained_pipelines = { for name, details in var.harness_platform_pipelines : name => {
     vars = merge(
       details.vars,
@@ -83,6 +85,13 @@ locals {
       try(local.pipeline_tpl_id[name], {}),
       try(local.pipeline_tpl_default_values[name], {}),
       {
+        for temp, values in details.template : temp =>
+        {
+          template_id = harness_platform_pipeline.pipeline[values.template_name].identifier
+          version     = values.template_version
+        } if values.type == "chain"
+      },
+      {
         suffix      = var.suffix
         name        = "${name}"
         identifier  = "${lower(replace(name, "/[\\s-.]/", "_"))}_${var.suffix}"
@@ -90,15 +99,7 @@ locals {
         org_id      = try(local.pipeline_org_id[name], "") != "" ? local.pipeline_org_id[name] : try(details.org_id, var.org_id)
         project_id  = try(local.pipeline_prj_id[name], "") != "" ? local.pipeline_prj_id[name] : try(details.project_id, var.project_id)
         git_details = try(details.vars.git_details, {})
-        template = {
-          for temp, values in details.template : temp => {
-            template_id = temp == "chained" ? try(harness_platform_pipeline.pipeline[values.template_name].identifier, "") : try(
-              var.templates.stages[values.template_name].identifier,
-              try(var.templates.pipelines[values.template_name].identifier, "")
-            )
-            version = values.template_version
-          }
-        }
+
         /* template_variables = try(yamldecode(data.harness_platform_template.template[name].template_yaml).template.spec.variables, {}) */
       }
   ) } if details.enable && details.type == "chained-pipeline" }
