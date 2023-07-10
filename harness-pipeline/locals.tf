@@ -96,8 +96,8 @@ locals {
         name        = "${name}"
         identifier  = "${lower(replace(name, "/[\\s-.]/", "_"))}_${var.suffix}"
         tags        = concat(try(details.vars.tags, []), var.tags)
-        org_id      = try(local.pipeline_org_id[name], "") != "" ? local.pipeline_org_id[name] : try(details.org_id, var.org_id)
-        project_id  = try(local.pipeline_prj_id[name], "") != "" ? local.pipeline_prj_id[name] : try(details.project_id, var.project_id)
+        org_id      = try(local.pipeline_org_id[name], "") != "" ? local.pipeline_org_id[name] : try(details.org_id, var.common_values.org_id)
+        project_id  = try(local.pipeline_prj_id[name], "") != "" ? local.pipeline_prj_id[name] : try(details.project_id, var.common_values.project_id)
         git_details = try(details.vars.git_details, {})
 
         /* template_variables = try(yamldecode(data.harness_platform_template.template[name].template_yaml).template.spec.variables, {}) */
