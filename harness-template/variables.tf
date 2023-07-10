@@ -20,6 +20,9 @@ variable "projects" {
 variable "connectors" {
   default = {}
 }
+variable "usergroups" {
+  default = {}
+}
 variable "common_values" {
   default = {
     org_id     = ""
