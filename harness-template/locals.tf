@@ -25,6 +25,7 @@ locals {
         try(details.template, {}),
         try(details.default_values, {}),
         try(local.template_connectors[name], {}),
+        try(details.vars.usergroups_required, false) ? { usergroups = var.usergroups } : {},
         {
           name        = "${name}"
           identifier  = "${lower(replace(name, "/[\\s-.]/", "_"))}_${var.suffix}"
@@ -33,7 +34,6 @@ locals {
           org_id      = try(local.template_org_id[name], "") != "" ? local.template_org_id[name] : try(details.org_id, var.org_id)
           project_id  = try(local.template_prj_id[name], "") != "" ? local.template_prj_id[name] : try(details.project_id, var.project_id)
           git_details = try(details.vars.git_details, {})
-          usergroups  = var.usergroups
         }
       )
     }
