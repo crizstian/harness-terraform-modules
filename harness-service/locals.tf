@@ -73,7 +73,7 @@ locals {
               - ${v.manifest_path}
           type: ${v.git_provider}
     EOT
-    if v.type == "Values"
+    if v.type == "Values" && try(v.git_provider != "Harness")
     ]
   }
 
