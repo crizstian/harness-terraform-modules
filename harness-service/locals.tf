@@ -44,7 +44,7 @@ locals {
           spec:
             connectorRef: ${value.CONNECTORS.git_connector_id}
             %{if can(v.reponame)}
-            reponame: ${v.reponame}
+            repoName: ${v.reponame}
             %{endif}
             gitFetchType: Branch
             branch: ${v.branch}
@@ -65,7 +65,7 @@ locals {
           spec:
             connectorRef: ${value.CONNECTORS.git_connector_id}
             %{if can(v.reponame)}
-            reponame: ${v.reponame}
+            repoName: ${v.reponame}
             %{endif}
             gitFetchType: Branch
             branch: ${v.branch}
