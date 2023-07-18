@@ -56,7 +56,7 @@ locals {
                 env                                                      = "${env}"
                 env_id                                                   = var.environments[env].identifier
                 "${variables.SERVICE_DEFINITION.type}_infrastructure_id" = var.infrastructures["${variables.SERVICE_DEFINITION.type}_${infra.infrastructure}"].identifier
-                delegate_selectors                                       = var.infrastructures["${variables.SERVICE_DEFINITION.type}_${infra.infrastructure}"].delegate_selectors
+                delegate_selectors                                       = try(var.infrastructures["${variables.SERVICE_DEFINITION.type}_${infra.infrastructure}"].delegate_selectors, ["NOT_DEFINED"])
               }
             ) if infra.enable && lower(var.environments[env].type) == lower(set.type)
           } if try(set.enable, false) && name == pipe
