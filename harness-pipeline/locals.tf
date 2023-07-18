@@ -78,6 +78,7 @@ locals {
 
 
   chained_pipelines = { for name, details in var.harness_platform_pipelines : name => {
+    default_values = try(local.pipeline_tpl_default_values[name], {})
     vars = merge(
       details.vars,
       merge([for temp, values in details.template : merge(
