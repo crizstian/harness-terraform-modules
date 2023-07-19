@@ -8,7 +8,7 @@ locals {
     for name, details in var.harness_platform_triggers : [
       for svc, variables in var.harness_platform_services : [
         for pipe, values in try(variables.PIPELINE, {}) : {
-          for trg, definition in values.TRIGGER : "${svc}_${name}_${trg}" =>
+          for trg, definition in try(values.TRIGGER, {}) : "${svc}_${name}_${trg}" =>
           merge(
             variables.SERVICE_DEFINITION,
             try(var.templates.stages[name].default_values, try(var.templates.pipelines[pipe].default_values, {})),

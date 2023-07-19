@@ -5,7 +5,7 @@ locals {
     for name, details in var.harness_platform_inputsets : [
       for svc, variables in var.harness_platform_services : [
         for pipe, values in try(variables.PIPELINE, {}) : {
-          for inpt, set in values.INPUTSET : "${svc}_${name}_${inpt}" =>
+          for inpt, set in try(values.INPUTSET, {}) : "${svc}_${name}_${inpt}" =>
           merge(
             try(var.templates.stages[name].default_values, try(var.templates.pipelines[pipe].default_values, {})),
             try(var.connectors.default_connectors, {}),
