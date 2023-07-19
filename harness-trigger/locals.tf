@@ -93,7 +93,7 @@ locals {
                 identifier   = "${lower(replace("${svc}_${name}_${trg}_ALL", "/[\\s-.]/", "_"))}_${var.suffix}"
                 inputset_ids = try([for inpt, enable in definition.TRIGGER_INPUTSET : local.inputsets["${svc}_${name}_${inpt}_ALL"].identifier if enable], ["NOT_DEFINED"])
               },
-              merge([for inpt, enable in values.TRIGGER_INPUTSET :
+              merge([for inpt, enable in definition.TRIGGER_INPUTSET :
               try(local.inputsets_verbose_by_infra["${svc}_${name}_${inpt}_ALL"], {}) if enable]...),
               [for env, infra in variables.CD.ENV : {
                 "${variables.SERVICE_DEFINITION.type}_${lower(env)}_infrastructure_id" = var.infrastructures["${variables.SERVICE_DEFINITION.type}_${infra.infrastructure}"].identifier
