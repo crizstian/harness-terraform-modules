@@ -78,7 +78,7 @@ locals {
             vars = merge(
               local.inpt_by_svc["${svc}_${name}_${inpt}"],
               {
-                name       = "${svc}_${name}_${inpt}_ALL"
+                name       = "${svc}_${inpt}_ALL"
                 identifier = "${lower(replace("${svc}_${name}_${inpt}_ALL", "/[\\s-.]/", "_"))}_${var.suffix}"
               },
               [for env, infra in variables.CD.ENV : {
