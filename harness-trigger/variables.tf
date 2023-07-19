@@ -41,6 +41,9 @@ variable "environments" {
 variable "infrastructures" {
   default = {}
 }
+variable "usergroups" {
+  default = {}
+}
 variable "common_values" {
   default = {
     org_id     = ""
