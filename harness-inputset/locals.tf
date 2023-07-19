@@ -59,8 +59,8 @@ locals {
                   env_id                                                   = var.environments[env].identifier
                   "${variables.SERVICE_DEFINITION.type}_infrastructure_id" = var.infrastructures["${variables.SERVICE_DEFINITION.type}_${infra.infrastructure}"].identifier
                   delegate_selectors                                       = try(var.infrastructures["${variables.SERVICE_DEFINITION.type}_${infra.infrastructure}"].delegate_selectors, ["NOT_DEFINED"])
-                  name                                                     = "${svc}_${inpt}_${env}"
-                  identifier                                               = "${lower(replace("${svc}_${inpt}_${env}", "/[\\s-.]/", "_"))}_${var.suffix}"
+                  name                                                     = "${svc}_${name}_${inpt}_${env}"
+                  identifier                                               = "${lower(replace("${svc}_${name}_${inpt}_${env}", "/[\\s-.]/", "_"))}_${var.suffix}"
                 }
               )
             } if infra.enable && (lower(var.environments[env].type) == lower(set.type) || set.type == "all")
