@@ -48,7 +48,7 @@ locals {
     for name, details in var.harness_platform_inputsets : [
       for svc, variables in var.harness_platform_services : [
         for pipe, values in try(variables.PIPELINE, {}) : [
-          for inpt, set in values.INPUTSET : {
+          for inpt, set in try(values.INPUTSET, {}) : {
             for env, infra in variables.CD.ENV : "${svc}_${name}_${inpt}_${env}" =>
             {
               vars = merge(
@@ -74,7 +74,7 @@ locals {
     for name, details in var.harness_platform_inputsets : [
       for svc, variables in var.harness_platform_services : [
         for pipe, values in try(variables.PIPELINE, {}) : {
-          for inpt, set in values.INPUTSET : "${svc}_${name}_${inpt}_ALL" => {
+          for inpt, set in try(values.INPUTSET, {}) : "${svc}_${name}_${inpt}_ALL" => {
             vars = merge(
               local.inpt_by_svc["${svc}_${name}_${inpt}"],
               {

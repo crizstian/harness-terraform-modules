@@ -56,7 +56,7 @@ locals {
     for name, details in var.harness_platform_triggers : [
       for svc, variables in var.harness_platform_services : [
         for pipe, values in try(variables.PIPELINE, {}) : [
-          for trg, definition in values.TRIGGER : {
+          for trg, definition in try(values.TRIGGER, {}) : {
             for env, infra in variables.CD.ENV : "${svc}_${name}_${trg}_${env}" =>
             {
               vars = merge(
@@ -84,7 +84,7 @@ locals {
     for name, details in var.harness_platform_triggers : [
       for svc, variables in var.harness_platform_services : [
         for pipe, values in try(variables.PIPELINE, {}) : {
-          for trg, definition in values.TRIGGER : "${svc}_${name}_ALL" =>
+          for trg, definition in try(values.TRIGGER, {}) : "${svc}_${name}_ALL" =>
           {
             vars = merge(
               local.trg_by_svc["${svc}_${name}_${trg}"],
