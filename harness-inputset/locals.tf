@@ -11,6 +11,7 @@ locals {
             try(var.connectors.default_connectors, {}),
             try(variables.CONNECTORS, {}),
             try(variables.CI, {}),
+            try(details.vars.usergroups_required, false) ? { usergroups = var.usergroups } : {},
             details,
             var.pipelines[pipe].default_values,
             set.VALUES,
