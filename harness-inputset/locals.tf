@@ -59,7 +59,7 @@ locals {
                   env_id                                                   = var.environments[env].identifier
                   "${variables.SERVICE_DEFINITION.type}_infrastructure_id" = var.infrastructures["${variables.SERVICE_DEFINITION.type}_${infra.infrastructure}"].identifier
                   delegate_selectors                                       = try(var.infrastructures["${variables.SERVICE_DEFINITION.type}_${infra.infrastructure}"].delegate_selectors, ["NOT_DEFINED"])
-                  name                                                     = "${svc}_${inpt}_${env}"
+                  name                                                     = "${svc}_${env}"
                   identifier                                               = "${lower(replace("${svc}_${name}_${inpt}_${env}", "/[\\s-.]/", "_"))}_${var.suffix}"
                 }
               )
@@ -78,7 +78,7 @@ locals {
             vars = merge(
               local.inpt_by_svc["${svc}_${name}_${inpt}"],
               {
-                name       = "${svc}_${inpt}_ALL"
+                name       = "${svc}"
                 identifier = "${lower(replace("${svc}_${name}_${inpt}_ALL", "/[\\s-.]/", "_"))}_${var.suffix}"
               },
               [for env, infra in variables.CD.ENV : {
