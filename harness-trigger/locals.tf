@@ -69,7 +69,7 @@ locals {
                   env_id                                                   = var.environments[env].identifier
                   "${variables.SERVICE_DEFINITION.type}_infrastructure_id" = var.infrastructures["${variables.SERVICE_DEFINITION.type}_${infra.infrastructure}"].identifier
                   name                                                     = "${svc}_${trg}_${env}"
-                  identifier                                               = "${lower(replace(name, "/[\\s-.]/", "_"))}_${var.suffix}"
+                  identifier                                               = "${lower(replace("${svc}_${name}_${trg}_${env}", "/[\\s-.]/", "_"))}_${var.suffix}"
                   inputset_ids                                             = try([for inpt, enable in definition.TRIGGER_INPUTSET : local.inputsets["${svc}_${name}_${inpt}_${env}"].identifier if enable], ["NOT_DEFINED"])
                 }
               )
@@ -89,8 +89,8 @@ locals {
             vars = merge(
               local.trg_by_svc["${svc}_${name}_${trg}"],
               {
-                name         = "${svc}_${trg}_${env}"
-                identifier   = "${lower(replace(name, "/[\\s-.]/", "_"))}_${var.suffix}"
+                name         = "${svc}_${trg}_ALL"
+                identifier   = "${lower(replace("${svc}_${name}_${trg}_ALL", "/[\\s-.]/", "_"))}_${var.suffix}"
                 inputset_ids = try([for inpt, enable in definition.TRIGGER_INPUTSET : local.inputsets["${svc}_${name}_${inpt}_ALL"].identifier if enable], ["NOT_DEFINED"])
               },
               merge([for inpt, enable in values.TRIGGER_INPUTSET :
