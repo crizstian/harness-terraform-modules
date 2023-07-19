@@ -79,7 +79,7 @@ locals {
               identifier = "${lower(replace("${svc}_${name}_${inpt}_ALL", "/[\\s-.]/", "_"))}_${var.suffix}"
             },
             [for env, infra in variables.CD.ENV : {
-              "${variables.SERVICE_DEFINITION.type}_${lower(env)}_infrastructure_id" = infra.infrastructure_id
+              "${variables.SERVICE_DEFINITION.type}_${lower(env)}_infrastructure_id" = var.infrastructures["${variables.SERVICE_DEFINITION.type}_${infra.infrastructure}"].identifier
             }]...
           ) if try(set.enable, false) && name == pipe
         } #if values.enable
