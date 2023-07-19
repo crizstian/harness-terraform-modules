@@ -84,7 +84,7 @@ locals {
           ) if try(set.enable, false) && name == pipe
         } #if values.enable
       ] if variables.SERVICE_DEFINITION.enable
-    ] if details.enable && details.type == "CD"
+    ] if details.enable && details.type == "ALL"
   ])...)
 
   /* cd = { for name, values in local.inpt_by_infra : name =>
