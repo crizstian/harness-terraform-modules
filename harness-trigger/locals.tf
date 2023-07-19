@@ -11,6 +11,7 @@ locals {
           for trg, definition in try(values.TRIGGER, {}) : "${svc}_${name}_${trg}" =>
           merge(
             variables.SERVICE_DEFINITION,
+            try(details.vars.usergroups_required, false) ? { usergroups = var.usergroups } : {},
             try(var.templates.stages[name].default_values, try(var.templates.pipelines[pipe].default_values, {})),
             try(var.connectors.default_connectors, {}),
             merge([for inpt, enable in try(definition.TRIGGER_INPUTSET, {}) : values.INPUTSET[inpt].VALUES if try(enable, false)]...),
