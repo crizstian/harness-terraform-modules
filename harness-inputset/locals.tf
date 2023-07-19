@@ -50,18 +50,20 @@ locals {
         for pipe, values in try(variables.PIPELINE, {}) : [
           for inpt, set in values.INPUTSET : {
             for env, infra in variables.CD.ENV : "${svc}_${name}_${inpt}_${env}" =>
-            merge(
-              infra,
-              local.inpt_by_svc["${svc}_${name}_${inpt}"],
-              {
-                env                                                      = "${env}"
-                env_id                                                   = var.environments[env].identifier
-                "${variables.SERVICE_DEFINITION.type}_infrastructure_id" = var.infrastructures["${variables.SERVICE_DEFINITION.type}_${infra.infrastructure}"].identifier
-                delegate_selectors                                       = try(var.infrastructures["${variables.SERVICE_DEFINITION.type}_${infra.infrastructure}"].delegate_selectors, ["NOT_DEFINED"])
-                name                                                     = "${svc}_${inpt}_${env}"
-                identifier                                               = "${lower(replace("${svc}_${inpt}_${env}", "/[\\s-.]/", "_"))}_${var.suffix}"
-              }
-            ) if infra.enable && (lower(var.environments[env].type) == lower(set.type) || set.type == "all")
+            {
+              vars = merge(
+                infra,
+                local.inpt_by_svc["${svc}_${name}_${inpt}"],
+                {
+                  env                                                      = "${env}"
+                  env_id                                                   = var.environments[env].identifier
+                  "${variables.SERVICE_DEFINITION.type}_infrastructure_id" = var.infrastructures["${variables.SERVICE_DEFINITION.type}_${infra.infrastructure}"].identifier
+                  delegate_selectors                                       = try(var.infrastructures["${variables.SERVICE_DEFINITION.type}_${infra.infrastructure}"].delegate_selectors, ["NOT_DEFINED"])
+                  name                                                     = "${svc}_${inpt}_${env}"
+                  identifier                                               = "${lower(replace("${svc}_${inpt}_${env}", "/[\\s-.]/", "_"))}_${var.suffix}"
+                }
+              )
+            } if infra.enable && (lower(var.environments[env].type) == lower(set.type) || set.type == "all")
           } if try(set.enable, false) && name == pipe
         ] #if values.enable
       ] if variables.SERVICE_DEFINITION.enable
@@ -72,16 +74,18 @@ locals {
     for name, details in var.harness_platform_inputsets : [
       for svc, variables in var.harness_platform_services : [
         for pipe, values in try(variables.PIPELINE, {}) : {
-          for inpt, set in values.INPUTSET : "${svc}_${name}_${inpt}_ALL" => merge(
-            local.inpt_by_svc["${svc}_${name}_${inpt}"],
-            {
-              name       = "${svc}_${name}_${inpt}_ALL"
-              identifier = "${lower(replace("${svc}_${name}_${inpt}_ALL", "/[\\s-.]/", "_"))}_${var.suffix}"
-            },
-            [for env, infra in variables.CD.ENV : {
-              "${variables.SERVICE_DEFINITION.type}_${lower(env)}_infrastructure_id" = var.infrastructures["${variables.SERVICE_DEFINITION.type}_${infra.infrastructure}"].identifier
-            }]...
-          ) if try(set.enable, false) && name == pipe
+          for inpt, set in values.INPUTSET : "${svc}_${name}_${inpt}_ALL" => {
+            vars = merge(
+              local.inpt_by_svc["${svc}_${name}_${inpt}"],
+              {
+                name       = "${svc}_${name}_${inpt}_ALL"
+                identifier = "${lower(replace("${svc}_${name}_${inpt}_ALL", "/[\\s-.]/", "_"))}_${var.suffix}"
+              },
+              [for env, infra in variables.CD.ENV : {
+                "${variables.SERVICE_DEFINITION.type}_${lower(env)}_infrastructure_id" = var.infrastructures["${variables.SERVICE_DEFINITION.type}_${infra.infrastructure}"].identifier
+              }]...
+            )
+          } if try(set.enable, false) && name == pipe
         } #if values.enable
       ] if variables.SERVICE_DEFINITION.enable
     ] if details.enable && details.type == "ALL"
