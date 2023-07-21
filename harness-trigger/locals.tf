@@ -63,7 +63,7 @@ locals {
               vars = merge(
                 infra,
                 local.trg_by_svc["${svc}_${name}_${trg}"],
-                merge([for inpt, enable in values.TRIGGER_INPUTSET :
+                merge([for inpt, enable in definition.TRIGGER_INPUTSET :
                 try(local.inputsets_verbose_by_infra["${svc}_${name}_${inpt}_${env}"], {}) if enable]...),
                 {
                   env                                                      = "${env}"
