@@ -6,7 +6,8 @@ resource "harness_platform_service" "services" {
   org_id      = each.value.vars.org_id
   project_id  = each.value.vars.project_id
   tags        = each.value.vars.tags
-  yaml        = templatefile(<<EOT
+  yaml        = templatefile(
+<<EOT
 service:
   name: ${name}
   identifier: ${identifier}
@@ -79,5 +80,5 @@ service:
         - ${indent(9, manifest)}
       %{ endfor }
       %{ endif }
-EOT>>, each.value.vars)
+EOT, each.value.vars)
 }
