@@ -22,13 +22,6 @@ service:
                 registryHostname: us.gcr.io
                 imagePath: ${artifacts.gcr.gcr_image}
                 tag: <+input>
-            - identifier: GCP_TEMPLATE
-              type: Gcr
-              spec:
-                connectorRef: ${gcr_connector_id}
-                registryHostname: us.gcr.io
-                imagePath: ${artifacts.gcr.gcr_template}
-                tag: <+input>
             %{ endif }
             %{ if can(artifacts.nexus) }
             - name: Nexus
