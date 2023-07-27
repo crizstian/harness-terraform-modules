@@ -79,6 +79,5 @@ service:
         - ${indent(9, manifest)}
       %{ endfor }
       %{ endif }
-  EOT>>
-  , each.value.vars)
+EOT>>, each.value.vars)
 }
