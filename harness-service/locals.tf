@@ -24,7 +24,7 @@ locals {
       spec:
         store:
           spec:
-            connectorRef: ${value.CONNECTORS.helm_connector_id}
+            connectorRef: ${value.SERVICE_DEFINITION.CONNECTORS.helm_connector_id}
           type: Http
         chartName: ${v.chartName}
         chartVersion: ${v.chartVersion}
@@ -42,7 +42,7 @@ locals {
       spec:
         store:
           spec:
-            connectorRef: ${value.CONNECTORS.git_connector_id}
+            connectorRef: ${value.SERVICE_DEFINITION.CONNECTORS.git_connector_id}
             %{if can(v.reponame)}
             repoName: ${v.reponame}
             %{endif}
@@ -63,7 +63,7 @@ locals {
       spec:
         store:
           spec:
-            connectorRef: ${value.CONNECTORS.git_connector_id}
+            connectorRef: ${value.SERVICE_DEFINITION.CONNECTORS.git_connector_id}
             %{if can(v.reponame)}
             repoName: ${v.reponame}
             %{endif}
@@ -83,7 +83,7 @@ locals {
     vars = merge(
       try(details.CI, {}),
       try(var.connectors.default_connectors, {}),
-      try(details.CONNECTORS, {}),
+      try(value.SERVICE_DEFINITION.CONNECTORS, {}),
       try(local.service_tpl_dp_id[name], {}),
       details.SERVICE_DEFINITION,
       {
