@@ -16,6 +16,18 @@ locals {
     ]...)
     } */
 
+  svc_artifacts_gcr = { for svc, value in var.harness_platform_services : svc => [
+    for k, v in try(value.SERVICE_DEFINITION.artifacts.gcr, {}) : <<-EOT
+    identifier: ${uppercase(k)}
+      type: Gcr
+      spec:
+        connectorRef: ${value.CONNECTORS.gcr_connector_id}
+        registryHostname: us.gcr.io
+        imagePath: ${V}
+        tag: <+input>
+    EOT
+    ]
+  }
   svc_manifest_helm_chart = { for svc, value in var.harness_platform_services : svc => [
     for k, v in try(value.SERVICE_DEFINITION.manifests, {}) : <<-EOT
     manifest:
@@ -87,12 +99,13 @@ locals {
       try(local.service_tpl_dp_id[name], {}),
       details.SERVICE_DEFINITION,
       {
-        name       = "${name}"
-        identifier = "${lower(replace(name, "/[\\s-.]/", "_"))}_${var.suffix}"
-        tags       = concat(try(details.SERVICE_DEFINITION.tags, []), var.tags)
-        org_id     = try(local.service_org_id[name], "") != "" ? local.service_org_id[name] : try(details.org_id, var.common_values.org_id)
-        project_id = try(local.service_prj_id[name], "") != "" ? local.service_prj_id[name] : try(details.project_id, var.common_values.project_id)
-        manifests  = flatten(concat(try(local.svc_manifest_helm_chart[name], []), try(local.svc_manifest_k8s[name], []), try(local.svc_manifest_values[name], [])))
+        name          = "${name}"
+        identifier    = "${lower(replace(name, "/[\\s-.]/", "_"))}_${var.suffix}"
+        tags          = concat(try(details.SERVICE_DEFINITION.tags, []), var.tags)
+        org_id        = try(local.service_org_id[name], "") != "" ? local.service_org_id[name] : try(details.org_id, var.common_values.org_id)
+        project_id    = try(local.service_prj_id[name], "") != "" ? local.service_prj_id[name] : try(details.project_id, var.common_values.project_id)
+        manifests     = flatten(concat(try(local.svc_manifest_helm_chart[name], []), try(local.svc_manifest_k8s[name], []), try(local.svc_manifest_values[name], [])))
+        gcr_artifacts = local.svc_artifacts_gcr
       }
   ) } if details.SERVICE_DEFINITION.enable }
 }
