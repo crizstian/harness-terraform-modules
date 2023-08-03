@@ -105,7 +105,7 @@ locals {
         org_id        = try(local.service_org_id[name], "") != "" ? local.service_org_id[name] : try(details.org_id, var.common_values.org_id)
         project_id    = try(local.service_prj_id[name], "") != "" ? local.service_prj_id[name] : try(details.project_id, var.common_values.project_id)
         manifests     = flatten(concat(try(local.svc_manifest_helm_chart[name], []), try(local.svc_manifest_k8s[name], []), try(local.svc_manifest_values[name], [])))
-        gcr_artifacts = local.svc_artifacts_gcr
+        gcr_artifacts = flatten(try(local.svc_artifacts_gcr, []))
       }
   ) } if details.SERVICE_DEFINITION.enable }
 }
