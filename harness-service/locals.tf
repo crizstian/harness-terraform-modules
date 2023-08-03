@@ -23,7 +23,7 @@ locals {
       spec:
         connectorRef: ${value.CONNECTORS.gcr_connector_id}
         registryHostname: us.gcr.io
-        imagePath: ${V}
+        imagePath: ${v}
         tag: <+input>
     EOT
     ]
