@@ -18,7 +18,7 @@ locals {
 
   svc_artifacts_gcr = { for svc, value in var.harness_platform_services : svc => [
     for k, v in try(value.SERVICE_DEFINITION.artifacts.gcr, {}) : <<-EOT
-    identifier: ${uppercase(k)}
+    identifier: ${upper(k)}
       type: Gcr
       spec:
         connectorRef: ${value.CONNECTORS.gcr_connector_id}
