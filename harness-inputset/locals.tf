@@ -87,7 +87,7 @@ locals {
                     env_id                                                   = env_details.identifier
                     "${variables.SERVICE_DEFINITION.type}_infrastructure_id" = infra_details.identifier
                     delegate_selectors                                       = try(infra_details.delegate_selectors, ["NOT_DEFINED"])
-                    name                                                     = "${svc}_${infra}"
+                    name                                                     = replace("${svc}_${infra}", "kubernetes_", "")
                     identifier                                               = "${lower(replace("${svc}_${name}_${inpt}_${env}_${infra}", "/[\\s-.]/", "_"))}_${var.suffix}"
                   }
                 )
