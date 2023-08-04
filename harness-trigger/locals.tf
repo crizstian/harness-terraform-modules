@@ -78,7 +78,7 @@ locals {
                     inputset_ids                                             = try([for inpt, enable in definition.TRIGGER_INPUTSET : local.inputsets["${svc}_${name}_${inpt}_${env}"].identifier if enable], ["NOT_DEFINED"])
                   }
                 )
-              } if infra_details.env_id == env_details.identifier || set.type == "all"
+              } if infra_details.env_id == env_details.identifier
             }
           ] if try(trg.enable, false) && name == pipe
 
