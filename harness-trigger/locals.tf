@@ -61,7 +61,7 @@ locals {
         for pipe, values in try(variables.PIPELINE, {}) : [
           for trg, definition in try(values.TRIGGER, {}) : [
             for env, env_details in var.environments : {
-              for infra, infra_detials in var.infrastructures : "${svc}_${name}_${inpt}_${env}_${infra}" =>
+              for infra, infra_details in var.infrastructures : "${svc}_${name}_${inpt}_${env}_${infra}" =>
               {
                 vars = merge(
                   local.trg_by_svc["${svc}_${name}_${trg}"],
@@ -71,14 +71,14 @@ locals {
                   {
                     env                                                      = "${env}"
                     env_id                                                   = env_details.identifier
-                    "${variables.SERVICE_DEFINITION.type}_infrastructure_id" = infra_detials.identifier
-                    delegate_selectors                                       = try(infra_detials.delegate_selectors, ["NOT_DEFINED"])
+                    "${variables.SERVICE_DEFINITION.type}_infrastructure_id" = infra_details.identifier
+                    delegate_selectors                                       = try(infra_details.delegate_selectors, ["NOT_DEFINED"])
                     name                                                     = "${svc}_${env}_${infra}"
                     identifier                                               = "${lower(replace("${svc}_${name}_${inpt}_${env}_${infra}", "/[\\s-.]/", "_"))}_${var.suffix}"
                     inputset_ids                                             = try([for inpt, enable in definition.TRIGGER_INPUTSET : local.inputsets["${svc}_${name}_${inpt}_${env}"].identifier if enable], ["NOT_DEFINED"])
                   }
                 )
-              } if infra_detials.env_id == env_details.identifier || set.type == "all"
+              } if infra_details.env_id == env_details.identifier || set.type == "all"
             }
           ] if try(set.enable, false) && name == pipe
 
