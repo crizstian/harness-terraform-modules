@@ -59,26 +59,29 @@ locals {
     for name, details in var.harness_platform_triggers : [
       for svc, variables in var.harness_platform_services : [
         for pipe, values in try(variables.PIPELINE, {}) : [
-          for trg, definition in try(values.TRIGGER, {}) : {
-            for env, infra in variables.CD.ENV : "${svc}_${name}_${trg}_${env}" =>
-            {
-              vars = merge(
-                infra,
-                local.trg_by_svc["${svc}_${name}_${trg}"],
-                merge([for inpt, enable in definition.TRIGGER_INPUTSET :
-                try(local.inputsets_verbose_by_infra["${svc}_${name}_${inpt}_${env}"], {}) if enable]...),
-                {
-                  env                                                      = "${env}"
-                  env_id                                                   = var.environments[env].identifier
-                  "${variables.SERVICE_DEFINITION.type}_infrastructure_id" = var.infrastructures["${variables.SERVICE_DEFINITION.type}_${infra.infrastructure}"].identifier
-                  name                                                     = "${svc}_${env}"
-                  identifier                                               = "${lower(replace("${svc}_${name}_${trg}_${env}", "/[\\s-.]/", "_"))}_${var.suffix}"
-                  inputset_ids                                             = try([for inpt, enable in definition.TRIGGER_INPUTSET : local.inputsets["${svc}_${name}_${inpt}_${env}"].identifier if enable], ["NOT_DEFINED"])
-                  delegate_selectors                                       = try(var.infrastructures["${variables.SERVICE_DEFINITION.type}_${infra.infrastructure}"].delegate_selectors, ["NOT_DEFINED"])
-                }
-              )
-            } if infra.enable && lower(var.environments[env].type) == lower(definition.type)
-          } if try(definition.enable, false) && name == pipe
+          for trg, definition in try(values.TRIGGER, {}) : [
+            for env, env_details in var.environments : {
+              for infra, infra_detials in var.infrastructures : "${svc}_${name}_${inpt}_${env}_${infra}" =>
+              {
+                vars = merge(
+                  local.trg_by_svc["${svc}_${name}_${trg}"],
+                  merge([for inpt, enable in definition.TRIGGER_INPUTSET :
+                  try(local.inputsets_verbose_by_infra["${svc}_${name}_${inpt}_${env}"], {}) if enable]...),
+
+                  {
+                    env                                                      = "${env}"
+                    env_id                                                   = env_details.identifier
+                    "${variables.SERVICE_DEFINITION.type}_infrastructure_id" = infra_detials.identifier
+                    delegate_selectors                                       = try(infra_detials.delegate_selectors, ["NOT_DEFINED"])
+                    name                                                     = "${svc}_${env}_${infra}"
+                    identifier                                               = "${lower(replace("${svc}_${name}_${inpt}_${env}_${infra}", "/[\\s-.]/", "_"))}_${var.suffix}"
+                    inputset_ids                                             = try([for inpt, enable in definition.TRIGGER_INPUTSET : local.inputsets["${svc}_${name}_${inpt}_${env}"].identifier if enable], ["NOT_DEFINED"])
+                  }
+                )
+              } if infra_detials.env_id == env_details.identifier || set.type == "all"
+            }
+          ] if try(set.enable, false) && name == pipe
+
         ] #if values.enable
       ] if variables.SERVICE_DEFINITION.enable
     ] if details.enable && details.type == "CD"
@@ -99,9 +102,11 @@ locals {
               },
               merge([for inpt, enable in definition.TRIGGER_INPUTSET :
               try(local.inputsets_verbose_by_infra["${svc}_${name}_${inpt}_ALL"], {}) if enable]...),
-              [for env, infra in variables.CD.ENV : {
-                "${variables.SERVICE_DEFINITION.type}_${lower(env)}_infrastructure_id" = var.infrastructures["${variables.SERVICE_DEFINITION.type}_${infra.infrastructure}"].identifier
-              }]...
+              flatten([for env, env_details in var.environments : [
+                for infra, infra_details in var.infrastructures : {
+                  "${variables.SERVICE_DEFINITION.type}_${lower(env)}_infrastructure_id" = infra_details.identifier
+                } if infra_detials.env_id == env_details.identifier
+              ]])...
             )
           } if try(definition.enable, false) && name == pipe
         } #if values.enable
