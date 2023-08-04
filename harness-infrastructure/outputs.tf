@@ -14,6 +14,7 @@ output "infrastructure" {
       identifier         = details.identifier
       org_id             = details.org_id
       project_id         = details.project_id
+      env_id             = details.env_id
       delegate_selectors = local.infrastructures[key].vars.delegate_selectors
     }
   }
