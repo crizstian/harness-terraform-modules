@@ -79,9 +79,7 @@ locals {
               for infra, infra_detials in var.infrastructures : "${svc}_${name}_${inpt}_${env}_${infra}" =>
               {
                 vars = merge(
-                  local.trg_by_svc["${svc}_${name}_${trg}"],
-                  merge([for inpt, enable in definition.TRIGGER_INPUTSET :
-                  try(local.inputsets_verbose_by_infra["${svc}_${name}_${inpt}_${env}"], {}) if enable]...),
+                  local.inpt_by_svc["${svc}_${name}_${inpt}"],
                   {
                     env                                                      = "${env}"
                     env_id                                                   = env_details.identifier
@@ -89,7 +87,6 @@ locals {
                     delegate_selectors                                       = try(infra_detials.delegate_selectors, ["NOT_DEFINED"])
                     name                                                     = "${svc}_${env}_${infra}"
                     identifier                                               = "${lower(replace("${svc}_${name}_${inpt}_${env}_${infra}", "/[\\s-.]/", "_"))}_${var.suffix}"
-                    inputset_ids                                             = try([for inpt, enable in definition.TRIGGER_INPUTSET : local.inputsets["${svc}_${name}_${inpt}_${env}"].identifier if enable], ["NOT_DEFINED"])
                   }
                 )
               } if infra_detials.env_id == env_details.identifier || set.type == "all"
