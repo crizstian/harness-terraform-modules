@@ -105,7 +105,7 @@ locals {
               flatten([for env, env_details in var.environments : [
                 for infra, infra_details in var.infrastructures : {
                   "${variables.SERVICE_DEFINITION.type}_${lower(env)}_infrastructure_id" = infra_details.identifier
-                } if infra_detials.env_id == env_details.identifier
+                } if infra_details.env_id == env_details.identifier
               ]])...
             )
           } if try(definition.enable, false) && name == pipe
