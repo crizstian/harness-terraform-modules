@@ -73,8 +73,10 @@ locals {
   inpt_by_infra = merge(flatten([
     for name, details in var.harness_platform_inputsets : [
       for svc, variables in var.harness_platform_services : [
+
         for pipe, values in try(variables.PIPELINE, {}) : [
           for inpt, set in try(values.INPUTSET, {}) : [
+
             for env, env_details in var.environments : {
               for infra, infra_details in var.infrastructures : "${svc}_${name}_${inpt}_${env}_${infra}" =>
               {
@@ -85,12 +87,13 @@ locals {
                     env_id                                                   = env_details.identifier
                     "${variables.SERVICE_DEFINITION.type}_infrastructure_id" = infra_details.identifier
                     delegate_selectors                                       = try(infra_details.delegate_selectors, ["NOT_DEFINED"])
-                    name                                                     = "${svc}_${env}_${infra}"
+                    name                                                     = "${svc}_${infra}"
                     identifier                                               = "${lower(replace("${svc}_${name}_${inpt}_${env}_${infra}", "/[\\s-.]/", "_"))}_${var.suffix}"
                   }
                 )
-              } #if infra_details.env_id == env_details.identifier
+              } if infra_details.env_id == env_details.identifier
             }
+
           ] if try(set.enable, false) && name == pipe
         ] #if values.enable
       ] if variables.SERVICE_DEFINITION.enable
