@@ -76,20 +76,20 @@ locals {
         for pipe, values in try(variables.PIPELINE, {}) : [
           for inpt, set in try(values.INPUTSET, {}) : [
             for env, env_details in var.environments : {
-              for infra, infra_detials in var.infrastructures : "${svc}_${name}_${inpt}_${env}_${infra}" =>
+              for infra, infra_details in var.infrastructures : "${svc}_${name}_${inpt}_${env}_${infra}" =>
               {
                 vars = merge(
                   local.inpt_by_svc["${svc}_${name}_${inpt}"],
                   {
                     env                                                      = "${env}"
                     env_id                                                   = env_details.identifier
-                    "${variables.SERVICE_DEFINITION.type}_infrastructure_id" = infra_detials.identifier
-                    delegate_selectors                                       = try(infra_detials.delegate_selectors, ["NOT_DEFINED"])
+                    "${variables.SERVICE_DEFINITION.type}_infrastructure_id" = infra_details.identifier
+                    delegate_selectors                                       = try(infra_details.delegate_selectors, ["NOT_DEFINED"])
                     name                                                     = "${svc}_${env}_${infra}"
                     identifier                                               = "${lower(replace("${svc}_${name}_${inpt}_${env}_${infra}", "/[\\s-.]/", "_"))}_${var.suffix}"
                   }
                 )
-              } if infra_detials.env_id == env_details.identifier || set.type == "all"
+              } if infra_details.env_id == env_details.identifier || set.type == "all"
             }
           ] if try(set.enable, false) && name == pipe
         ] #if values.enable
@@ -132,7 +132,7 @@ locals {
               flatten([for env, env_details in var.environments : [
                 for infra, infra_details in var.infrastructures : {
                   "${variables.SERVICE_DEFINITION.type}_${lower(env)}_infrastructure_id" = infra_details.identifier
-                } if infra_detials.env_id == env_details.identifier
+                } if infra_details.env_id == env_details.identifier
               ]])...
             )
           } if try(set.enable, false) && name == pipe
