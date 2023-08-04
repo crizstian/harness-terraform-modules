@@ -80,7 +80,7 @@ locals {
                 )
               } if infra_details.env_id == env_details.identifier || set.type == "all"
             }
-          ] if try(set.enable, false) && name == pipe
+          ] if try(trg.enable, false) && name == pipe
 
         ] #if values.enable
       ] if variables.SERVICE_DEFINITION.enable
