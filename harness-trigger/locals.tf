@@ -61,12 +61,12 @@ locals {
         for pipe, values in try(variables.PIPELINE, {}) : [
           for trg, definition in try(values.TRIGGER, {}) : [
             for env, env_details in var.environments : {
-              for infra, infra_details in var.infrastructures : "${svc}_${name}_${inpt}_${env}_${infra}" =>
+              for infra, infra_details in var.infrastructures : "${svc}_${name}_${trg}_${env}_${infra}" =>
               {
                 vars = merge(
                   local.trg_by_svc["${svc}_${name}_${trg}"],
                   merge([for inpt, enable in definition.TRIGGER_INPUTSET :
-                  try(local.inputsets_verbose_by_infra["${svc}_${name}_${inpt}_${env}"], {}) if enable]...),
+                  try(local.inputsets_verbose_by_infra["${svc}_${name}_${trg}_${env}"], {}) if enable]...),
 
                   {
                     env                                                      = "${env}"
@@ -74,8 +74,8 @@ locals {
                     "${variables.SERVICE_DEFINITION.type}_infrastructure_id" = infra_details.identifier
                     delegate_selectors                                       = try(infra_details.delegate_selectors, ["NOT_DEFINED"])
                     name                                                     = "${svc}_${env}_${infra}"
-                    identifier                                               = "${lower(replace("${svc}_${name}_${inpt}_${env}_${infra}", "/[\\s-.]/", "_"))}_${var.suffix}"
-                    inputset_ids                                             = try([for inpt, enable in definition.TRIGGER_INPUTSET : local.inputsets["${svc}_${name}_${inpt}_${env}"].identifier if enable], ["NOT_DEFINED"])
+                    identifier                                               = "${lower(replace("${svc}_${name}_${trg}_${env}_${infra}", "/[\\s-.]/", "_"))}_${var.suffix}"
+                    inputset_ids                                             = try([for inpt, enable in definition.TRIGGER_INPUTSET : local.inputsets["${svc}_${name}_${trg}_${env}"].identifier if enable], ["NOT_DEFINED"])
                   }
                 )
               } if infra_details.env_id == env_details.identifier
