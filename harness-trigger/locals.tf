@@ -74,7 +74,7 @@ locals {
                     "${variables.SERVICE_DEFINITION.type}_infrastructure_id" = infra_details.identifier
                     delegate_selectors                                       = try(infra_details.delegate_selectors, ["NOT_DEFINED"])
                     name                                                     = replace("${svc}_${infra}", "kubernetes_", "")
-                    identifier                                               = "${lower(replace("${svc}_${name}_${trg}_${env}_${infra}", "/[\\s-.]/", "_"))}_${var.suffix}"
+                    identifier                                               = "${lower(replace(replace("${svc}_${infra}", "/[\\s-.]/", "_"), "kubernetes_", ""))}_${var.suffix}"
                     inputset_ids                                             = try([for inpt, enable in definition.TRIGGER_INPUTSET : local.inputsets["${svc}_${name}_${trg}_${env}"].identifier if enable], ["NOT_DEFINED"])
                   }
                 )
