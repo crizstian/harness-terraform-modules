@@ -75,6 +75,7 @@ locals {
       spec:
         store:
           spec:
+            %{if v.git_provider != "Harness"}
             connectorRef: ${value.CONNECTORS.git_connector_id}
             %{if can(v.reponame)}
             repoName: ${v.reponame}
@@ -83,9 +84,14 @@ locals {
             branch: ${v.branch}
             paths:
               - ${v.manifest_path}
+            %{endif}
+            %{if v.git_provider == "Harness"}
+            files:
+              - "${v.manifest_path}"
+            %{endif}
           type: ${v.git_provider}
     EOT
-    if v.type == "Values" && try(v.git_provider != "Harness")
+    if v.type == "Values"
     ]
   }
 
