@@ -89,7 +89,7 @@ locals {
                     identifier                                               = "${lower(replace("${svc}_${name}_${inpt}_${env}_${infra}", "/[\\s-.]/", "_"))}_${var.suffix}"
                   }
                 )
-              } if infra_details.env_id == env_details.identifier || set.type == "all"
+              } if infra_details.env_id == env_details.identifier
             }
           ] if try(set.enable, false) && name == pipe
         ] #if values.enable
