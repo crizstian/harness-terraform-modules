@@ -105,7 +105,7 @@ locals {
         },
         {
           for k, v in try(details.template, {}) : k => {
-            template_id      = "${try(details.template.template-deployment.template_level, "project") == "project" ? "" : "${details.template.template-deployment.template_level}."}${try(harness_platform_template.template_deployment[try(details.template.template-deployment.template_name, "NOT_DEFINED")].identifier, "NOT_DEFINED")}"
+            template_id      = "${try(details.template.template-deployment.template_level, "project") == "project" ? "" : "${v.template_level}."}${try(harness_platform_template.template_deployment[v.template_name].identifier, "NOT_DEFINED")}"
             template_version = try(details.template.template-deployment.template_version, "1")
           } if try(v.type, "") == "template-deployment"
         },
