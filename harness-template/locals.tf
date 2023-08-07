@@ -104,10 +104,12 @@ locals {
           } if try(v.type, "") == "stage"
         },
         {
-          template-deployment = {
+          for k, v in try(details.template, {}) : k => {
             template_id      = "${try(details.template.template-deployment.template_level, "project") == "project" ? "" : "${details.template.template-deployment.template_level}."}${try(harness_platform_template.template_deployment[try(details.template.template-deployment.template_name, "NOT_DEFINED")].identifier, "NOT_DEFINED")}"
             template_version = try(details.template.template-deployment.template_version, "1")
-          }
+          } if try(v.type, "") == "template-deployment"
+        },
+        {
           sto = {
             template_id      = "${try(details.template.sto.template_level, "project") == "project" ? "" : "${details.template.sto.template_level}."}${try(harness_platform_template.stage[try(details.template.sto.template_name, "NOT_DEFINED")].identifier, "NOT_DEFINED")}"
             template_version = try(details.template.sto.template_version, "1")
