@@ -31,10 +31,10 @@ locals {
     merge(merge(
       concat(
         [
-          for k, v in try(values.template, {}) : try(var.templates.stages[v.template_name].default_values, {}) if try(v.type, {}) == "stage"
+          for k, v in try(values.template, {}) : try(var.templates.stages[v.template_name].default_values, {}) if try(v.type, "") == "stage"
         ],
         [
-          for k, v in try(values.template, {}) : try(var.templates.pipelines[v.template_name].default_values, {}) if try(v.type, {}) == "pipeline"
+          for k, v in try(values.template, {}) : try(var.templates.pipelines[v.template_name].default_values, {}) if try(v.type, "") == "pipeline"
         ]
       )...
       ),
