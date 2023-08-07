@@ -15,14 +15,14 @@ locals {
         {
           template_id      = try(var.templates.stages[v.template_name].identifier, "NOT_DEFINED")
           template_version = try(v.template_version, "NOT_DEFINED")
-        } if v.type == "stage"
+        } if try(v.type, "") == "stage"
       },
       {
         for k, v in try(values.template, {}) : k =>
         {
           template_id      = try(var.templates.pipelines[v.template_name].identifier, "NOT_DEFINED")
           template_version = try(v.template_version, "NOT_DEFINED")
-        } if v.type == "pipeline"
+        } if try(v.type, "") == "pipeline"
       }
     ) if values.enable
   }
