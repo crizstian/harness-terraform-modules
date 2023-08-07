@@ -86,24 +86,24 @@ locals {
       vars = merge(
         details.vars,
         {
-          step = {
-            for k, v in try(details.template, {}) : k => {
-              template_id      = "${try(v.template_level, "project") == "project" ? "" : "${v.template_level}."}${try(harness_platform_template.step[v.template_name].identifier, "NOT_DEFINED")}"
-              template_version = try(v.template_version, "1")
-            } if try(v.type, "") == "step"
-          }
-          step_group = {
-            for k, v in try(details.template, {}) : k => {
-              template_id      = "${try(v.template_level, "project") == "project" ? "" : "${v.template_level}."}${try(harness_platform_template.step-group[v.template_name].identifier, "NOT_DEFINED")}"
-              template_version = try(v.template_version, "1")
-            } if try(v.type, "") == "step-group"
-          }
-          stages = {
-            for k, v in try(details.template, {}) : k => {
-              template_id      = "${try(v.template_level, "project") == "project" ? "" : "${v.template_level}."}${try(harness_platform_template.stage[v.template_name].identifier, "NOT_DEFINED")}"
-              template_version = try(v.template_version, "1")
-            } if try(v.type, "") == "stage"
-          }
+          for k, v in try(details.template, {}) : k => {
+            template_id      = "${try(v.template_level, "project") == "project" ? "" : "${v.template_level}."}${try(harness_platform_template.step[v.template_name].identifier, "NOT_DEFINED")}"
+            template_version = try(v.template_version, "1")
+          } if try(v.type, "") == "step"
+        },
+        {
+          for k, v in try(details.template, {}) : k => {
+            template_id      = "${try(v.template_level, "project") == "project" ? "" : "${v.template_level}."}${try(harness_platform_template.step-group[v.template_name].identifier, "NOT_DEFINED")}"
+            template_version = try(v.template_version, "1")
+          } if try(v.type, "") == "step-group"
+        },
+        {
+          for k, v in try(details.template, {}) : k => {
+            template_id      = "${try(v.template_level, "project") == "project" ? "" : "${v.template_level}."}${try(harness_platform_template.stage[v.template_name].identifier, "NOT_DEFINED")}"
+            template_version = try(v.template_version, "1")
+          } if try(v.type, "") == "stage"
+        },
+        {
           template-deployment = {
             template_id      = "${try(details.template.template-deployment.template_level, "project") == "project" ? "" : "${details.template.template-deployment.template_level}."}${try(harness_platform_template.template_deployment[try(details.template.template-deployment.template_name, "NOT_DEFINED")].identifier, "NOT_DEFINED")}"
             template_version = try(details.template.template-deployment.template_version, "1")
