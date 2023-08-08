@@ -15,7 +15,7 @@ locals {
     identifier: ${upper(k)}
       type: Gcr
       spec:
-        connectorRef: ${try(var.connectors.default_connectors.gcr_connector_id, try(var.harness_platform_service_configs.CONNECTORS.gcr_connector_id, ""))}
+        connectorRef: ${try(var.connectors.default_connectors.gcr_connector_id, try(var.harness_platform_service_configs[value.type].CONNECTORS.gcr_connector_id, ""))}
         registryHostname: us.gcr.io
         imagePath: ${v}
         tag: <+input>
@@ -23,14 +23,14 @@ locals {
     ]
   }
   svc_manifest_helm_chart = { for svc, value in var.harness_platform_services : svc => [
-    for k, v in try(var.harness_platform_service_configs.MANIFESTS, {}) : <<-EOT
+    for k, v in try(var.harness_platform_service_configs[value.type].MANIFESTS, {}) : <<-EOT
     manifest:
       identifier: ${k}
       type: ${v.type}
       spec:
         store:
           spec:
-            connectorRef: ${try(var.connectors.default_connectors.helm_connector_id, try(var.harness_platform_service_configs.CONNECTORS.helm_connector_id, ""))}
+            connectorRef: ${try(var.connectors.default_connectors.helm_connector_id, try(var.harness_platform_service_configs[value.type].CONNECTORS.helm_connector_id, ""))}
           type: Http
         chartName: ${v.chartName}
         chartVersion: ${v.chartVersion}
@@ -41,14 +41,14 @@ locals {
     ]
   }
   svc_manifest_k8s = { for svc, value in var.harness_platform_services : svc => [
-    for k, v in try(var.harness_platform_service_configs.MANIFESTS, {}) : <<-EOT
+    for k, v in try(var.harness_platform_service_configs[value.type].MANIFESTS, {}) : <<-EOT
     manifest:
       identifier: ${k}
       type: ${v.type}
       spec:
         store:
           spec:
-            connectorRef: ${try(var.connectors.default_connectors.git_connector_id, try(var.harness_platform_service_configs.CONNECTORS.git_connector_id, ""))}
+            connectorRef: ${try(var.connectors.default_connectors.git_connector_id, try(var.harness_platform_service_configs[value.type].CONNECTORS.git_connector_id, ""))}
             %{if can(v.reponame)}
             repoName: ${v.reponame}
             %{endif}
@@ -62,7 +62,7 @@ locals {
     ]
   }
   svc_manifest_values = { for svc, value in var.harness_platform_services : svc => [
-    for k, v in try(var.harness_platform_service_configs.MANIFESTS, {}) : <<-EOT
+    for k, v in try(var.harness_platform_service_configs[value.type].MANIFESTS, {}) : <<-EOT
     manifest:
       identifier: ${k}
       type: ${v.type}
@@ -70,7 +70,7 @@ locals {
         store:
           spec:
             %{if v.git_provider != "Harness"}
-            connectorRef: ${try(var.connectors.default_connectors.git_connector_id, try(var.harness_platform_service_configs.CONNECTORS.git_connector_id, ""))}
+            connectorRef: ${try(var.connectors.default_connectors.git_connector_id, try(var.harness_platform_service_configs[value.type].CONNECTORS.git_connector_id, ""))}
             %{if can(v.reponame)}
             repoName: ${v.reponame}
             %{endif}
@@ -94,10 +94,10 @@ locals {
   services = { for name, details in var.harness_platform_services : name => {
     vars = merge(
       try(var.connectors.default_connectors, {}),
-      try(var.harness_platform_service_configs.CONNECTORS, {}),
+      try(var.harness_platform_service_configs[details.type].CONNECTORS, {}),
       try(local.service_tpl_dp_id[name], {}),
       details.SERVICE_DEFINITION,
-      var.harness_platform_service_configs[details.SERVICE_DEFINITION.type],
+      var.harness_platform_service_configs[details.type],
       {
         name          = "${name}"
         identifier    = "${lower(replace(name, "/[\\s-.]/", "_"))}_${var.suffix}"
