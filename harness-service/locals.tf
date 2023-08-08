@@ -97,7 +97,7 @@ locals {
       try(var.harness_platform_service_configs.CONNECTORS, {}),
       try(local.service_tpl_dp_id[name], {}),
       details.SERVICE_DEFINITION,
-      var.harness_platform_service_configs[details.type],
+      var.harness_platform_service_configs[details.SERVICE_DEFINITION.type],
       {
         name          = "${name}"
         identifier    = "${lower(replace(name, "/[\\s-.]/", "_"))}_${var.suffix}"
