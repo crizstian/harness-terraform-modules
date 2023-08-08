@@ -33,7 +33,7 @@ variable "services_path" {
   default = ""
 }
 variable "harness_platform_service_configs" {
-  default = ""
+  default = {}
 }
 variable "common_values" {
   default = {
