@@ -95,9 +95,9 @@ locals {
     vars = merge(
       try(var.connectors.default_connectors, {}),
       try(var.harness_platform_service_configs.CONNECTORS, {}),
-      try(var.harness_platform_service_configs[details.type], {}),
       try(local.service_tpl_dp_id[name], {}),
       details.SERVICE_DEFINITION,
+      var.harness_platform_service_configs[details.type],
       {
         name          = "${name}"
         identifier    = "${lower(replace(name, "/[\\s-.]/", "_"))}_${var.suffix}"
