@@ -53,8 +53,8 @@ locals {
             project_id                                        = try(var.pipelines[pipe].project_id, "") != "" ? var.pipelines[pipe].project_id : try(details.project_id, var.project_id)
             pipeline_id                                       = try(var.pipelines[pipe].identifier, "")
           }
-        )
-      } if variables.SERVICE_DEFINITION.enable && values.INPUTSET
+        ) if values.INPUTSET
+      } if variables.SERVICE_DEFINITION.enable
     ] if details.enable
   ])...)
 
