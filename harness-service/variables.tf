@@ -32,6 +32,9 @@ variable "tags" {
 variable "services_path" {
   default = ""
 }
+variable "harness_platform_service_configs" {
+  default = ""
+}
 variable "common_values" {
   default = {
     org_id     = ""

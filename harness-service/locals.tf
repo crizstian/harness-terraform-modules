@@ -97,6 +97,7 @@ locals {
       try(var.connectors.default_connectors, {}),
       try(details.CONNECTORS, {}),
       try(local.service_tpl_dp_id[name], {}),
+      try(var.harness_platform_service_configs[details.type], {}),
       details.SERVICE_DEFINITION,
       {
         name          = "${name}"
