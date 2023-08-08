@@ -74,9 +74,9 @@ locals {
                 )
               } if infra_details.env_id == env_details.identifier
             }
-          ] if enable && name == pipe
+          ] if enable
 
-        ] #if values.enable
+        ] if name == pipe
       ] if variables.vars.enable
     ] if details.enable && details.type == "CD"
   ])...)
@@ -101,8 +101,8 @@ locals {
                 } if infra_details.env_id == env_details.identifier
               ]])...
             )
-          } if enable && name == pipe
-        } #if values.enable
+          } if enable
+        } if name == pipe
       ] if variables.vars.enable
     ] if details.enable && details.type == "ALL"
   ])...)
