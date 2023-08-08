@@ -45,14 +45,14 @@ locals {
           variables,
           var.pipelines[pipe].default_values,
           {
-            svc                                               = "${svc}"
-            suffix                                            = var.suffix
-            tags                                              = concat(try(variables.tags, []), var.tags)
-            git_details                                       = try(variables.git_details, {})
-            "${variables.SERVICE_DEFINITION.type}_service_id" = try("${replace(svc, "-", "_")}_${var.suffix}", "")
-            org_id                                            = try(var.pipelines[pipe].org_id, "") != "" ? var.pipelines[pipe].org_id : try(details.org_id, var.org_id)
-            project_id                                        = try(var.pipelines[pipe].project_id, "") != "" ? var.pipelines[pipe].project_id : try(details.project_id, var.project_id)
-            pipeline_id                                       = try(var.pipelines[pipe].identifier, "")
+            svc                            = "${svc}"
+            suffix                         = var.suffix
+            tags                           = concat(try(variables.tags, []), var.tags)
+            git_details                    = try(variables.git_details, {})
+            org_id                         = try(var.pipelines[pipe].org_id, "") != "" ? var.pipelines[pipe].org_id : try(details.org_id, var.org_id)
+            project_id                     = try(var.pipelines[pipe].project_id, "") != "" ? var.pipelines[pipe].project_id : try(details.project_id, var.project_id)
+            pipeline_id                    = try(var.pipelines[pipe].identifier, "")
+            "${variables.type}_service_id" = try("${replace(svc, "-", "_")}_${var.suffix}", "")
           }
         ) if values.INPUTSET
       } if variables.SERVICE_DEFINITION.enable
@@ -82,12 +82,12 @@ locals {
               vars = merge(
                 local.inpt_by_svc["${svc}_${name}"],
                 {
-                  env                                                      = "${env}"
-                  env_id                                                   = env_details.identifier
-                  "${variables.SERVICE_DEFINITION.type}_infrastructure_id" = infra_details.identifier
-                  delegate_selectors                                       = try(infra_details.delegate_selectors, ["NOT_DEFINED"])
-                  name                                                     = replace("${svc}_${infra}", "kubernetes_", "")
-                  identifier                                               = "${lower(replace(replace("${svc}_${infra}", "/[\\s-.]/", "_"), "kubernetes_", ""))}_${var.suffix}"
+                  env                                   = "${env}"
+                  env_id                                = env_details.identifier
+                  delegate_selectors                    = try(infra_details.delegate_selectors, ["NOT_DEFINED"])
+                  name                                  = replace("${svc}_${infra}", "kubernetes_", "")
+                  identifier                            = "${lower(replace(replace("${svc}_${infra}", "/[\\s-.]/", "_"), "kubernetes_", ""))}_${var.suffix}"
+                  "${variables.type}_infrastructure_id" = infra_details.identifier
                 }
               )
             } if infra_details.env_id == env_details.identifier
