@@ -31,8 +31,8 @@ locals {
               pipeline_id                         = try(var.pipelines[pipe].identifier, "")
               "${variables.vars.type}_service_id" = try("${replace(svc, "-", "_")}_${var.suffix}", "")
             }
-          ) if enable && name == pipe
-        }
+          ) if enable
+        } if name == pipe
       ] if variables.vars.enable
     ] if details.enable
   ])...)
