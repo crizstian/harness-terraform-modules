@@ -42,6 +42,7 @@ locals {
           try(variables.CONNECTORS, {}),
           try(details.vars.usergroups_required, false) ? { usergroups = var.usergroups } : {},
           details,
+          variables,
           var.pipelines[pipe].default_values,
           {
             svc                                               = "${svc}"
