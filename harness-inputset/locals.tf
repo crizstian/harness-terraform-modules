@@ -54,7 +54,7 @@ locals {
             pipeline_id                                       = try(var.pipelines[pipe].identifier, "")
           }
         )
-      } if variables.SERVICE_DEFINITION.enable && values.INPUSET
+      } if variables.SERVICE_DEFINITION.enable && values.INPUTSET
     ] if details.enable
   ])...)
 
@@ -91,7 +91,7 @@ locals {
               )
             } if infra_details.env_id == env_details.identifier
           }
-        ] if name == pipe && values.INPUSET
+        ] if name == pipe && values.INPUTSET
       ] if variables.SERVICE_DEFINITION.enable
     ] if details.enable && details.type == "CD"
   ])...)
@@ -142,7 +142,7 @@ locals {
               } if infra_details.env_id == env_details.identifier
             ]])...
           )
-        } if name == pipe && values.INPUSET
+        } if name == pipe && values.INPUTSET
       } if variables.SERVICE_DEFINITION.enable
     ] if details.enable && details.type == "ALL"
   ])...)
