@@ -55,7 +55,7 @@ locals {
             "${variables.type}_service_id" = try("${replace(svc, "-", "_")}_${var.suffix}", "")
           }
         ) if values.INPUTSET
-      } if variables.enable
+      } if variables.SERVICE_DEFINITION.enable
     ] if details.enable
   ])...)
 
@@ -93,7 +93,7 @@ locals {
             } if infra_details.env_id == env_details.identifier
           }
         ] if name == pipe && values.INPUTSET
-      ] if variables.enable
+      ] if variables.SERVICE_DEFINITION.enable
     ] if details.enable && details.type == "CD"
   ])...)
 
