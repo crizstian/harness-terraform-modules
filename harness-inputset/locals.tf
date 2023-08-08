@@ -35,27 +35,27 @@ locals {
   inpt_by_svc = merge(flatten([
     for name, details in var.harness_platform_inputsets : [
       for svc, variables in var.harness_platform_services : {
-        for pipe, values in try(variables.PIPELINE, {}) : "${svc}_${name}" =>
+        for pipe, values in try(variables.vars.PIPELINE, {}) : "${svc}_${name}" =>
         merge(
           try(var.templates.stages[name].default_values, try(var.templates.pipelines[pipe].default_values, {})),
           try(var.connectors.default_connectors, {}),
-          try(variables.CONNECTORS, {}),
+          try(variables.vars.CONNECTORS, {}),
           try(details.vars.usergroups_required, false) ? { usergroups = var.usergroups } : {},
           details,
           variables,
           var.pipelines[pipe].default_values,
           {
-            svc                            = "${svc}"
-            suffix                         = var.suffix
-            tags                           = concat(try(variables.tags, []), var.tags)
-            git_details                    = try(variables.git_details, {})
-            org_id                         = try(var.pipelines[pipe].org_id, "") != "" ? var.pipelines[pipe].org_id : try(details.org_id, var.org_id)
-            project_id                     = try(var.pipelines[pipe].project_id, "") != "" ? var.pipelines[pipe].project_id : try(details.project_id, var.project_id)
-            pipeline_id                    = try(var.pipelines[pipe].identifier, "")
-            "${variables.type}_service_id" = try("${replace(svc, "-", "_")}_${var.suffix}", "")
+            svc                                 = "${svc}"
+            suffix                              = var.suffix
+            tags                                = concat(try(variables.vars.tags, []), var.tags)
+            git_details                         = try(variables.vars.git_details, {})
+            org_id                              = try(var.pipelines[pipe].org_id, "") != "" ? var.pipelines[pipe].org_id : try(details.org_id, var.org_id)
+            project_id                          = try(var.pipelines[pipe].project_id, "") != "" ? var.pipelines[pipe].project_id : try(details.project_id, var.project_id)
+            pipeline_id                         = try(var.pipelines[pipe].identifier, "")
+            "${variables.vars.type}_service_id" = try("${replace(svc, "-", "_")}_${var.suffix}", "")
           }
         ) if values.INPUTSET
-      } if variables.enable
+      } if variables.vars.enable
     ] if details.enable
   ])...)
 
@@ -75,25 +75,25 @@ locals {
     for name, details in var.harness_platform_inputsets : [
       for svc, variables in var.harness_platform_services : [
 
-        for pipe, values in try(variables.PIPELINE, {}) : [
+        for pipe, values in try(variables.vars.PIPELINE, {}) : [
           for env, env_details in var.environments : {
             for infra, infra_details in var.infrastructures : "${svc}_${name}_${env}_${infra}" =>
             {
               vars = merge(
                 local.inpt_by_svc["${svc}_${name}"],
                 {
-                  env                                   = "${env}"
-                  env_id                                = env_details.identifier
-                  delegate_selectors                    = try(infra_details.delegate_selectors, ["NOT_DEFINED"])
-                  name                                  = replace("${svc}_${infra}", "kubernetes_", "")
-                  identifier                            = "${lower(replace(replace("${svc}_${infra}", "/[\\s-.]/", "_"), "kubernetes_", ""))}_${var.suffix}"
-                  "${variables.type}_infrastructure_id" = infra_details.identifier
+                  env                                        = "${env}"
+                  env_id                                     = env_details.identifier
+                  delegate_selectors                         = try(infra_details.delegate_selectors, ["NOT_DEFINED"])
+                  name                                       = replace("${svc}_${infra}", "kubernetes_", "")
+                  identifier                                 = "${lower(replace(replace("${svc}_${infra}", "/[\\s-.]/", "_"), "kubernetes_", ""))}_${var.suffix}"
+                  "${variables.vars.type}_infrastructure_id" = infra_details.identifier
                 }
               )
             } if infra_details.env_id == env_details.identifier
           }
         ] if name == pipe && values.INPUTSET
-      ] if variables.enable
+      ] if variables.vars.enable
     ] if details.enable && details.type == "CD"
   ])...)
 
