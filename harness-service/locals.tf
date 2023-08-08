@@ -10,18 +10,12 @@ locals {
     }
   }
 
-  /* service_cnt_ids = {for service, values in var.harness_platform_services: service => merge(
-    [
-      for cnt, value in values.CONNECTORS: {}
-    ]...)
-    } */
-
   svc_artifacts_gcr = { for svc, value in var.harness_platform_services : svc => [
     for k, v in try(value.SERVICE_DEFINITION.artifacts.gcr, {}) : <<-EOT
     identifier: ${upper(k)}
       type: Gcr
       spec:
-        connectorRef: ${value.CONNECTORS.gcr_connector_id}
+        connectorRef: ${try(var.connectors.default_connectors.gcr_connector_id, try(value.CONNECTORS.gcr_connector_id, ""))}
         registryHostname: us.gcr.io
         imagePath: ${v}
         tag: <+input>
@@ -36,7 +30,7 @@ locals {
       spec:
         store:
           spec:
-            connectorRef: ${value.CONNECTORS.helm_connector_id}
+            connectorRef: ${try(var.connectors.default_connectors.helm_connector_id, try(value.CONNECTORS.helm_connector_id, ""))}
           type: Http
         chartName: ${v.chartName}
         chartVersion: ${v.chartVersion}
@@ -54,7 +48,7 @@ locals {
       spec:
         store:
           spec:
-            connectorRef: ${value.CONNECTORS.git_connector_id}
+            connectorRef: ${try(var.connectors.default_connectors.git_connector_id, try(value.CONNECTORS.git_connector_id, ""))}
             %{if can(v.reponame)}
             repoName: ${v.reponame}
             %{endif}
@@ -76,7 +70,7 @@ locals {
         store:
           spec:
             %{if v.git_provider != "Harness"}
-            connectorRef: ${value.CONNECTORS.git_connector_id}
+            connectorRef: ${try(var.connectors.default_connectors.git_connector_id, try(value.CONNECTORS.git_connector_id, ""))}
             %{if can(v.reponame)}
             repoName: ${v.reponame}
             %{endif}
@@ -115,21 +109,3 @@ locals {
       }
   ) } if details.SERVICE_DEFINITION.enable }
 }
-
-
-
-/* {
-      identifier = k
-      type       = v.type
-      spec = {
-        store = {
-          spec = {
-            connectorRef = value.CONNECTORS.git_connector_id
-            gitFetchType = "Branch"
-            branch       = v.branch
-            paths        = [v.manifest_path]
-          }
-          type = v.git_provider
-        }
-      }
-    } */
