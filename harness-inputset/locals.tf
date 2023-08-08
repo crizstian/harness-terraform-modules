@@ -129,7 +129,7 @@ locals {
   inpt_by_all_infra = merge(flatten([
     for name, details in var.harness_platform_inputsets : [
       for svc, variables in var.harness_platform_services : {
-        for pipe, values in try(variables.PIPELINE, {}) : "${svc}_${name}_${inpt}_ALL" => {
+        for pipe, values in try(variables.PIPELINE, {}) : "${svc}_${name}_ALL" => {
           vars = merge(
             local.inpt_by_svc["${svc}_${name}"],
             {
