@@ -5,7 +5,7 @@ locals {
   inputsets_verbose_by_infra = var.inputsets.verbose_by_infra
 
   trg_by_svc = merge(flatten([
-    for name, details in var.harness_platform_inputsets : [
+    for name, details in var.harness_platform_triggers : [
       for svc, variables in var.harness_platform_services : [
         for pipe, values in try(variables.vars.PIPELINE, {}) : {
           for trg, enable in try(values.vars.TRIGGER, {}) : "${svc}_${name}_${trg}" =>
@@ -50,7 +50,7 @@ locals {
   }
 
   trg_by_infra = merge(flatten([
-    for name, details in var.harness_platform_inputsets : [
+    for name, details in var.harness_platform_triggers : [
       for svc, variables in var.harness_platform_services : [
         for pipe, values in try(variables.vars.PIPELINE, {}) : [
           for trg, enable in try(values.vars.TRIGGER, {}) : [
