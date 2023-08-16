@@ -19,7 +19,7 @@ locals {
 
   infrastructure_org_id = merge([for infrastructure, values in var.harness_platform_infrastructures : { for org, details in var.organizations : infrastructure => details.identifier if lower(org) == lower(try(values.organization, "NOT_FOUND")) }]...)
   infrastructure_prj_id = merge([for infrastructure, values in var.harness_platform_infrastructures : { for prj, details in var.projects : infrastructure => details.identifier if lower(prj) == lower(try(values.project, "NOT_FOUND")) }]...)
-  infrastructure_env_id = merge([for infrastructure, values in var.harness_platform_infrastructures : { for env, details in harness_platform_environment.environment : infrastructure => details.identifier if lower(env) == lower(try(values.vars.environment, "NOT_FOUND")) }]...)
+  #infrastructure_env_id = merge([for infrastructure, values in var.harness_platform_infrastructures : { for env, details in harness_platform_environment.environment : infrastructure => details.identifier if lower(env) == lower(try(values.vars.environment, "NOT_FOUND")) }]...)
   #infrastructure_k8s_id = merge([for infrastructure, values in var.harness_platform_infrastructures : { for cnt, details in try(var.connectors.kubernetes_connectors, {}) : infrastructure => details.identifier if lower(cnt) == lower(infrastructure) }]...)
   #infrastructure_keys   = toset(setsubtract(keys(var.harness_platform_infrastructures), keys(local.infrastructure_k8s_id)))
   infrastructure_tpl_dp_id = { for infrastructure, values in var.harness_platform_infrastructures : infrastructure =>
@@ -30,6 +30,16 @@ locals {
       }
     }
   }
+
+  infrastructure_env_id = merge([
+    for type, values in var.harness_platform_infrastructures : {
+      for infra, details in try(var.connectors["${type}_connectors"], {}) : "${type}_${infra}" => {
+        env_id       = try(harness_platform_environment.environment[element([for k, v in toset(try(details.tags, [])) : replace(v, "environment:", "") if startswith(v, "environment:")], 0)].identifier, "NOT_FOUND")
+        connector_id = try(var.connectors["${type}_connectors"][infra].identifier, "NOT_FOUND")
+      }
+    }
+  ])
+
 
   infrastructures = merge(
     [
@@ -43,14 +53,14 @@ locals {
               name               = "${type}_${infra}"
               identifier         = "${lower(replace("${type}_${infra}", "/[\\s-.]/", "_"))}_${var.suffix}"
               tags               = concat(try(values.vars.tags, []), var.tags)
-              env_id             = "test" #try(harness_platform_environment.environment[element([for k, v in toset(try(details.tags, [])) : replace(v, "environment:", "") if startswith(v, "environment:")], 0)].identifier, "")
+              delegate_selectors = try(var.connectors["${type}_connectors"][infra].delegate_selectors, [])
               org_id             = try(local.infrastructure_org_id[type], "") != "" ? local.infrastructure_org_id[type] : try(values.vars.org_id, var.common_values.org_id)
               project_id         = try(local.infrastructure_prj_id[type], "") != "" ? local.infrastructure_prj_id[type] : try(values.vars.project_id, var.common_values.project_id)
-              connector_id       = try(var.connectors["${type}_connectors"][infra].identifier, "NOT_FOUND")
-              delegate_selectors = try(var.connectors["${type}_connectors"][infra].delegate_selectors, [])
+              connector_id       = local.infrastructure_env_id["${type}_${infra}"].connector_id
+              env_id             = local.infrastructure_env_id["${type}_${infra}"].env_id
             }
           )
-        }
+        } if local.infrastructure_env_id["${type}_${infra}"].env_id != "NOT_FOUND"
       }
     ]...
   )
