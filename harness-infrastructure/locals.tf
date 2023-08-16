@@ -50,7 +50,7 @@ locals {
               delegate_selectors = try(var.connectors["${type}_connectors"][infra].delegate_selectors, [])
             }
           )
-        } if details.enable
+        }
       }
     ]...
   )
