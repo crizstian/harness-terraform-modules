@@ -34,7 +34,8 @@ locals {
   infrastructure_env_id = merge([
     for type, values in var.harness_platform_infrastructures : {
       for infra, details in try(var.connectors["${type}_connectors"], {}) : "${type}_${infra}" => {
-        env_id = try(harness_platform_environment.environment[element([for k, v in toset(try(details.tags, [])) : replace(v, "environment:", "") if startswith(v, "environment:")], 0)].identifier, "NOT_FOUND")
+        env_id = try(harness_platform_environment.environment[details.environment].identifier, "NOT_FOUND")
+        /* env_id = try(harness_platform_environment.environment[element([for k, v in toset(try(details.tags, [])) : replace(v, "environment:", "") if startswith(v, "environment:")], 0)].identifier, "NOT_FOUND") */
       }
     }
   ]...)
