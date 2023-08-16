@@ -42,7 +42,7 @@ locals {
             {
               name               = "${type}_${infra}"
               identifier         = "${lower(replace("${type}_${infra}", "/[\\s-.]/", "_"))}_${var.suffix}"
-              tags               = concat(try(values.vars.tags, []), try(details.tags, []), var.tags)
+              tags               = concat(try(details.tags, []), try(values.vars.tags, []), var.tags)
               env_id             = harness_platform_environment.environment[element([for k, v in toset(details.tags) : replace(v, "environment:", "") if startswith(v, "environment:")], 0)].identifier
               org_id             = try(local.infrastructure_org_id[type], "") != "" ? local.infrastructure_org_id[type] : try(values.vars.org_id, var.common_values.org_id)
               project_id         = try(local.infrastructure_prj_id[type], "") != "" ? local.infrastructure_prj_id[type] : try(values.vars.project_id, var.common_values.project_id)
