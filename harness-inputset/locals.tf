@@ -21,7 +21,7 @@ locals {
               suffix                                            = var.suffix
               tags                                              = concat(try(variables.SERVICE_DEFINITION.tags, []), var.tags)
               git_details                                       = try(variables.SERVICE_DEFINITION.git_details, {})
-              "${variables.SERVICE_DEFINITION.type}_service_id" = try("${replace(svc, "-", "_")}_${var.suffix}", "")
+              "${variables.SERVICE_DEFINITION.type}_service_id" = variables.identifier
               org_id                                            = try(var.pipelines[pipe].org_id, "") != "" ? var.pipelines[pipe].org_id : try(details.org_id, var.org_id)
               project_id                                        = try(var.pipelines[pipe].project_id, "") != "" ? var.pipelines[pipe].project_id : try(details.project_id, var.project_id)
               pipeline_id                                       = try(var.pipelines[pipe].identifier, "")
@@ -52,7 +52,7 @@ locals {
             org_id                              = try(var.pipelines[pipe].org_id, "") != "" ? var.pipelines[pipe].org_id : try(details.org_id, var.org_id)
             project_id                          = try(var.pipelines[pipe].project_id, "") != "" ? var.pipelines[pipe].project_id : try(details.project_id, var.project_id)
             pipeline_id                         = try(var.pipelines[pipe].identifier, "")
-            "${variables.vars.type}_service_id" = try("${replace(svc, "-", "_")}_${var.suffix}", "")
+            "${variables.vars.type}_service_id" = variables.identifier
           }
         ) if values.INPUTSET && name == pipe
       } if variables.vars.enable
