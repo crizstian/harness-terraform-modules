@@ -8,7 +8,7 @@ locals {
     for name, details in var.harness_platform_triggers : [
       for svc, variables in var.harness_platform_services : [
         for pipe, values in try(variables.vars.PIPELINE, {}) : {
-          for trg, enable in try(values.vars.TRIGGER, {}) : "${svc}_${name}_${trg}" =>
+          for trg, enable in try(values.TRIGGER, {}) : "${svc}_${name}_${trg}" =>
           merge(
             try(var.templates.stages[name].default_values,
             try(var.templates.pipelines[pipe].default_values, {})),
@@ -53,7 +53,7 @@ locals {
     for name, details in var.harness_platform_triggers : [
       for svc, variables in var.harness_platform_services : [
         for pipe, values in try(variables.vars.PIPELINE, {}) : [
-          for trg, enable in try(values.vars.TRIGGER, {}) : [
+          for trg, enable in try(values.TRIGGER, {}) : [
             for env, env_details in var.environments : {
               for infra, infra_details in var.infrastructures : "${svc}_${name}_${env}_${infra}_${trg}" =>
               {
