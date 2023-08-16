@@ -16,7 +16,7 @@ locals {
             try(variables.vars.CONNECTORS, {}),
             try(details.vars.usergroups_required, false) ? { usergroups = var.usergroups } : {},
             details,
-            variables,
+            variables.vars,
             var.pipelines[pipe].default_values,
             {
               trg                                 = "${trg}"
