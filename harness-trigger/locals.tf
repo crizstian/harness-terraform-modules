@@ -85,16 +85,16 @@ locals {
     for name, details in var.harness_platform_triggers : [
       for svc, variables in var.harness_platform_services : [
         for pipe, values in try(variables.PIPELINE, {}) : {
-          for trg, enable in try(values.TRIGGER, {}) : "${svc}_${name}_ALL" =>
+          for trg, enable in try(values.TRIGGER, {}) : "${svc}_${name}_${trg}" =>
           {
             vars = merge(
               local.trg_by_svc["${svc}_${name}_${trg}"],
               {
                 name       = "${svc}"
-                identifier = "${lower(replace("${svc}_${name}_${trg}_ALL", "/[\\s-.]/", "_"))}_${var.suffix}"
-                /* inputset_ids = try([for inpt, enable in definition.TRIGGER_INPUTSET : local.inputsets["${svc}_${name}_${inpt}_ALL"].identifier if enable], ["NOT_DEFINED"]) */
+                identifier = "${lower(replace("${svc}_${name}_${trg}", "/[\\s-.]/", "_"))}_${var.suffix}"
+                /* inputset_ids = try([for inpt, enable in definition.TRIGGER_INPUTSET : local.inputsets["${svc}_${name}_${inpt}_${trg}"].identifier if enable], ["NOT_DEFINED"]) */
               },
-              try(local.inputsets_verbose_by_infra["${svc}_${name}_ALL"], {}),
+              try(local.inputsets_verbose_by_infra["${svc}_${name}"], {}),
               flatten([for env, env_details in var.environments : [
                 for infra, infra_details in var.infrastructures : {
                   "${variables.vars.type}_${lower(env)}_infrastructure_id" = infra_details.identifier
