@@ -37,7 +37,7 @@ locals {
         env_id = try(harness_platform_environment.environment[try(details.environment, "NOT_FOUND")].identifier, "NOT_FOUND")
         /* env_id = try(harness_platform_environment.environment[element([for k, v in toset(try(details.tags, [])) : replace(v, "environment:", "") if startswith(v, "environment:")], 0)].identifier, "NOT_FOUND") */
       }
-    } if can(harness_platform_environment.environment[try(details.environment, "NOT_FOUND")].identifier)
+    }
   ]...)
 
 
