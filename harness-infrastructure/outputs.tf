@@ -1,11 +1,12 @@
 output "environment" {
   value = { for key, details in harness_platform_environment.environment : key =>
     {
-      identifier       = details.identifier
-      org_id           = details.org_id
-      project_id       = details.project_id
-      type             = details.type
-      primary_artifact = try(var.harness_platform_environments[key].primary_artifact, "")
+      identifier             = details.identifier
+      org_id                 = details.org_id
+      project_id             = details.project_id
+      type                   = details.type
+      primary_artifact       = try(var.harness_platform_environments[key].primary_artifact, "")
+      trigger_artifact_regex = try(var.harness_platform_environments[key].trigger_artifact_regex, "")
     }
   }
 }

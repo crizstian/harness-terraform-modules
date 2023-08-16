@@ -67,13 +67,15 @@ locals {
                     env_id                                     = env_details.identifier
                     "${variables.vars.type}_infrastructure_id" = infra_details.identifier
                     delegate_selectors                         = try(infra_details.delegate_selectors, ["NOT_DEFINED"])
+                    primary_artifact                           = env_details.primary_artifact
+                    trigger_artifact_regex                     = try(env_details.trigger_artifact_regex, "")
                     name                                       = replace("${svc}_${infra}", "kubernetes_", "")
                     identifier                                 = "${lower(replace(replace("${svc}_${infra}", "/[\\s-.]/", "_"), "kubernetes_", ""))}_${var.suffix}"
                     /* inputset_ids                               = try([for inpt, enable in definition.TRIGGER_INPUTSET : local.inputsets["${svc}_${name}_${trg}_${env}"].identifier if enable], ["NOT_DEFINED"]) */
                   }
                 )
               } if infra_details.env_id == env_details.identifier
-            }
+            } if contains(keys(variables.vars.artifacts), env_details.primary_artifact)
           ] if enable
 
         ] if name == pipe
