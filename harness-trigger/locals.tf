@@ -15,7 +15,6 @@ locals {
             try(var.connectors.default_connectors, {}),
             try(variables.vars.CONNECTORS, {}),
             try(details.vars.usergroups_required, false) ? { usergroups = var.usergroups } : {},
-            details,
             variables.vars,
             var.pipelines[pipe].default_values,
             {
@@ -28,7 +27,8 @@ locals {
               project_id                          = try(var.pipelines[pipe].project_id, "") != "" ? var.pipelines[pipe].project_id : try(details.project_id, var.project_id)
               pipeline_id                         = try(var.pipelines[pipe].identifier, "")
               "${variables.vars.type}_service_id" = variables.identifier
-            }
+            },
+            details
           ) if enable
         } if name == pipe
       ] if variables.vars.enable
