@@ -37,7 +37,7 @@ locals {
         env_id = try(harness_platform_environment.environment[details.environment].identifier, "NOT_FOUND")
         /* env_id = try(harness_platform_environment.environment[element([for k, v in toset(try(details.tags, [])) : replace(v, "environment:", "") if startswith(v, "environment:")], 0)].identifier, "NOT_FOUND") */
       }
-    }
+    } if can(harness_platform_environment.environment[details.environment].identifier)
   ]...)
 
 
@@ -60,7 +60,7 @@ locals {
               connector_id       = details.identifier
             }
           )
-        } if local.infrastructure_env_id["${type}_${infra}"].env_id != "NOT_FOUND"
+        }
       }
     ]...
   )
