@@ -92,7 +92,7 @@ locals {
                 }
               )
             } if infra_details.env_id == env_details.identifier
-          } if contains(keys(variables.artifacts), env_details.primary_artifact)
+          } if contains(keys(variables.vars.artifacts), env_details.primary_artifact)
         ] if name == pipe && values.INPUTSET
       ] if variables.vars.enable
     ] if details.enable && details.type == "CD"
