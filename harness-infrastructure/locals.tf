@@ -37,7 +37,7 @@ locals {
         env_id = try(harness_platform_environment.environment[element([for k, v in toset(try(details.tags, [])) : replace(v, "environment:", "") if startswith(v, "environment:")], 0)].identifier, "NOT_FOUND")
       }
     }
-  ])
+  ]...)
 
 
   infrastructures = merge(
@@ -52,7 +52,7 @@ locals {
               name               = "${type}_${infra}"
               identifier         = "${lower(replace("${type}_${infra}", "/[\\s-.]/", "_"))}_${var.suffix}"
               tags               = concat(try(values.vars.tags, []), var.tags)
-              delegate_selectors = try(var.connectors["${type}_connectors"][infra].delegate_selectors, [])
+              delegate_selectors = try(details.delegate_selectors, [])
               org_id             = try(local.infrastructure_org_id[type], "") != "" ? local.infrastructure_org_id[type] : try(values.vars.org_id, var.common_values.org_id)
               project_id         = try(local.infrastructure_prj_id[type], "") != "" ? local.infrastructure_prj_id[type] : try(values.vars.project_id, var.common_values.project_id)
               env_id             = local.infrastructure_env_id["${type}_${infra}"].env_id
