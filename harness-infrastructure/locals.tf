@@ -31,16 +31,6 @@ locals {
     }
   }
 
-  infrastructure_env_id = merge([
-    for type, values in var.harness_platform_infrastructures : {
-      for infra, details in try(var.connectors["${type}_connectors"], {}) : "${type}_${infra}" => {
-        env_id = try(harness_platform_environment.environment[try(details.environment, "NOT_FOUND")].identifier, "NOT_FOUND")
-        /* env_id = try(harness_platform_environment.environment[element([for k, v in toset(try(details.tags, [])) : replace(v, "environment:", "") if startswith(v, "environment:")], 0)].identifier, "NOT_FOUND") */
-      }
-    }
-  ]...)
-
-
   infrastructures = merge(
     [
       for type, values in var.harness_platform_infrastructures : {
@@ -56,11 +46,11 @@ locals {
               delegate_selectors = try(details.delegate_selectors, [])
               org_id             = try(local.infrastructure_org_id[type], "") != "" ? local.infrastructure_org_id[type] : try(values.vars.org_id, var.common_values.org_id)
               project_id         = try(local.infrastructure_prj_id[type], "") != "" ? local.infrastructure_prj_id[type] : try(values.vars.project_id, var.common_values.project_id)
-              env_id             = local.infrastructure_env_id["${type}_${infra}"].env_id
+              env_id             = try(harness_platform_environment.environment[try(details.environment, "NOT_FOUND")].identifier, "NOT_FOUND")
               connector_id       = details.identifier
             }
           )
-        }
+        } if can(harness_platform_environment.environment[try(details.environment, "NOT_FOUND")].identifier)
       }
     ]...
   )
