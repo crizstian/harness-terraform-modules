@@ -84,6 +84,7 @@ locals {
                 {
                   env                                        = "${env}"
                   env_id                                     = env_details.identifier
+                  primary_artifact                           = env_details.primary_artifact
                   delegate_selectors                         = try(infra_details.delegate_selectors, ["NOT_DEFINED"])
                   name                                       = replace("${svc}_${infra}", "kubernetes_", "")
                   identifier                                 = "${lower(replace(replace("${svc}_${infra}", "/[\\s-.]/", "_"), "kubernetes_", ""))}_${var.suffix}"
