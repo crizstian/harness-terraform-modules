@@ -46,11 +46,11 @@ locals {
               delegate_selectors = try(details.delegate_selectors, [])
               org_id             = try(local.infrastructure_org_id[type], "") != "" ? local.infrastructure_org_id[type] : try(values.vars.org_id, var.common_values.org_id)
               project_id         = try(local.infrastructure_prj_id[type], "") != "" ? local.infrastructure_prj_id[type] : try(values.vars.project_id, var.common_values.project_id)
-              env_id             = harness_platform_environment.environment[try(details.environment, "NOT_FOUND")].identifier
+              env_id             = harness_platform_environment.environment[details.environment].identifier
               connector_id       = details.identifier
             }
           )
-        } if can(harness_platform_environment.environment[try(details.environment, "NOT_FOUND")])
+        }
       }
     ]...
   )
