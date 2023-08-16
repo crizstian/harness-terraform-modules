@@ -77,7 +77,7 @@ locals {
     {
       identifier         = value.project_id != "" ? value.identifier : value.org_id != "" ? "org.${value.identifier}" : "account.${value.identifier}"
       tags               = value.tags
-      delegate_selectors = can(var.harness_platform_kubernetes_connectors[key].inherit_from_delegate) ? var.harness_platform_kubernetes_connectors[key].inherit_from_delegate.delegate_selectors : value.delegate_selectors
+      delegate_selectors = can(var.harness_platform_kubernetes_connectors[key].inherit_from_delegate) ? var.harness_platform_kubernetes_connectors[key].inherit_from_delegate.delegate_selectors : try(value.delegate_selectors, [])
     }
   }
   aws_connectors_output = { for key, value in harness_platform_connector_aws.connector : key =>
