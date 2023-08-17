@@ -71,7 +71,7 @@ locals {
                   }
                 )
               } if infra_details.env_id == env_details.identifier
-            } if contains(keys(variables.vars.artifacts), try(env_details.primary_artifact, "NOT_DEFINED")) && try(local.trg_by_svc["${svc}_${name}"].environment_type, env_details.type) == env_details.type
+            } if contains(keys(variables.vars.artifacts), env_details.primary_artifact) && try(local.trg_by_svc["${svc}_${name}"].environment_type, env_details.type) == env_details.type
           ] if enable
         ] if name == pipe
       ] if variables.vars.enable
@@ -112,7 +112,7 @@ locals {
   trg_by_all_infra = merge(flatten([
     for name, details in var.harness_platform_triggers : [
       for svc, variables in var.harness_platform_services : [
-        for pipe, values in try(variables.PIPELINE, {}) : {
+        for pipe, values in try(variables.vars.PIPELINE, {}) : {
           for trg, enable in try(values.TRIGGER, {}) : "${svc}_${name}_${trg}" =>
           {
             vars = merge(
@@ -122,7 +122,7 @@ locals {
                 identifier = "${lower(replace("${svc}_${name}_${trg}", "/[\\s-.]/", "_"))}_${var.suffix}"
                 /* inputset_ids = try([for inpt, enable in definition.TRIGGER_INPUTSET : local.inputsets["${svc}_${name}_${inpt}_${trg}"].identifier if enable], ["NOT_DEFINED"]) */
               },
-              try(local.inputsets_verbose_by_infra["${svc}_${name}"], {}),
+              /* try(local.inputsets_verbose_by_infra["${svc}_${name}"], {}), */
               flatten([for env, env_details in var.environments : [
                 for infra, infra_details in var.infrastructures : {
                   "${variables.vars.type}_${lower(env)}_infrastructure_id" = infra_details.identifier
