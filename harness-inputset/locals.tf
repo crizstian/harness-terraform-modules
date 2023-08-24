@@ -119,7 +119,7 @@ locals {
                 }
               )
             } if infra_details.env_id == env_details.identifier && try(variables.vars.settings.infrastructure[infra], false)
-          } if contains(keys(variables.vars.artifacts), env_details.primary_artifact) && try(local.inpt_by_svc["${svc}_${name}"].environment_type, env_details.type) == env_details.type && try(variables.vars.settings.environments[env], false)
+          } if contains(keys(variables.vars.artifacts), env_details.primary_artifact) && try(local.inpt_by_svc["${svc}_${name}"].environment_type, env_details.type) == env_details.type
         ] if name == pipe && values.INPUTSET
       ] if variables.vars.enable
     ] if details.enable && details.type == "CD"
