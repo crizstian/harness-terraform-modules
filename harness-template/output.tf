@@ -47,3 +47,7 @@ output "all" {
     length(keys(local.templates_output)) > 0 ? { templates = local.templates_output } : {},
   )
 }
+
+output "test" {
+  value = local.template_connectors
+}
