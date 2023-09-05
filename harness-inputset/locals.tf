@@ -54,7 +54,7 @@ locals {
             "${variables.vars.type}_service_id" = variables.identifier
           },
           details
-        ) if values.INPUTSET && name == pipe
+        ) if values.INPUTSET && try(details.pipeline, name) == pipe
       } if variables.vars.enable
     ] if details.enable
   ])...)
@@ -93,7 +93,7 @@ locals {
               )
             } if infra_details.env_id == env_details.identifier && !can(variables.vars.settings.infrastructure)
           } if contains(keys(variables.vars.artifacts), env_details.primary_artifact) && try(local.inpt_by_svc["${svc}_${name}"].environment_type, env_details.type) == env_details.type
-        ] if name == pipe && values.INPUTSET
+        ] if try(details.pipeline, name) == pipe && values.INPUTSET && !can(variables.vars.settings.pipelines)
       ] if variables.vars.enable && !can(variables.vars.settings.environments)
     ] if details.enable && details.type == "CD"
   ])...)
@@ -120,7 +120,7 @@ locals {
               )
             } if infra_details.env_id == env_details.identifier && try(variables.vars.settings.infrastructure[replace(infra, "kubernetes_", "")], false)
           } if contains(keys(variables.vars.artifacts), env_details.primary_artifact) && try(local.inpt_by_svc["${svc}_${name}"].environment_type, env_details.type) == env_details.type
-        ] if name == pipe && values.INPUTSET
+        ] if try(details.pipeline, name) == pipe && values.INPUTSET && try(variables.vars.settings.pipelines[try(details.pipeline, name)], false)
       ] if variables.vars.enable
     ] if details.enable && details.type == "CD"
   ])...)
