@@ -7,10 +7,10 @@ output "inputset" {
     }
   }
 }
-output "inpt_by_svc" {
+output "verbose" {
   value = { for key, details in local.inpt_by_svc : key => details }
 }
-output "inpt_by_infra" {
+output "verbose_by_infra" {
   value = { for key, details in local.inpt_by_infra : key => details }
 }
 output "inpt_by_infra_specific" {
