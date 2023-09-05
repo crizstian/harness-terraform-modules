@@ -120,7 +120,7 @@ locals {
               )
             } if infra_details.env_id == env_details.identifier && try(variables.vars.settings.infrastructure[replace(infra, "kubernetes_", "")], false)
           } if contains(keys(variables.vars.artifacts), env_details.primary_artifact) && try(local.inpt_by_svc["${svc}_${name}"].environment_type, env_details.type) == env_details.type
-        ] if try(details.pipeline, name) == pipe && values.INPUTSET
+        ] if try(details.pipeline, name) == pipe && values.INPUTSET && !can(variables.vars.settings.pipelines)
       ] if variables.vars.enable
     ] if details.enable && details.type == "CD"
   ])...)
