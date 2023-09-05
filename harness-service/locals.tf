@@ -4,7 +4,7 @@ locals {
   service_tpl_dp_id = {
     for service, values in var.harness_platform_services : service => {
       template-deployment = {
-        template_id      = try(var.templates.template_deployments[values.SERVICE_DEFINITION.template.template-deployment.template_name].identifier, "")
+        template_id      = try(var.templates.template_deployments[var.harness_platform_service_configs[details.SERVICE_DEFINITION.type].template.template-deployment.template_name].identifier, "")
         template_version = try(values.SERVICE_DEFINITION.template.template-deployment.template_version, "")
       }
     }
