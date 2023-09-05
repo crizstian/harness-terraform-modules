@@ -120,6 +120,60 @@ locals {
               )
             } if infra_details.env_id == env_details.identifier && try(variables.vars.settings.infrastructure[replace(infra, "kubernetes_", "")], false)
           } if contains(keys(variables.vars.artifacts), env_details.primary_artifact) && try(local.inpt_by_svc["${svc}_${name}"].environment_type, env_details.type) == env_details.type
+        ] if try(details.pipeline, name) == pipe && values.INPUTSET
+      ] if variables.vars.enable
+    ] if details.enable && details.type == "CD"
+  ])...)
+
+  inpt_by_pipeline_specific = merge(flatten([
+    for name, details in var.harness_platform_inputsets : [
+      for svc, variables in var.harness_platform_services : [
+
+        for pipe, values in try(variables.vars.PIPELINE, {}) : [
+          for env, env_details in var.environments : {
+            for infra, infra_details in var.infrastructures : "${svc}_${name}_${env}_${infra}" =>
+            {
+              vars = merge(
+                local.inpt_by_svc["${svc}_${name}"],
+                {
+                  env                                        = "${env}"
+                  env_id                                     = env_details.identifier
+                  primary_artifact                           = env_details.primary_artifact
+                  delegate_selectors                         = try(infra_details.delegate_selectors, ["NOT_DEFINED"])
+                  name                                       = replace("${svc}_${infra}", "kubernetes_", "")
+                  identifier                                 = "${lower(replace(replace("${svc}_${infra}", "/[\\s-.]/", "_"), "kubernetes_", ""))}_${var.suffix}"
+                  "${variables.vars.type}_infrastructure_id" = infra_details.identifier
+                }
+              )
+            } if infra_details.env_id == env_details.identifier && !can(variables.vars.settings.infrastructure)
+          } if contains(keys(variables.vars.artifacts), env_details.primary_artifact) && try(local.inpt_by_svc["${svc}_${name}"].environment_type, env_details.type) == env_details.type
+        ] if try(details.pipeline, name) == pipe && values.INPUTSET && try(variables.vars.settings.pipelines[try(details.pipeline, name)], false)
+      ] if variables.vars.enable
+    ] if details.enable && details.type == "CD"
+  ])...)
+
+  inpt_by_infra_and_pipeline_specific = merge(flatten([
+    for name, details in var.harness_platform_inputsets : [
+      for svc, variables in var.harness_platform_services : [
+
+        for pipe, values in try(variables.vars.PIPELINE, {}) : [
+          for env, env_details in var.environments : {
+            for infra, infra_details in var.infrastructures : "${svc}_${name}_${env}_${infra}" =>
+            {
+              vars = merge(
+                local.inpt_by_svc["${svc}_${name}"],
+                {
+                  env                                        = "${env}"
+                  env_id                                     = env_details.identifier
+                  primary_artifact                           = env_details.primary_artifact
+                  delegate_selectors                         = try(infra_details.delegate_selectors, ["NOT_DEFINED"])
+                  name                                       = replace("${svc}_${infra}", "kubernetes_", "")
+                  identifier                                 = "${lower(replace(replace("${svc}_${infra}", "/[\\s-.]/", "_"), "kubernetes_", ""))}_${var.suffix}"
+                  "${variables.vars.type}_infrastructure_id" = infra_details.identifier
+                }
+              )
+            } if infra_details.env_id == env_details.identifier && try(variables.vars.settings.infrastructure[replace(infra, "kubernetes_", "")], false)
+          } if contains(keys(variables.vars.artifacts), env_details.primary_artifact) && try(local.inpt_by_svc["${svc}_${name}"].environment_type, env_details.type) == env_details.type
         ] if try(details.pipeline, name) == pipe && values.INPUTSET && try(variables.vars.settings.pipelines[try(details.pipeline, name)], false)
       ] if variables.vars.enable
     ] if details.enable && details.type == "CD"
@@ -171,7 +225,7 @@ locals {
               } if infra_details.env_id == env_details.identifier
             ]])...
           )
-        } if name == pipe && values.INPUTSET
+        } if try(details.pipeline, name) == pipe && values.INPUTSET
       } if variables.vars.enable && !can(variables.vars.settings.infrastructure)
     ] if details.enable && details.type == "ALL"
   ])...)
@@ -203,6 +257,8 @@ locals {
     local.ci,
     local.inpt_by_infra,
     local.inpt_by_infra_specific,
+    local.inpt_by_pipeline_specific,
+    local.inpt_by_infra_and_pipeline_specific,
     local.inpt_by_all_infra,
   )
 }
