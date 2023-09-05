@@ -9,7 +9,7 @@ locals {
         for type, connectors in var.connectors : {
           for tipo, connector in try(details.connectors, {}) : tipo => {
             for key, value in connector : key => {
-              connector_id = connectors[value.name].identifier
+              connector_id = connectors[key].identifier
             }
           } if "${tipo}_connectors" == type
         }
