@@ -6,13 +6,13 @@ locals {
   template_connectors = { for name, details in var.harness_platform_templates : name => {
     connector = merge(
       flatten([
-        for type, connectors in var.connectors : {
-          for tipo, connector in try(details.connectors, {}) : tipo => {
+        for type, connectors in var.connectors : [
+          for tipo, connector in try(details.connectors, {}) : {
             for key, value in connector : key => {
-              connector_id = connectors[key].identifier
+              id = connectors[key].identifier
             }
           } if "${tipo}_connectors" == type
-        }
+        ]
       ])...
   ) } if details.enable }
 
