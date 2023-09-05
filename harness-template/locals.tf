@@ -4,7 +4,7 @@ locals {
   template_prj_id = merge([for template, values in var.harness_platform_templates : { for prj, details in var.projects : template => details.identifier if lower(prj) == lower(try(values.vars.project, "")) }]...)
 
   template_connectors = { for name, details in var.harness_platform_templates : name => {
-    connector = merge(
+    connectors = merge(
       flatten([
         for type, connectors in var.connectors : [
           for tipo, connector in try(details.connectors, {}) : {
