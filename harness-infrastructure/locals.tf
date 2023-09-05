@@ -69,7 +69,7 @@ locals {
             )
           }
         } : {}
-      )
+      ) if try(values.enable, true)
     ]...
   )
 
