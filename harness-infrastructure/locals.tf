@@ -54,7 +54,7 @@ locals {
           }
         },
         values.type == "CustomDeployment" ? {
-          type = {
+          "${type}" = {
             vars = merge(
               values,
               try(local.infrastructure_tpl_dp_id[type], {}),
