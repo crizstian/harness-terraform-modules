@@ -7,7 +7,7 @@ locals {
     connector = merge(
       flatten([
         for type, connectors in var.connectors : {
-          for tipo, connector in try(details.connector, {}) : tipo => {
+          for tipo, connector in try(details.connectors, {}) : tipo => {
             for key, value in connector : key => {
               connector_id = connectors[value.name].identifier
             }
