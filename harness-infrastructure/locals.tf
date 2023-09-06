@@ -53,18 +53,21 @@ locals {
             )
           }
         },
-        values.type == "CustomDeployment" ? {
-          "${type}" = {
+        values.type == "CustomDeployment" ?
+        {
+          for env, env_details in harness_platform_environment.environment : "${type}_${env}" => {
             vars = merge(
               values,
+              details,
               try(local.infrastructure_tpl_dp_id[type], {}),
               {
-                name       = "${type}"
-                identifier = "${lower(replace(type, "/[\\s-.]/", "_"))}_${var.suffix}"
-                tags       = concat(try(values.vars.tags, []), var.tags)
-                org_id     = try(local.infrastructure_org_id[type], "") != "" ? local.infrastructure_org_id[type] : try(values.vars.org_id, var.common_values.org_id)
-                project_id = try(local.infrastructure_prj_id[type], "") != "" ? local.infrastructure_prj_id[type] : try(values.vars.project_id, var.common_values.project_id)
-                env_id     = harness_platform_environment.environment[type].identifier
+                name               = "${type}_${env}"
+                identifier         = "${lower(replace("${type}_${env}", "/[\\s-.]/", "_"))}_${var.suffix}"
+                tags               = concat(try(values.vars.tags, []), var.tags)
+                delegate_selectors = try(details.delegate_selectors, [])
+                org_id             = try(local.infrastructure_org_id[type], "") != "" ? local.infrastructure_org_id[type] : try(values.vars.org_id, var.common_values.org_id)
+                project_id         = try(local.infrastructure_prj_id[type], "") != "" ? local.infrastructure_prj_id[type] : try(values.vars.project_id, var.common_values.project_id)
+                env_id             = env_details.identifier
               }
             )
           }
