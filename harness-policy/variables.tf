@@ -14,9 +14,6 @@ variable "organizations" {
 variable "projects" {
   default = {}
 }
-variable "tags" {
-  default = ""
-}
 variable "common_values" {
   default = {
     org_id     = ""
