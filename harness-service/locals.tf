@@ -35,9 +35,9 @@ locals {
         chartName: "${v.chartName}"
         chartVersion: "${v.chartVersion}"
         helmVersion: "${v.helmVersion}"
-        skipResourceVersioning: "false"
-        nableDeclarativeRollback: "false"
-        fetchHelmChartMetadata: "false "
+        skipResourceVersioning: false
+        nableDeclarativeRollback: false
+        fetchHelmChartMetadata: false
         %{if length(v.commandFlags) > 0}
         commandFlags:                
           - commandType: Upgrade                  
