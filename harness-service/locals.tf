@@ -38,12 +38,14 @@ locals {
         skipResourceVersioning: false
         nableDeclarativeRollback: false              
         fetchHelmChartMetadata: false 
-        %{if length(v.commandFlags) > 0}%{for cmd in v.commandFlags}
+        %{if length(v.commandFlags) > 0}
+        %{for cmd in v.commandFlags}
         commandFlags:                
           - commandType: ${cmd}                  
             flag: |-                    
               ${v.commandFlags[cmd].flag}
-        %{endfor}%{endif}
+        %{endfor}
+        %{endif}
     EOT
     if v.type == "HelmChart"
     ]
