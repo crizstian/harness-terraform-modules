@@ -34,23 +34,7 @@ locals {
   infrastructures = merge(
     [
       for type, values in var.harness_platform_infrastructures : merge(
-        values.type == "CustomDeployment" ?
         {
-          for env, env_details in harness_platform_environment.environment : "${type}_${env}" => {
-            vars = merge(
-              values,
-              try(local.infrastructure_tpl_dp_id[type], {}),
-              {
-                name       = "${type}_${env}"
-                identifier = "${lower(replace("${type}_${env}", "/[\\s-.]/", "_"))}_${var.suffix}"
-                tags       = concat(try(values.vars.tags, []), var.tags)
-                org_id     = try(local.infrastructure_org_id[type], "") != "" ? local.infrastructure_org_id[type] : try(values.vars.org_id, var.common_values.org_id)
-                project_id = try(local.infrastructure_prj_id[type], "") != "" ? local.infrastructure_prj_id[type] : try(values.vars.project_id, var.common_values.project_id)
-                env_id     = env_details.identifier
-              }
-            )
-          }
-          } : {
           for infra, details in try(var.connectors["${type}_connectors"], {}) : "${type}_${infra}" => {
             vars = merge(
               values,
@@ -68,7 +52,24 @@ locals {
               }
             )
           }
-        }
+        },
+        values.type == "CustomDeployment" ?
+        {
+          for env, env_details in harness_platform_environment.environment : "${type}_${env}" => {
+            vars = merge(
+              values,
+              try(local.infrastructure_tpl_dp_id[type], {}),
+              {
+                name       = "${type}_${env}"
+                identifier = "${lower(replace("${type}_${env}", "/[\\s-.]/", "_"))}_${var.suffix}"
+                tags       = concat(try(values.vars.tags, []), var.tags)
+                org_id     = try(local.infrastructure_org_id[type], "") != "" ? local.infrastructure_org_id[type] : try(values.vars.org_id, var.common_values.org_id)
+                project_id = try(local.infrastructure_prj_id[type], "") != "" ? local.infrastructure_prj_id[type] : try(values.vars.project_id, var.common_values.project_id)
+                env_id     = env_details.identifier
+              }
+            )
+          }
+        } : {}
       ) if try(values.enable, true)
     ]...
   )
