@@ -39,12 +39,10 @@ locals {
         nableDeclarativeRollback: false              
         fetchHelmChartMetadata: false 
         %{if length(v.commandFlags) > 0}
-        %{for cmd in v.commandFlags}
         commandFlags:                
-          - commandType: ${cmd}                  
+          - commandType: Upgrade                  
             flag: |-                    
-              ${v.commandFlags[cmd].flag}
-        %{endfor}
+              ${v.commandFlags["Upgrade"].flag}
         %{endif}
     EOT
     if v.type == "HelmChart"
