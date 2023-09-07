@@ -30,7 +30,7 @@ locals {
       spec:
         store:
           spec:
-            connectorRef: ${try(var.harness_platform_service_configs[value.SERVICE_DEFINITION.type].CONNECTORS.helm_connector_id, try(var.connectors.default_connectors.helm_connector_id, ""))}
+            connectorRef: ${try(var.connectors["helm_connectors"][var.harness_platform_service_configs[value.SERVICE_DEFINITION.type].CONNECTORS.helm].identifier, try(var.connectors.default_connectors.helm_connector_id, ""))}
           type: Http
         chartName: ${v.chartName}
         chartVersion: ${v.chartVersion}
