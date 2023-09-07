@@ -30,12 +30,20 @@ locals {
       spec:
         store:
           spec:
-            connectorRef: ${try(var.connectors.default_connectors.helm_connector_id, try(var.harness_platform_service_configs[value.SERVICE_DEFINITION.type].CONNECTORS.helm_connector_id, ""))}
+            connectorRef: ${try(var.harness_platform_service_configs[value.SERVICE_DEFINITION.type].CONNECTORS.helm_connector_id, try(var.connectors.default_connectors.helm_connector_id, ""))}
           type: Http
         chartName: ${v.chartName}
         chartVersion: ${v.chartVersion}
         helmVersion: ${v.helmVersion}
         skipResourceVersioning: false
+        nableDeclarativeRollback: false              
+        fetchHelmChartMetadata: false 
+        %{if length(v.commandFlags) > 0}%{for cmd in v.commandFlags}
+        commandFlags:                
+          - commandType: ${cmd}                  
+            flag: |-                    
+              ${v.commandFlags[cmd].flag}
+        %{endfor}%{endif}
     EOT
     if v.type == "HelmChart"
     ]
