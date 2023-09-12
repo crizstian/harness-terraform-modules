@@ -286,6 +286,28 @@ locals {
     ] if details.enable && details.type == "ALL"
   ])...)
 
+  inpt_by_base_env = merge(flatten([
+    for name, details in var.harness_platform_inputsets : [
+      for svc, variables in var.harness_platform_services : {
+        for pipe, values in try(variables.vars.PIPELINE, {}) : "${svc}_${name}_ALL" => {
+          vars = merge(
+            local.inpt_by_svc["${svc}_${name}"],
+            {
+              name       = "${svc}"
+              identifier = "${lower(replace("${svc}_${name}_ALL", "/[\\s-.]/", "_"))}_${var.suffix}"
+            },
+            flatten([for env, env_details in var.environments : [
+              for infra, infra_details in var.infrastructures : {
+                "${variables.vars.type}_infrastructure_id" = infra_details.identifier
+                "env_id"                                   = env_details.identifier
+              } if infra_details.env_id == env_details.identifier && try(details.vars.base_env, "NONE") == env
+            ]])...
+          )
+        } if try(details.pipeline, name) == pipe && values.INPUTSET
+      } if variables.vars.enable && !can(variables.vars.settings.infrastructure)
+    ] if details.enable && details.type == "ALL"
+  ])...)
+
   /* inpt_by_all_infra = merge(flatten([
     for name, details in var.harness_platform_inputsets : [
       for svc, variables in var.harness_platform_services : [
@@ -318,5 +340,6 @@ locals {
     local.inpt_by_inputset_specific,
     local.inpt_by_infra_and_pipeline_and_input_specific,
     local.inpt_by_all_infra,
+    local.inpt_by_base_env,
   )
 }
