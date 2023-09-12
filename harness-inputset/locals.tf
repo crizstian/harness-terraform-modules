@@ -305,7 +305,7 @@ locals {
           )
         } if try(details.pipeline, name) == pipe && values.INPUTSET
       } if variables.vars.enable && !can(variables.vars.settings.infrastructure)
-    ] if details.enable && details.type == "ALL"
+    ] if details.enable && details.type == "ALL" && can(details.vars.base_env)
   ])...)
 
   /* inpt_by_all_infra = merge(flatten([
