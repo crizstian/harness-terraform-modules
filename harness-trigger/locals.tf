@@ -131,7 +131,7 @@ locals {
             )
           } if enable
         } if name == pipe
-      ] if variables.vars.enable && contains(keys(variables.vars.arttifacts), try(details.vars.type, "NONE"))
+      ] if variables.vars.enable && contains(keys(variables.vars.artifacts), try(details.vars.type, "NONE"))
     ] if details.enable && details.type == "ALL"
   ])...)
 
