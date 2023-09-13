@@ -218,12 +218,12 @@ locals {
   inputsets = merge(
     local.ci,
     local.inpt_by_infra,
-    local.inpt_by_infra_specific,
+    /* local.inpt_by_infra_specific,
     local.inpt_by_inputset_specific,
     local.inpt_by_pipeline_specific,
     local.inpt_by_infra_and_pipeline_specific,
     local.inpt_by_infra_and_pipeline_and_input_specific,
     local.inpt_by_all_infra,
-    local.inpt_by_base_env,
+    local.inpt_by_base_env, */
   )
 }
