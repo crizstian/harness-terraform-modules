@@ -70,11 +70,11 @@ locals {
                   "${local.services[svc].type}_infrastructure_id" = "" # infra_details.identifier
                 }
               )
-            } #if infra_details.env_id == env_details.identifier
-          }   #if contains(keys(local.services[svc].artifacts), env_details.primary_artifact)
-        ]     #if try(details.pipeline, name) == pipe && values.INPUTSET
-      ]       #if local.services[svc].enable
-    ]         #if details.enable && details.type == "CD"
+            } if infra_details.env_id == env_details.identifier
+          } if contains(keys(local.services[svc].artifacts), env_details.primary_artifact)
+        ] if try(details.pipeline, name) == pipe && values.INPUTSET
+      ] if local.services[svc].enable
+    ] if details.enable && details.type == "CD"
   ])...)
 
 
@@ -84,13 +84,13 @@ locals {
 
         for pipe, values in local.services[svc].PIPELINE : [
           for env, env_details in var.environments : {
-            for infra, infra_details in var.infrastructures : "${svc}_${name}_${env}_${infra}" => local.inpt_by_svc["${svc}_${name}"] #local.inpt["${svc}_${name}_${env}_${infra}"]
+            for infra, infra_details in var.infrastructures : "${svc}_${name}_${env}_${infra}" => local.inpt["${svc}_${name}_${env}_${infra}"]
 
             /* if infra_details.env_id == env_details.identifier && !can(local.services[svc].settings.infrastructure) */
-          } #if contains(keys(local.services[svc].artifacts), env_details.primary_artifact) && !can(local.services[svc].settings.environments) #&& try(local.inpt_by_svc["${svc}_${name}"].environment_type, env_details.type) == env_details.type
-        ]   #if try(details.pipeline, name) == pipe && values.INPUTSET && !can(local.services[svc].settings.pipelines)
-      ]     #if local.services[svc].enable && !can(local.services[svc].settings.inputsets)
-    ]       #if details.enable && details.type == "CD"
+          } if contains(keys(local.services[svc].artifacts), env_details.primary_artifact) && !can(local.services[svc].settings.environments) #&& try(local.inpt_by_svc["${svc}_${name}"].environment_type, env_details.type) == env_details.type
+        ] if try(details.pipeline, name) == pipe && values.INPUTSET && !can(local.services[svc].settings.pipelines)
+      ] if local.services[svc].enable && !can(local.services[svc].settings.inputsets)
+    ] if details.enable && details.type == "CD"
   ])...)
 
   inpt_by_inputset_specific = merge(flatten([
