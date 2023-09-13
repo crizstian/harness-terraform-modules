@@ -84,7 +84,7 @@ locals {
 
         for pipe, values in try(local.services[svc].PIPELINE, {}) : [
           for env, env_details in var.environments : {
-            for infra, infra_details in var.infrastructures : "${svc}_${name}_${env}_${infra}" => local.inpt["${svc}_${name}_${env}_${infra}"]
+            for infra, infra_details in var.infrastructures : "${svc}_${name}_${env}_${infra}" => true #local.inpt["${svc}_${name}_${env}_${infra}"]
 
             /* if infra_details.env_id == env_details.identifier && !can(local.services[svc].settings.infrastructure) */
           } #if contains(keys(local.services[svc].artifacts), env_details.primary_artifact) && !can(local.services[svc].settings.environments) #&& try(local.inpt_by_svc["${svc}_${name}"].environment_type, env_details.type) == env_details.type
