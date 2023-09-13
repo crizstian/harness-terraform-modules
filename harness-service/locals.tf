@@ -1,7 +1,7 @@
 locals {
 
   service_definition = { for svc, value in var.harness_platform_services : svc => merge(
-    var.harness_platform_service_configs[values.SERVICE_DEFINITION.type],
+    var.harness_platform_service_configs[value.SERVICE_DEFINITION.type],
     value.SERVICE_DEFINITION
     )
   }
