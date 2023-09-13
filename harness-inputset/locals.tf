@@ -33,9 +33,9 @@ locals {
             pipeline_id = "" #var.pipelines[pipe].identifier
           },
           details
-        ) if values.INPUTSET && try(details.pipeline, name) == pipe
-      } if local.services[svc].enable
-    ] if details.enable
+        ) #if values.INPUTSET && try(details.pipeline, name) == pipe
+      }   #if local.services[svc].enable
+    ]     #if details.enable
   ])...)
 
   ci = { for name, values in local.inpt_by_svc : name =>
