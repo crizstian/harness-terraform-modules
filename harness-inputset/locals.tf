@@ -62,12 +62,12 @@ locals {
                 local.inpt_by_svc["${svc}_${name}"],
                 {
                   env                                             = "${env}"
-                  env_id                                          = env_details.identifier
+                  env_id                                          = "" # env_details.identifier
                   primary_artifact                                = env_details.primary_artifact
                   delegate_selectors                              = try(infra_details.delegate_selectors, ["NOT_DEFINED"])
                   name                                            = replace("${svc}_${infra}", "${local.services[svc].type}_", "")
                   identifier                                      = "${lower(replace(replace("${svc}_${infra}", "/[\\s-.]/", "_"), "${local.services[svc].type}_", ""))}_${var.suffix}"
-                  "${local.services[svc].type}_infrastructure_id" = infra_details.identifier
+                  "${local.services[svc].type}_infrastructure_id" = "" # infra_details.identifier
                 }
               )
             } if infra_details.env_id == env_details.identifier
