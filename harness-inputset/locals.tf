@@ -1,5 +1,20 @@
 # github pipelines
 locals {
+  environments = { for name, details in var.harness_platform_environments : name => "${lower(replace(name, "/[\\s-.]/", "_"))}_${var.suffix}" if details.enable }
+
+  infrastructures = merge(
+    [
+      for type, values in var.harness_platform_infrastructures : merge(
+        {
+          for infra, details in try(var.connectors["${type}_connectors"], {}) : "${type}_${infra}" => {
+            identifier = "${lower(replace("${type}_${infra}", "/[\\s-.]/", "_"))}_${var.suffix}"
+            env_id     = local.environments[details.environment]
+          }
+        }
+      )
+    ]
+  )
+
 
   services = {
     for svc, details in var.harness_platform_services : svc => merge(
@@ -55,19 +70,19 @@ locals {
       for svc, variables in var.harness_platform_services : [
 
         for pipe, values in local.services[svc].PIPELINE : [
-          for env, env_details in var.environments : {
-            for infra, infra_details in var.infrastructures : "${svc}_${name}_${env}_${infra}" =>
+          for env, env_details in local.environments : {
+            for infra, infra_details in local.infrastructures : "${svc}_${name}_${env}_${infra}" =>
             {
               vars = merge(
                 local.inpt_by_svc["${svc}_${name}"],
                 {
                   env                                             = "${env}"
-                  env_id                                          = "" # env_details.identifier
+                  env_id                                          = env_details.identifier
                   primary_artifact                                = env_details.primary_artifact
                   delegate_selectors                              = try(infra_details.delegate_selectors, ["NOT_DEFINED"])
                   name                                            = replace("${svc}_${infra}", "${local.services[svc].type}_", "")
                   identifier                                      = "${lower(replace(replace("${svc}_${infra}", "/[\\s-.]/", "_"), "${local.services[svc].type}_", ""))}_${var.suffix}"
-                  "${local.services[svc].type}_infrastructure_id" = "" # infra_details.identifier
+                  "${local.services[svc].type}_infrastructure_id" = infra_details.identifier
                 }
               )
             } if infra_details.env_id == env_details.identifier
@@ -83,10 +98,10 @@ locals {
       for svc, variables in var.harness_platform_services : [
 
         for pipe, values in local.services[svc].PIPELINE : [
-          for env, env_details in var.environments : {
-            for infra, infra_details in var.infrastructures : "${svc}_${name}_${env}_${infra}" => local.inpt["${svc}_${name}_${env}_${infra}"]
+          for env, env_details in local.environments : {
+            for infra, infra_details in local.infrastructures : "${svc}_${name}_${env}_${infra}" => local.inpt["${svc}_${name}_${env}_${infra}"]
 
-            /* if infra_details.env_id == env_details.identifier && !can(local.services[svc].settings.infrastructure) */
+            if infra_details.env_id == env_details.identifier && !can(local.services[svc].settings.infrastructure)
           } if contains(keys(local.services[svc].artifacts), env_details.primary_artifact) && !can(local.services[svc].settings.environments) #&& try(local.inpt_by_svc["${svc}_${name}"].environment_type, env_details.type) == env_details.type
         ] if try(details.pipeline, name) == pipe && values.INPUTSET && !can(local.services[svc].settings.pipelines)
       ] if local.services[svc].enable && !can(local.services[svc].settings.inputsets)
@@ -98,8 +113,8 @@ locals {
       for svc, variables in var.harness_platform_services : [
 
         for pipe, values in local.services[svc].PIPELINE : [
-          for env, env_details in var.environments : {
-            for infra, infra_details in var.infrastructures : "${svc}_${name}_${env}_${infra}" => local.inpt["${svc}_${name}_${env}_${infra}"]
+          for env, env_details in local.environments : {
+            for infra, infra_details in local.infrastructures : "${svc}_${name}_${env}_${infra}" => local.inpt["${svc}_${name}_${env}_${infra}"]
 
             if infra_details.env_id == env_details.identifier && !can(local.services[svc].settings.infrastructure)
           } if contains(keys(local.services[svc].artifacts), env_details.primary_artifact) && !can(local.services[svc].settings.environments) #&& try(local.inpt_by_svc["${svc}_${name}"].environment_type, env_details.type) == env_details.type
@@ -113,8 +128,8 @@ locals {
       for svc, variables in var.harness_platform_services : [
 
         for pipe, values in local.services[svc].PIPELINE : [
-          for env, env_details in var.environments : {
-            for infra, infra_details in var.infrastructures : "${svc}_${name}_${env}_${infra}" => local.inpt["${svc}_${name}_${env}_${infra}"]
+          for env, env_details in local.environments : {
+            for infra, infra_details in local.infrastructures : "${svc}_${name}_${env}_${infra}" => local.inpt["${svc}_${name}_${env}_${infra}"]
 
             if infra_details.env_id == env_details.identifier && try(variables.vars.settings.infrastructure[replace(infra, "${local.services[svc].type}_", "")], false)
           } if contains(keys(local.services[svc].artifacts), env_details.primary_artifact) && !can(local.services[svc].settings.environments) #&& try(local.inpt_by_svc["${svc}_${name}"].environment_type, env_details.type) == env_details.type
@@ -130,8 +145,8 @@ locals {
       for svc, variables in var.harness_platform_services : [
 
         for pipe, values in local.services[svc].PIPELINE : [
-          for env, env_details in var.environments : {
-            for infra, infra_details in var.infrastructures : "${svc}_${name}_${env}_${infra}" => local.inpt["${svc}_${name}_${env}_${infra}"]
+          for env, env_details in local.environments : {
+            for infra, infra_details in local.infrastructures : "${svc}_${name}_${env}_${infra}" => local.inpt["${svc}_${name}_${env}_${infra}"]
 
             if infra_details.env_id == env_details.identifier && !can(local.services[svc].settings.infrastructure)
           } if contains(keys(local.services[svc].artifacts), env_details.primary_artifact) && !can(local.services[svc].settings.environments) #&& try(local.inpt_by_svc["${svc}_${name}"].environment_type, env_details.type) == env_details.type
@@ -146,8 +161,8 @@ locals {
       for svc, variables in var.harness_platform_services : [
 
         for pipe, values in local.services[svc].PIPELINE : [
-          for env, env_details in var.environments : {
-            for infra, infra_details in var.infrastructures : "${svc}_${name}_${env}_${infra}" => local.inpt["${svc}_${name}_${env}_${infra}"]
+          for env, env_details in local.environments : {
+            for infra, infra_details in local.infrastructures : "${svc}_${name}_${env}_${infra}" => local.inpt["${svc}_${name}_${env}_${infra}"]
 
             if infra_details.env_id == env_details.identifier && try(variables.vars.settings.infrastructure[replace(infra, "${local.services[svc].type}_", "")], false)
           } if contains(keys(local.services[svc].artifacts), env_details.primary_artifact) && !can(local.services[svc].settings.environments) #&& try(local.inpt_by_svc["${svc}_${name}"].environment_type, env_details.type) == env_details.type
@@ -161,8 +176,8 @@ locals {
       for svc, variables in var.harness_platform_services : [
 
         for pipe, values in local.services[svc].PIPELINE : [
-          for env, env_details in var.environments : {
-            for infra, infra_details in var.infrastructures : "${svc}_${name}_${env}_${infra}" => local.inpt["${svc}_${name}_${env}_${infra}"]
+          for env, env_details in local.environments : {
+            for infra, infra_details in local.infrastructures : "${svc}_${name}_${env}_${infra}" => local.inpt["${svc}_${name}_${env}_${infra}"]
 
             if infra_details.env_id == env_details.identifier && try(variables.vars.settings.infrastructure[replace(infra, "${local.services[svc].type}_", "")], false)
           } if contains(keys(local.services[svc].artifacts), env_details.primary_artifact) && !can(local.services[svc].settings.environments) #&& try(local.inpt_by_svc["${svc}_${name}"].environment_type, env_details.type) == env_details.type
@@ -182,8 +197,8 @@ locals {
               name       = "${svc}"
               identifier = "${lower(replace("${svc}_${name}_ALL", "/[\\s-.]/", "_"))}_${var.suffix}"
             },
-            flatten([for env, env_details in var.environments : [
-              for infra, infra_details in var.infrastructures : {
+            flatten([for env, env_details in local.environments : [
+              for infra, infra_details in local.infrastructures : {
                 "${local.services[svc].type}_${lower(env)}_infrastructure_id" = infra_details.identifier
               } if infra_details.env_id == env_details.identifier
             ]])...
@@ -203,8 +218,8 @@ locals {
               name       = "${svc}"
               identifier = "${lower(replace("${svc}_${name}_ALL", "/[\\s-.]/", "_"))}_${var.suffix}"
             },
-            flatten([for env, env_details in var.environments : [
-              for infra, infra_details in var.infrastructures : {
+            flatten([for env, env_details in local.environments : [
+              for infra, infra_details in local.infrastructures : {
                 "${local.services[svc].type}_${lower(env)}_infrastructure_id" = infra_details.identifier
               } if infra_details.env_id == env_details.identifier && details.vars.base_env == env
             ]])...
