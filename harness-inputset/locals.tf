@@ -15,7 +15,7 @@ locals {
   inpt_by_svc = merge(flatten([
     for name, details in var.harness_platform_inputsets : [
       for svc, variables in var.harness_platform_services : {
-        for pipe, values in try(local.services[svc].PIPELINE, {}) : "${svc}_${name}" =>
+        for pipe, values in local.services[svc].PIPELINE : "${svc}_${name}" =>
         merge(
           try(details.vars.usergroups_required, false) ? { usergroups = var.usergroups } : {},
           try(var.templates.pipelines[pipe].default_values, {}),
@@ -28,14 +28,14 @@ locals {
             suffix      = var.suffix
             tags        = concat(try(local.services[svc].tags, []), var.tags)
             git_details = try(local.services[svc].git_details, {})
-            org_id      = "" #var.pipelines[pipe].org_id
-            project_id  = "" #var.pipelines[pipe].project_id
-            pipeline_id = "" #var.pipelines[pipe].identifier
+            org_id      = var.pipelines[pipe].org_id
+            project_id  = var.pipelines[pipe].project_id
+            pipeline_id = var.pipelines[pipe].identifier
           },
           details
-        ) #if values.INPUTSET && try(details.pipeline, name) == pipe
-      }   #if local.services[svc].enable
-    ]     #if details.enable
+        ) if values.INPUTSET && try(details.pipeline, name) == pipe
+      } if local.services[svc].enable
+    ] if details.enable
   ])...)
 
   ci = { for name, values in local.inpt_by_svc : name =>
@@ -54,7 +54,7 @@ locals {
     for name, details in var.harness_platform_inputsets : [
       for svc, variables in var.harness_platform_services : [
 
-        for pipe, values in try(local.services[svc].PIPELINE, {}) : [
+        for pipe, values in local.services[svc].PIPELINE : [
           for env, env_details in var.environments : {
             for infra, infra_details in var.infrastructures : "${svc}_${name}_${env}_${infra}" =>
             {
@@ -84,7 +84,7 @@ locals {
 
         for pipe, values in local.services[svc].PIPELINE : [
           for env, env_details in var.environments : {
-            for infra, infra_details in var.infrastructures : "${svc}_${name}_${env}_${infra}" => true #local.inpt["${svc}_${name}_${env}_${infra}"]
+            for infra, infra_details in var.infrastructures : "${svc}_${name}_${env}_${infra}" => local.inpt_by_svc["${svc}_${name}"] #local.inpt["${svc}_${name}_${env}_${infra}"]
 
             /* if infra_details.env_id == env_details.identifier && !can(local.services[svc].settings.infrastructure) */
           } #if contains(keys(local.services[svc].artifacts), env_details.primary_artifact) && !can(local.services[svc].settings.environments) #&& try(local.inpt_by_svc["${svc}_${name}"].environment_type, env_details.type) == env_details.type
@@ -97,7 +97,7 @@ locals {
     for name, details in var.harness_platform_inputsets : [
       for svc, variables in var.harness_platform_services : [
 
-        for pipe, values in try(local.services[svc].PIPELINE, {}) : [
+        for pipe, values in local.services[svc].PIPELINE : [
           for env, env_details in var.environments : {
             for infra, infra_details in var.infrastructures : "${svc}_${name}_${env}_${infra}" => local.inpt["${svc}_${name}_${env}_${infra}"]
 
@@ -112,7 +112,7 @@ locals {
     for name, details in var.harness_platform_inputsets : [
       for svc, variables in var.harness_platform_services : [
 
-        for pipe, values in try(local.services[svc].PIPELINE, {}) : [
+        for pipe, values in local.services[svc].PIPELINE : [
           for env, env_details in var.environments : {
             for infra, infra_details in var.infrastructures : "${svc}_${name}_${env}_${infra}" => local.inpt["${svc}_${name}_${env}_${infra}"]
 
@@ -129,7 +129,7 @@ locals {
     for name, details in var.harness_platform_inputsets : [
       for svc, variables in var.harness_platform_services : [
 
-        for pipe, values in try(local.services[svc].PIPELINE, {}) : [
+        for pipe, values in local.services[svc].PIPELINE : [
           for env, env_details in var.environments : {
             for infra, infra_details in var.infrastructures : "${svc}_${name}_${env}_${infra}" => local.inpt["${svc}_${name}_${env}_${infra}"]
 
@@ -145,7 +145,7 @@ locals {
     for name, details in var.harness_platform_inputsets : [
       for svc, variables in var.harness_platform_services : [
 
-        for pipe, values in try(local.services[svc].PIPELINE, {}) : [
+        for pipe, values in local.services[svc].PIPELINE : [
           for env, env_details in var.environments : {
             for infra, infra_details in var.infrastructures : "${svc}_${name}_${env}_${infra}" => local.inpt["${svc}_${name}_${env}_${infra}"]
 
@@ -160,7 +160,7 @@ locals {
     for name, details in var.harness_platform_inputsets : [
       for svc, variables in var.harness_platform_services : [
 
-        for pipe, values in try(local.services[svc].PIPELINE, {}) : [
+        for pipe, values in local.services[svc].PIPELINE : [
           for env, env_details in var.environments : {
             for infra, infra_details in var.infrastructures : "${svc}_${name}_${env}_${infra}" => local.inpt["${svc}_${name}_${env}_${infra}"]
 
@@ -175,7 +175,7 @@ locals {
   inpt_by_all_infra = merge(flatten([
     for name, details in var.harness_platform_inputsets : [
       for svc, variables in var.harness_platform_services : {
-        for pipe, values in try(local.services[svc].PIPELINE, {}) : "${svc}_${name}_ALL" => {
+        for pipe, values in local.services[svc].PIPELINE : "${svc}_${name}_ALL" => {
           vars = merge(
             local.inpt_by_svc["${svc}_${name}"],
             {
@@ -196,7 +196,7 @@ locals {
   inpt_by_base_env = merge(flatten([
     for name, details in var.harness_platform_inputsets : [
       for svc, variables in var.harness_platform_services : {
-        for pipe, values in try(local.services[svc].PIPELINE, {}) : "${svc}_${name}_ALL" => {
+        for pipe, values in local.services[svc].PIPELINE : "${svc}_${name}_ALL" => {
           vars = merge(
             local.inpt_by_svc["${svc}_${name}"],
             {
