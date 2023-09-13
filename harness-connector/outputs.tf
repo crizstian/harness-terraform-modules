@@ -63,11 +63,11 @@ locals {
       identifier = value.project_id != "" ? value.identifier : value.org_id != "" ? "org.${value.identifier}" : "account.${value.identifier}"
     }
   }
-  /* service_now_connectors_output = { for key, value in harness_platform_connector_service_now.connector : key =>
+  service_now_connectors_output = { for key, value in harness_platform_connector_service_now.connector : key =>
     {
       identifier = value.project_id != "" ? value.identifier : value.org_id != "" ? "org.${value.identifier}" : "account.${value.identifier}"
     }
-  } */
+  }
   dynatrace_connectors_output = { for key, value in harness_platform_connector_dynatrace.connector : key =>
     {
       identifier = value.project_id != "" ? value.identifier : value.org_id != "" ? "org.${value.identifier}" : "account.${value.identifier}"

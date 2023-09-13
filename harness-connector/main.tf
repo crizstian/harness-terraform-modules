@@ -85,7 +85,7 @@ resource "harness_platform_connector_nexus" "connector" {
   }
 }
 
-/* resource "harness_platform_connector_service_now" "connector" {
+resource "harness_platform_connector_service_now" "connector" {
   for_each           = local.service_now_connectors
   identifier         = each.value.identifier
   name               = each.key
@@ -104,7 +104,7 @@ resource "harness_platform_connector_nexus" "connector" {
       password_ref = each.value.auth.credentials.password_ref
     }
   }
-} */
+}
 
 resource "harness_platform_connector_dynatrace" "connector" {
   for_each           = local.dynatrace_connectors
