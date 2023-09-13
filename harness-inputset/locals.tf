@@ -216,7 +216,7 @@ locals {
 
 
   inputsets = merge(
-    local.ci,
+    /* local.ci, */
     local.inpt_by_infra,
     /* local.inpt_by_infra_specific,
     local.inpt_by_inputset_specific,
