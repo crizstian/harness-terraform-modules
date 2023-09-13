@@ -77,7 +77,7 @@ locals {
     {
       identifier         = value.project_id != "" ? value.identifier : value.org_id != "" ? "org.${value.identifier}" : "account.${value.identifier}"
       tags               = value.tags
-      environment        = var.harness_platform_kubernetes_connectors[key].environment
+      environment        = try(var.harness_platform_kubernetes_connectors[key].environment, "NOT_DEFINED")
       delegate_selectors = can(var.harness_platform_kubernetes_connectors[key].inherit_from_delegate) ? var.harness_platform_kubernetes_connectors[key].inherit_from_delegate.delegate_selectors : try(value.delegate_selectors, [])
     }
   }
