@@ -62,12 +62,12 @@ locals {
                 local.inpt_by_svc["${svc}_${name}"],
                 {
                   env                                             = "${env}"
-                  env_id                                          = "" # env_details.identifier
+                  env_id                                          = env_details.identifier
                   primary_artifact                                = env_details.primary_artifact
                   delegate_selectors                              = try(infra_details.delegate_selectors, ["NOT_DEFINED"])
                   name                                            = replace("${svc}_${infra}", "${local.services[svc].type}_", "")
                   identifier                                      = "${lower(replace(replace("${svc}_${infra}", "/[\\s-.]/", "_"), "${local.services[svc].type}_", ""))}_${var.suffix}"
-                  "${local.services[svc].type}_infrastructure_id" = "" # infra_details.identifier
+                  "${local.services[svc].type}_infrastructure_id" = infra_details.identifier
                 }
               )
             } if infra_details.env_id == env_details.identifier
@@ -86,7 +86,7 @@ locals {
           for env, env_details in var.environments : {
             for infra, infra_details in var.infrastructures : "${svc}_${name}_${env}_${infra}" => local.inpt["${svc}_${name}_${env}_${infra}"]
 
-            /* if infra_details.env_id == env_details.identifier && !can(local.services[svc].settings.infrastructure) */
+            if infra_details.env_id == env_details.identifier && !can(local.services[svc].settings.infrastructure)
           } if contains(keys(local.services[svc].artifacts), env_details.primary_artifact) && !can(local.services[svc].settings.environments) #&& try(local.inpt_by_svc["${svc}_${name}"].environment_type, env_details.type) == env_details.type
         ] if try(details.pipeline, name) == pipe && values.INPUTSET && !can(local.services[svc].settings.pipelines)
       ] if local.services[svc].enable && !can(local.services[svc].settings.inputsets)
