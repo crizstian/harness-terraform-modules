@@ -82,7 +82,7 @@ locals {
     for name, details in var.harness_platform_inputsets : [
       for svc, variables in var.harness_platform_services : [
 
-        for pipe, values in try(local.services[svc].PIPELINE, {}) : [
+        for pipe, values in local.services[svc].PIPELINE : [
           for env, env_details in var.environments : {
             for infra, infra_details in var.infrastructures : "${svc}_${name}_${env}_${infra}" => true #local.inpt["${svc}_${name}_${env}_${infra}"]
 
