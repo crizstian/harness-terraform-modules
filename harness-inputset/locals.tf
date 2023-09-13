@@ -13,8 +13,8 @@ locals {
         },
         values.type == "CustomDeployment" ?
         {
-          for name, details in var.harness_platform_environments : "${type}_${env}" => {
-            identifier = "${lower(replace("${type}_${env}", "/[\\s-.]/", "_"))}_${var.suffix}"
+          for name, details in var.harness_platform_environments : "${type}_${name}" => {
+            identifier = "${lower(replace("${type}_${name}", "/[\\s-.]/", "_"))}_${var.suffix}"
             env_id     = "${lower(replace(name, "/[\\s-.]/", "_"))}_${var.suffix}"
           }
         } : {}
