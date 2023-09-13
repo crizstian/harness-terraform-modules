@@ -74,7 +74,7 @@ locals {
           }   #if contains(keys(local.services[svc].artifacts), env_details.primary_artifact)
         ]     #if try(details.pipeline, name) == pipe && values.INPUTSET
       ]       #if local.services[svc].enable
-    ] if details.enable && details.type == "CD"
+    ]         #if details.enable && details.type == "CD"
   ])...)
 
 
@@ -90,7 +90,7 @@ locals {
           } #if contains(keys(local.services[svc].artifacts), env_details.primary_artifact) && !can(local.services[svc].settings.environments) #&& try(local.inpt_by_svc["${svc}_${name}"].environment_type, env_details.type) == env_details.type
         ]   #if try(details.pipeline, name) == pipe && values.INPUTSET && !can(local.services[svc].settings.pipelines)
       ]     #if local.services[svc].enable && !can(local.services[svc].settings.inputsets)
-    ] if details.enable && details.type == "CD"
+    ]       #if details.enable && details.type == "CD"
   ])...)
 
   inpt_by_inputset_specific = merge(flatten([
