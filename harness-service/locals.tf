@@ -1,21 +1,29 @@
 locals {
+
+  service_definition = { for svc, value in var.harness_platform_services : svc => merge(
+    var.harness_platform_service_configs[values.SERVICE_DEFINITION.type],
+    value.SERVICE_DEFINITION
+    )
+  }
+
+
   service_org_id = merge([for service, values in var.harness_platform_services : { for org, details in var.organizations : service => details.identifier if lower(org) == lower(try(values.SERVICE_DEFINITION.organization, "")) }]...)
   service_prj_id = merge([for service, values in var.harness_platform_services : { for prj, details in var.projects : service => details.identifier if lower(prj) == lower(try(values.SERVICE_DEFINITION.project, "")) }]...)
   service_tpl_dp_id = {
     for service, values in var.harness_platform_services : service => {
       template-deployment = {
-        template_id      = try(var.templates.template_deployments[var.harness_platform_service_configs[values.SERVICE_DEFINITION.type].template.template-deployment.template_name].identifier, "")
-        template_version = try(var.harness_platform_service_configs[values.SERVICE_DEFINITION.type].template.template-deployment.template_version, "")
+        template_id      = try(var.templates.template_deployments[local.service_definition[svc].template.template-deployment.template_name].identifier, "")
+        template_version = try(local.service_definition[svc].template.template-deployment.template_version, "")
       }
     }
   }
 
   svc_artifacts_gcr = { for svc, value in var.harness_platform_services : svc => [
-    for k, v in try(value.SERVICE_DEFINITION.artifacts.gcr, {}) : <<-EOT
+    for k, v in try(local.service_definition[svc].artifacts.gcr, {}) : <<-EOT
     identifier: ${upper(k)}
       type: Gcr
       spec:
-        connectorRef: ${try(var.connectors.default_connectors.gcr_connector_id, try(var.harness_platform_service_configs[value.SERVICE_DEFINITION.type].CONNECTORS.gcr_connector_id, ""))}
+        connectorRef: ${try(var.connectors.default_connectors.gcr_connector_id, try(local.service_definition[svc].CONNECTORS.gcr_connector_id, ""))}
         registryHostname: us.gcr.io
         imagePath: ${v}
         tag: <+input>
@@ -23,14 +31,14 @@ locals {
     ]
   }
   svc_manifest_helm_chart = { for svc, value in var.harness_platform_services : svc => [
-    for k, v in try(var.harness_platform_service_configs[value.SERVICE_DEFINITION.type].MANIFESTS, try(value.SERVICE_DEFINITION.MANIFESTS, {})) : <<-EOT
+    for k, v in try(local.service_definition[svc].MANIFESTS, {}) : <<-EOT
     manifest:
       identifier: ${k}
       type: ${v.type}
       spec:
         store:
           spec:
-            connectorRef: ${try(var.connectors["helm_connectors"][value.SERVICE_DEFINITION.CONNECTORS.helm_connector_id].identifier, try(value.SERVICE_DEFINITION.CONNECTORS.helm_connector_id, try(var.harness_platform_service_configs[value.SERVICE_DEFINITION.type].CONNECTORS.helm_connector_id, try(var.connectors.default_connectors.helm_connector_id, ""))))}
+            connectorRef: ${try(var.connectors["helm_connectors"][local.service_definition[svc].CONNECTORS.helm_connector_id].identifier, try(local.service_definition[svc].CONNECTORS.helm_connector_id, var.connectors.default_connectors.helm_connector_id, ""))}
           type: Http
         chartName: "${v.chartName}"
         chartVersion: "${v.chartVersion}"
@@ -49,14 +57,14 @@ locals {
     ]
   }
   svc_manifest_k8s = { for svc, value in var.harness_platform_services : svc => [
-    for k, v in try(var.harness_platform_service_configs[value.SERVICE_DEFINITION.type].MANIFESTS, try(value.SERVICE_DEFINITION.MANIFESTS, {})) : <<-EOT
+    for k, v in try(local.service_definition[svc].MANIFESTS, {}) : <<-EOT
     manifest:
       identifier: ${k}
       type: ${v.type}
       spec:
         store:
           spec:
-            connectorRef: ${try(var.connectors.default_connectors.git_connector_id, try(var.harness_platform_service_configs[value.SERVICE_DEFINITION.type].CONNECTORS.git_connector_id, ""))}
+            connectorRef: ${try(var.connectors.default_connectors.git_connector_id, try(local.service_definition[svc].CONNECTORS.git_connector_id, ""))}
             %{if can(v.reponame)}
             repoName: ${v.reponame}
             %{endif}
@@ -70,7 +78,7 @@ locals {
     ]
   }
   svc_manifest_values = { for svc, value in var.harness_platform_services : svc => [
-    for k, v in try(var.harness_platform_service_configs[value.SERVICE_DEFINITION.type].MANIFESTS, try(value.SERVICE_DEFINITION.MANIFESTS, {})) : <<-EOT
+    for k, v in try(value.SERVICE_DEFINITION.MANIFESTS, {}) : <<-EOT
     manifest:
       identifier: ${k}
       type: ${v.type}
@@ -78,7 +86,7 @@ locals {
         store:
           spec:
             %{if v.git_provider != "Harness"}
-            connectorRef: ${try(var.connectors.default_connectors.git_connector_id, try(var.harness_platform_service_configs[value.SERVICE_DEFINITION.type].CONNECTORS.git_connector_id, ""))}
+            connectorRef: ${try(var.connectors.default_connectors.git_connector_id, try(local.service_definition[svc].CONNECTORS.git_connector_id, ""))}
             %{if can(v.reponame)}
             repoName: ${v.reponame}
             %{endif}
@@ -97,23 +105,22 @@ locals {
     ]
   }
 
+  service_manifests = { for svc, details in var.harness_platform_services : svc => flatten(concat(try(local.svc_manifest_helm_chart[svc], []), try(local.svc_manifest_k8s[svc], []), try(local.svc_manifest_values[svc], []))) }
 
-
-  services = { for name, details in var.harness_platform_services : name => {
+  services = { for svc, details in var.harness_platform_services : svc => {
     vars = merge(
       try(var.connectors.default_connectors, {}),
-      try(var.harness_platform_service_configs[details.SERVICE_DEFINITION.type].CONNECTORS, {}),
-      try(local.service_tpl_dp_id[name], {}),
-      details.SERVICE_DEFINITION,
-      try(var.harness_platform_service_configs[details.SERVICE_DEFINITION.type], {}),
+      try(local.service_definition[svc].CONNECTORS, {}),
+      try(local.service_tpl_dp_id[svc], {}),
+      local.service_definition[svc],
       {
-        name          = "${name}"
-        identifier    = "${lower(replace(name, "/[\\s-.]/", "_"))}_${var.suffix}"
-        tags          = concat(try(details.SERVICE_DEFINITION.tags, []), var.tags)
-        org_id        = try(local.service_org_id[name], "") != "" ? local.service_org_id[name] : try(details.org_id, var.common_values.org_id)
-        project_id    = try(local.service_prj_id[name], "") != "" ? local.service_prj_id[name] : try(details.project_id, var.common_values.project_id)
-        manifests     = flatten(concat(try(local.svc_manifest_helm_chart[name], []), try(local.svc_manifest_k8s[name], []), try(local.svc_manifest_values[name], [])))
-        gcr_artifacts = flatten(concat(try(local.svc_artifacts_gcr[name], [])))
+        svc           = "${svc}"
+        identifier    = "${lower(replace(svc, "/[\\s-.]/", "_"))}_${var.suffix}"
+        tags          = concat(try(local.service_definition[svc].tags, []), var.tags)
+        org_id        = try(local.service_org_id[svc], "") != "" ? local.service_org_id[svc] : try(details.org_id, var.common_values.org_id)
+        project_id    = try(local.service_prj_id[svc], "") != "" ? local.service_prj_id[svc] : try(details.project_id, var.common_values.project_id)
+        manifests     = local.service_manifests[svc]
+        gcr_artifacts = flatten(concat(try(local.svc_artifacts_gcr[svc], [])))
       }
-  ) } if details.SERVICE_DEFINITION.enable }
+  ) } if local.service_definition[svc].enable }
 }
