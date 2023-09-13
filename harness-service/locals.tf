@@ -10,7 +10,7 @@ locals {
   service_org_id = merge([for service, values in var.harness_platform_services : { for org, details in var.organizations : service => details.identifier if lower(org) == lower(try(values.SERVICE_DEFINITION.organization, "")) }]...)
   service_prj_id = merge([for service, values in var.harness_platform_services : { for prj, details in var.projects : service => details.identifier if lower(prj) == lower(try(values.SERVICE_DEFINITION.project, "")) }]...)
   service_tpl_dp_id = {
-    for service, values in var.harness_platform_services : service => {
+    for svc, values in var.harness_platform_services : svc => {
       template-deployment = {
         template_id      = try(var.templates.template_deployments[local.service_definition[svc].template.template-deployment.template_name].identifier, "")
         template_version = try(local.service_definition[svc].template.template-deployment.template_version, "")
