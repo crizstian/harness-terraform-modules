@@ -10,6 +10,9 @@ variable "harness_platform_triggers" {
 variable "harness_platform_services" {
   default = {}
 }
+variable "harness_platform_service_configs" {
+  default = {}
+}
 variable "suffix" {}
 variable "org_id" {
   default = ""
