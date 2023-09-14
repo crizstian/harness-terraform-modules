@@ -28,14 +28,14 @@ locals {
             suffix      = var.suffix
             tags        = concat(try(local.services[svc].tags, []), var.tags)
             git_details = try(local.services[svc].git_details, {})
-            org_id      = "" #var.pipelines[pipe].org_id
-            project_id  = "" #var.pipelines[pipe].project_id
-            pipeline_id = "" #var.pipelines[pipe].identifier
+            org_id      = var.pipelines[pipe].org_id
+            project_id  = var.pipelines[pipe].project_id
+            pipeline_id = var.pipelines[pipe].identifier
           },
           details
-        ) #if values.INPUTSET && try(details.pipeline, name) == pipe
-      }   #if local.services[svc].enable
-    ]     #if details.enable
+        ) if values.INPUTSET && try(details.pipeline, name) == pipe
+      } if local.services[svc].enable
+    ] if details.enable
   ])...)
 
   ci = { for name, values in local.inpt_by_svc : name =>
