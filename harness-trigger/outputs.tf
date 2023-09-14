@@ -9,5 +9,6 @@ output "trigger" {
     identifier = details.identifier
     org_id     = details.org_id
     project_id = details.project_id
+    name       = details.name
   } }
 }
