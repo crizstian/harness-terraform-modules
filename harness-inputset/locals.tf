@@ -67,7 +67,7 @@ locals {
                   env_id                                     = env_details.identifier
                   primary_artifact                           = env_details.primary_artifact
                   delegate_selectors                         = try(infra_details.delegate_selectors, ["NOT_DEFINED"])
-                  name                                       = replace("${svc}_${infra}", "${variables.vars.type}_", "")
+                  name                                       = can(details.pipeline) ? replace("${svc}_${name}_${infra}", "${variables.vars.type}_", "") : replace("${svc}_${infra}", "${variables.vars.type}_", "")
                   identifier                                 = "${lower(replace(replace("${svc}_${infra}", "/[\\s-.]/", "_"), "${variables.vars.type}_", ""))}_${var.suffix}"
                   "${variables.vars.type}_infrastructure_id" = infra_details.identifier
                 }
