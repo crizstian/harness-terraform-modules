@@ -34,7 +34,7 @@ locals {
           },
           details
         ) if values.INPUTSET && try(details.pipeline, name) == pipe
-      } if variables.enable
+      }
     ] if details.enable
   ])...)
 
@@ -73,7 +73,7 @@ locals {
             } if infra_details.env_id == env_details.identifier
           } if contains(keys(variables.artifacts), env_details.primary_artifact)
         ] if try(details.pipeline, name) == pipe && values.INPUTSET
-      ] if variables.enable
+      ]
     ] if details.enable && details.type == "CD"
   ])...)
 
@@ -89,7 +89,7 @@ locals {
             if infra_details.env_id == env_details.identifier && !can(variables.settings.infrastructure)
           } if contains(keys(variables.artifacts), env_details.primary_artifact) && !can(variables.settings.environments) #&& try(local.inpt_by_svc["${svc}_${name}"].environment_type, env_details.type) == env_details.type
         ] if try(details.pipeline, name) == pipe && values.INPUTSET && !can(variables.settings.pipelines)
-      ] if variables.enable && !can(variables.settings.inputsets)
+      ] if !can(variables.settings.inputsets)
     ] if details.enable && details.type == "CD"
   ])...)
 
@@ -104,7 +104,7 @@ locals {
             if infra_details.env_id == env_details.identifier && !can(variables.settings.infrastructure)
           } if contains(keys(variables.artifacts), env_details.primary_artifact) && !can(variables.settings.environments) #&& try(local.inpt_by_svc["${svc}_${name}"].environment_type, env_details.type) == env_details.type
         ] if try(details.pipeline, name) == pipe && values.INPUTSET && !can(variables.settings.pipelines)
-      ] if variables.enable && try(variables.vars.settings.inputsets[name], false)
+      ] if try(variables.vars.settings.inputsets[name], false)
     ] if details.enable && details.type == "CD"
   ])...)
 
@@ -119,7 +119,7 @@ locals {
             if infra_details.env_id == env_details.identifier && try(variables.vars.settings.infrastructure[replace(infra, "${variables.type}_", "")], false)
           } if contains(keys(variables.artifacts), env_details.primary_artifact) && !can(variables.settings.environments) #&& try(local.inpt_by_svc["${svc}_${name}"].environment_type, env_details.type) == env_details.type
         ] if try(details.pipeline, name) == pipe && values.INPUTSET && !can(variables.settings.pipelines)
-      ] if variables.enable && !can(variables.settings.inputsets)
+      ] if !can(variables.settings.inputsets)
     ] if details.enable && details.type == "CD"
   ])...)
 
@@ -136,7 +136,7 @@ locals {
             if infra_details.env_id == env_details.identifier && !can(variables.settings.infrastructure)
           } if contains(keys(variables.artifacts), env_details.primary_artifact) && !can(variables.settings.environments) #&& try(local.inpt_by_svc["${svc}_${name}"].environment_type, env_details.type) == env_details.type
         ] if try(details.pipeline, name) == pipe && values.INPUTSET && try(variables.vars.settings.pipelines[try(details.pipeline, name)], false)
-      ] if variables.enable && !can(variables.settings.inputsets)
+      ] if !can(variables.settings.inputsets)
     ] if details.enable && details.type == "CD"
   ])...)
 
@@ -152,7 +152,7 @@ locals {
             if infra_details.env_id == env_details.identifier && try(variables.vars.settings.infrastructure[replace(infra, "${variables.type}_", "")], false)
           } if contains(keys(variables.artifacts), env_details.primary_artifact) && !can(variables.settings.environments) #&& try(local.inpt_by_svc["${svc}_${name}"].environment_type, env_details.type) == env_details.type
         ] if try(details.pipeline, name) == pipe && values.INPUTSET && try(variables.vars.settings.pipelines[try(details.pipeline, name)], false)
-      ] if variables.enable && !can(variables.settings.inputsets)
+      ] if !can(variables.settings.inputsets)
     ] if details.enable && details.type == "CD"
   ])...)
 
@@ -167,7 +167,7 @@ locals {
             if infra_details.env_id == env_details.identifier && try(variables.vars.settings.infrastructure[replace(infra, "${variables.type}_", "")], false)
           } if contains(keys(variables.artifacts), env_details.primary_artifact) && !can(variables.settings.environments) #&& try(local.inpt_by_svc["${svc}_${name}"].environment_type, env_details.type) == env_details.type
         ] if try(details.pipeline, name) == pipe && values.INPUTSET && try(variables.vars.settings.pipelines[try(details.pipeline, name)], false)
-      ] if variables.enable && try(variables.vars.settings.inputsets[name], false)
+      ] if try(variables.vars.settings.inputsets[name], false)
     ] if details.enable && details.type == "CD"
   ])...)
 
@@ -189,7 +189,7 @@ locals {
             ]])...
           )
         } if try(details.pipeline, name) == pipe && values.INPUTSET
-      } if variables.enable && !can(variables.settings.infrastructure)
+      } if !can(variables.settings.infrastructure)
     ] if details.enable && details.type == "ALL" && !can(details.vars.base_env)
   ])...)
 
@@ -210,7 +210,7 @@ locals {
             ]])...
           )
         } if try(details.pipeline, name) == pipe && values.INPUTSET
-      } if variables.enable && !can(variables.settings.infrastructure)
+      } if !can(variables.settings.infrastructure)
     ] if details.enable && details.type == "ALL" && can(details.vars.base_env)
   ])...)
 
