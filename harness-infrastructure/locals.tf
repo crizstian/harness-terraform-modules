@@ -80,5 +80,10 @@ locals {
     ]...
   )
 
+  infrastructures = merge(
+    local.infra_by_connector,
+    local.infra_by_custom
+  )
+
 }
 
