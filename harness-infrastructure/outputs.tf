@@ -17,7 +17,7 @@ output "infrastructure" {
       org_id             = details.org_id
       project_id         = details.project_id
       env_id             = details.env_id
-      name               = local.infrastructures[key].name
+      name               = local.infrastructures[key].vars.name
       delegate_selectors = try(local.infrastructures[key].vars.delegate_selectors, [])
     }
   }
