@@ -57,7 +57,7 @@ locals {
         skipResourceVersioning: false
         nableDeclarativeRollback: false
         fetchHelmChartMetadata: false
-        %{if cam(v.commandFlags)}
+        %{if can(v.commandFlags)}
         commandFlags:                
           - commandType: Upgrade                  
             flag: |-                    
