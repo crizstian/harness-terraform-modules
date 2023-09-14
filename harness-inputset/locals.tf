@@ -1,6 +1,11 @@
 # github pipelines
 locals {
-  environments = { for name, details in var.harness_platform_environments : name => "${lower(replace(name, "/[\\s-.]/", "_"))}_${var.suffix}" if details.enable }
+  environments = { for name, details in var.harness_platform_environments : name => merge(
+    details,
+    {
+      identifier = "${lower(replace(name, "/[\\s-.]/", "_"))}_${var.suffix}"
+    }
+  ) if details.enable }
 
   infrastructures = merge(
     [
@@ -8,7 +13,7 @@ locals {
         {
           for infra, details in try(var.connectors["${type}_connectors"], {}) : "${type}_${infra}" => {
             identifier = "${lower(replace("${type}_${infra}", "/[\\s-.]/", "_"))}_${var.suffix}"
-            env_id     = local.environments[details.environment]
+            env_id     = local.environments[details.environment].identifier
           }
         },
         values.type == "CustomDeployment" ?
