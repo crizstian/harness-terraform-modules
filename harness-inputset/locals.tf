@@ -23,6 +23,7 @@ locals {
           try(var.pipelines[pipe].default_values, {}),
           try(details.default_values, {}),
           variables.vars,
+          variables.vars.default_values,
           {
             svc                                 = "${svc}"
             suffix                              = var.suffix
