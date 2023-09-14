@@ -6,7 +6,7 @@ locals {
     )
   }
 
-  service_connectors = { for name, details in var.harness_platform_services : name => {
+  service_connectors = { for svc, details in var.harness_platform_services : svc => {
     connectors = merge(
       flatten([
         for type, connectors in var.connectors : [
