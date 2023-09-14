@@ -6,6 +6,18 @@ locals {
     )
   }
 
+  service_connectors = { for name, details in var.harness_platform_services : name => {
+    connectors = merge(
+      flatten([
+        for type, connectors in var.connectors : [
+          for tipo, connector in try(details.CONNECTORS, {}) : {
+            for key, value in connector : key => {
+              id = connectors[value].identifier
+            }
+          } if "${tipo}_connectors" == type
+        ]
+      ])...
+  ) } if details.enable }
 
   service_org_id = merge([for service, values in var.harness_platform_services : { for org, details in var.organizations : service => details.identifier if lower(org) == lower(try(values.SERVICE_DEFINITION.organization, "")) }]...)
   service_prj_id = merge([for service, values in var.harness_platform_services : { for prj, details in var.projects : service => details.identifier if lower(prj) == lower(try(values.SERVICE_DEFINITION.project, "")) }]...)
@@ -113,6 +125,7 @@ locals {
       try(local.service_definition[svc].CONNECTORS, {}),
       try(local.service_tpl_dp_id[svc], {}),
       local.service_definition[svc],
+      local.service_connectors[svc],
       {
         svc           = "${svc}"
         identifier    = "${lower(replace(svc, "/[\\s-.]/", "_"))}_${var.suffix}"
