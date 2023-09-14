@@ -71,10 +71,10 @@ locals {
                 }
               )
             } #if infra_details.env_id == env_details.identifier
-          }   #if contains(keys(local.services[svc].artifacts), env_details.primary_artifact)
-        ]     #if try(details.pipeline, name) == pipe && values.INPUTSET
-      ]       #if local.services[svc].enable
-    ]         #if details.enable && details.type == "CD"
+          } if contains(keys(local.services[svc].artifacts), env_details.primary_artifact)
+        ] if try(details.pipeline, name) == pipe && values.INPUTSET
+      ] if local.services[svc].enable
+    ] if details.enable && details.type == "CD"
   ])...)
 
 
