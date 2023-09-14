@@ -11,7 +11,7 @@ output "environment" {
   }
 }
 output "infrastructure" {
-  value = { for key, details in harness_platform_infrastructure.infrastructure : key =>
+  value = { for key, details in harness_platform_infrastructure.infrastructure : details.name =>
     {
       identifier         = details.identifier
       org_id             = details.org_id
