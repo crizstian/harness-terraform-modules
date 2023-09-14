@@ -41,7 +41,7 @@ locals {
               details,
               try(local.infrastructure_tpl_dp_id[type], {}),
               {
-                name               = "${type}_${infra}"
+                name               = infra
                 identifier         = "${lower(replace("${type}_${infra}", "/[\\s-.]/", "_"))}_${var.suffix}"
                 tags               = concat(try(values.vars.tags, []), var.tags)
                 delegate_selectors = try(details.delegate_selectors, [])
@@ -60,8 +60,8 @@ locals {
               values,
               try(local.infrastructure_tpl_dp_id[type], {}),
               {
-                name       = "${type}_${env}"
-                identifier = "${lower(replace("${type}_${env}", "/[\\s-.]/", "_"))}_${var.suffix}"
+                name       = type == env ? "${type}_${env}" : type
+                identifier = "${lower(replace(type == env ? "${type}_${env}" : type, "/[\\s-.]/", "_"))}_${var.suffix}"
                 tags       = concat(try(values.vars.tags, []), var.tags)
                 org_id     = try(local.infrastructure_org_id[type], "") != "" ? local.infrastructure_org_id[type] : try(values.vars.org_id, var.common_values.org_id)
                 project_id = try(local.infrastructure_prj_id[type], "") != "" ? local.infrastructure_prj_id[type] : try(values.vars.project_id, var.common_values.project_id)
