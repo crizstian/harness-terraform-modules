@@ -7,31 +7,31 @@ locals {
   trg_by_svc = merge(flatten([
     for name, details in var.harness_platform_triggers : [
       for svc, variables in var.services : [
-        for pipe, values in try(variables.vars.PIPELINE, {}) : {
+        for pipe, values in variables.vars.PIPELINE : {
           for trg, enable in try(values.TRIGGER, {}) : "${svc}_${name}_${trg}" =>
           merge(
-            try(var.templates.stages[name].default_values,
-            try(var.templates.pipelines[pipe].default_values, {})),
-            try(var.connectors.default_connectors, {}),
-            try(variables.vars.CONNECTORS, {}),
             try(details.vars.usergroups_required, false) ? { usergroups = var.usergroups } : {},
+            try(var.templates.pipelines[pipe].default_values, {}),
+            try(var.connectors.default_connectors, {}),
+            try(var.pipelines[pipe].default_values, {}),
+            try(details.default_values, {}),
             variables.vars,
-            var.pipelines[pipe].default_values,
+            variables.vars.default_values,
             {
               trg                                 = "${trg}"
               svc                                 = "${svc}"
               suffix                              = var.suffix
               tags                                = concat(try(variables.vars.tags, []), var.tags)
               git_details                         = try(variables.vars.git_details, {})
-              org_id                              = try(var.pipelines[pipe].org_id, "") != "" ? var.pipelines[pipe].org_id : try(details.org_id, var.org_id)
-              project_id                          = try(var.pipelines[pipe].project_id, "") != "" ? var.pipelines[pipe].project_id : try(details.project_id, var.project_id)
-              pipeline_id                         = try(var.pipelines[pipe].identifier, "")
-              "${variables.vars.type}_service_id" = variables.identifier
+              org_id                              = var.pipelines[pipe].org_id
+              project_id                          = var.pipelines[pipe].project_id
+              pipeline_id                         = var.pipelines[pipe].identifier
+              "${variables.vars.type}_service_id" = "${lower(replace(svc, "/[\\s-.]/", "_"))}_${var.suffix}"
             },
             details
-          ) if enable
-        } if name == pipe
-      ] if variables.vars.enable
+          ) if enable && try(details.pipeline, name) == pipe
+        } #if variables.vars.enable
+      ]
     ] if details.enable
   ])...)
 
@@ -52,7 +52,7 @@ locals {
   trg_by_infra = merge(flatten([
     for name, details in var.harness_platform_triggers : [
       for svc, variables in var.services : [
-        for pipe, values in try(variables.vars.PIPELINE, {}) : [
+        for pipe, values in variables.vars.PIPELINE : [
           for trg, enable in try(values.TRIGGER, {}) : [
             for env, env_details in var.environments : {
               for infra, infra_details in var.infrastructures : "${svc}_${name}_${env}_${infra}_${trg}" =>
@@ -65,16 +65,16 @@ locals {
                     primary_artifact                           = env_details.primary_artifact
                     trigger_artifact_regex                     = try(env_details.trigger_artifact_regex, "")
                     delegate_selectors                         = try(infra_details.delegate_selectors, ["NOT_DEFINED"])
-                    name                                       = replace("${svc}_${infra}_${trg}", "kubernetes_", "")
-                    identifier                                 = "${lower(replace(replace("${svc}_${infra}_${trg}", "/[\\s-.]/", "_"), "kubernetes_", ""))}_${var.suffix}"
+                    name                                       = replace("${svc}_${infra}_${trg}", "${variables.vars.type}_", "")
+                    identifier                                 = "${lower(replace(replace("${svc}_${infra}_${trg}", "/[\\s-.]/", "_"), "${variables.vars.type}_", ""))}_${var.suffix}"
                     "${variables.vars.type}_infrastructure_id" = infra_details.identifier
                   }
                 )
               } if infra_details.env_id == env_details.identifier
             } if contains(keys(variables.vars.artifacts), env_details.primary_artifact) && try(local.trg_by_svc["${svc}_${name}"].environment_type, env_details.type) == env_details.type
           ] if enable
-        ] if name == pipe
-      ] if variables.vars.enable
+        ] if try(details.pipeline, name) == pipe
+      ]
     ] if details.enable && details.type == "CD"
   ])...)
 
@@ -112,7 +112,7 @@ locals {
   trg_by_all_infra = merge(flatten([
     for name, details in var.harness_platform_triggers : [
       for svc, variables in var.services : [
-        for pipe, values in try(variables.vars.PIPELINE, {}) : {
+        for pipe, values in variables.vars.PIPELINE : {
           for trg, enable in try(values.TRIGGER, {}) : "${svc}_${name}_${trg}" =>
           {
             vars = merge(
@@ -130,8 +130,8 @@ locals {
               ]])...
             )
           } if enable
-        } if name == pipe
-      ] if variables.vars.enable && contains(keys(variables.vars.artifacts), try(details.vars.type, "NONE"))
+        } if try(details.pipeline, name) == pipe
+      ] if contains(keys(variables.vars.artifacts), try(details.vars.type, "NONE"))
     ] if details.enable && details.type == "ALL"
   ])...)
 
