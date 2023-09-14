@@ -35,3 +35,6 @@ variable "common_values" {
     project_id = ""
   }
 }
+variable "environments" {
+  default = {}
+}
