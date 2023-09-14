@@ -217,7 +217,7 @@ locals {
 
   inputsets = merge(
     /* local.ci, */
-    local.inpt_by_svc,
+    local.inpt,
     /* local.inpt_by_infra_specific,
     local.inpt_by_inputset_specific,
     local.inpt_by_pipeline_specific,
