@@ -51,7 +51,7 @@ locals {
                 connector_id       = details.identifier
               }
             )
-          }
+          } if can(var.environments[details.environment].identifier)
         }
       ) if values.enable && values.type != "CustomDeployment"
     ]...
