@@ -6,7 +6,7 @@ locals {
 
   trg_by_svc = merge(flatten([
     for name, details in var.harness_platform_triggers : [
-      for svc, variables in var.harness_platform_services : [
+      for svc, variables in var.services : [
         for pipe, values in try(variables.vars.PIPELINE, {}) : {
           for trg, enable in try(values.TRIGGER, {}) : "${svc}_${name}_${trg}" =>
           merge(
@@ -51,7 +51,7 @@ locals {
 
   trg_by_infra = merge(flatten([
     for name, details in var.harness_platform_triggers : [
-      for svc, variables in var.harness_platform_services : [
+      for svc, variables in var.services : [
         for pipe, values in try(variables.vars.PIPELINE, {}) : [
           for trg, enable in try(values.TRIGGER, {}) : [
             for env, env_details in var.environments : {
@@ -80,7 +80,7 @@ locals {
 
   /* trg_by_infra = merge(flatten([
     for name, details in var.harness_platform_triggers : [
-      for svc, variables in var.harness_platform_services : [
+      for svc, variables in var.services : [
         for pipe, values in try(variables.PIPELINE, {}) : [
           for trg, enable in try(values.TRIGGER, {}) : [
             for env, env_details in var.environments : {
@@ -111,7 +111,7 @@ locals {
 
   trg_by_all_infra = merge(flatten([
     for name, details in var.harness_platform_triggers : [
-      for svc, variables in var.harness_platform_services : [
+      for svc, variables in var.services : [
         for pipe, values in try(variables.vars.PIPELINE, {}) : {
           for trg, enable in try(values.TRIGGER, {}) : "${svc}_${name}_${trg}" =>
           {
@@ -138,7 +138,7 @@ locals {
 
   /* cd_type_trigger = merge(flatten([
     for name, details in var.harness_platform_triggers : [
-      for svc, variables in var.harness_platform_services : [
+      for svc, variables in var.services : [
         for trg, values in variables.TRIGGER : {
           for env, infra in variables.CD.ENV : "${svc}_${name}_${trg}_${env}" =>
           {
@@ -164,7 +164,7 @@ locals {
   /* 
   inputset_by_all_infra = merge(flatten([
     for name, details in var.harness_platform_inputsets : [
-      for svc, variables in var.harness_platform_services : {
+      for svc, variables in var.services : {
         for inpt, values in variables.INPUTSET : "${svc}_${name}_ALL" =>
         merge(
           local.inputset_by_svc["${svc}_${name}_${inpt}"],
@@ -182,7 +182,7 @@ locals {
 
   cd_type_inputset_all = merge(flatten([
     for name, details in var.harness_platform_inputsets : [
-      for svc, variables in var.harness_platform_services : {
+      for svc, variables in var.services : {
         for inpt, values in variables.INPUTSET : "${svc}_${name}_ALL" =>
         {
           vars = merge(
@@ -203,7 +203,7 @@ locals {
 
   chain_type_inputset_all = merge(flatten([
     for name, details in var.harness_platform_inputsets : [
-      for svc, variables in var.harness_platform_services : {
+      for svc, variables in var.services : {
         for inpt, values in variables.INPUTSET : "${svc}_${name}_${inpt}_ALL" =>
         {
           vars = merge(
@@ -225,7 +225,7 @@ locals {
 
   chain_type_trigger_all = merge(flatten([
     for name, details in var.harness_platform_triggers : [
-      for svc, variables in var.harness_platform_services : {
+      for svc, variables in var.services : {
         for trg, values in variables.TRIGGER : "${svc}_${name}_${trg}_ALL" =>
         {
           vars = merge(
@@ -249,7 +249,7 @@ locals {
 
   cd_type_trigger_all = merge(flatten([
     for name, details in var.harness_platform_triggers : [
-      for svc, variables in var.harness_platform_services : {
+      for svc, variables in var.services : {
         for trg, values in variables.TRIGGER : "${svc}_${name}_${trg}_ALL" =>
         {
           vars = merge(

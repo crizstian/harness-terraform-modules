@@ -7,7 +7,7 @@ variable "inputsets" {
 variable "harness_platform_triggers" {
   default = {}
 }
-variable "harness_platform_services" {
+variable "services" {
   default = {}
 }
 variable "suffix" {}
