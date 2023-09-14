@@ -101,7 +101,7 @@ output "all" {
     length(keys(local.docker_connectors_output)) > 0 ? { docker_connectors = local.docker_connectors_output } : {},
     length(keys(local.gcp_connectors_output)) > 0 ? { gcp_connectors = local.gcp_connectors_output } : {},
     length(keys(local.nexus_connectors_output)) > 0 ? { nexus_connectors = local.nexus_connectors_output } : {},
-    /* length(keys(local.service_now_connectors_output)) > 0 ? { service_now_connectors = local.service_now_connectors_output } : {}, */
+    length(keys(local.service_now_connectors_output)) > 0 ? { service_now_connectors = local.service_now_connectors_output } : {},
     length(keys(local.dynatrace_connectors_output)) > 0 ? { dynatrace_connectors = local.dynatrace_connectors_output } : {},
     length(keys(local.kubernetes_connectors_output)) > 0 ? { kubernetes_connectors = local.kubernetes_connectors_output } : {},
     length(keys(local.aws_connectors_output)) > 0 ? { aws_connectors = local.aws_connectors_output } : {},
