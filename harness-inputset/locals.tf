@@ -5,7 +5,8 @@ locals {
     {
       identifier = "${lower(replace(name, "/[\\s-.]/", "_"))}_${var.suffix}"
     }
-  ) if details.enable }
+    ) if details.enable
+  }
 
   infrastructures = merge(
     [
@@ -23,7 +24,7 @@ locals {
             env_id     = "${lower(replace(name, "/[\\s-.]/", "_"))}_${var.suffix}"
           }
         } : {}
-      ) if try(values.enable, true)
+      ) if values.enable
     ]...
   )
 
