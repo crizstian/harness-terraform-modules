@@ -87,10 +87,10 @@ locals {
             for infra, infra_details in var.infrastructures : "${svc}_${name}_${env}_${infra}" => local.inpt["${svc}_${name}_${env}_${infra}"]
 
             #if infra_details.env_id == env_details.identifier && !can(local.services[svc].settings.infrastructure)
-          } if contains(keys(local.services[svc].artifacts), env_details.primary_artifact) && !can(local.services[svc].settings.environments) #&& try(local.inpt_by_svc["${svc}_${name}"].environment_type, env_details.type) == env_details.type
-        ] if try(details.pipeline, name) == pipe && values.INPUTSET && !can(local.services[svc].settings.pipelines)
-      ] if local.services[svc].enable && !can(local.services[svc].settings.inputsets)
-    ] if details.enable && details.type == "CD"
+          } #if contains(keys(local.services[svc].artifacts), env_details.primary_artifact) && !can(local.services[svc].settings.environments) #&& try(local.inpt_by_svc["${svc}_${name}"].environment_type, env_details.type) == env_details.type
+        ]   #if try(details.pipeline, name) == pipe && values.INPUTSET && !can(local.services[svc].settings.pipelines)
+      ]     #if local.services[svc].enable && !can(local.services[svc].settings.inputsets)
+    ]       #if details.enable && details.type == "CD"
   ])...)
 
   inpt_by_inputset_specific = merge(flatten([
@@ -217,7 +217,7 @@ locals {
 
   inputsets = merge(
     /* local.ci, */
-    local.inpt,
+    local.inpt_by_infra,
     /* local.inpt_by_infra_specific,
     local.inpt_by_inputset_specific,
     local.inpt_by_pipeline_specific,
