@@ -31,11 +31,11 @@ locals {
     }
   }
 
-  infrastructures = merge(
+  infra_by_connector = merge(
     [
       for type, values in var.harness_platform_infrastructures : merge(
         {
-          for infra, details in try(var.connectors["${type}_connectors"], {}) : "${type}_${infra}" => {
+          for infra, details in var.connectors["${type}_connectors"] : "${type}_${infra}" => {
             vars = merge(
               values,
               details,
@@ -52,8 +52,14 @@ locals {
               }
             )
           }
-        },
-        values.type == "CustomDeployment" ?
+        }
+      ) if values.enable && values.type != "CustomDeployment"
+    ]...
+  )
+
+  infra_by_custom = merge(
+    [
+      for type, values in var.harness_platform_infrastructures : merge(
         {
           for env, env_details in harness_platform_environment.environment : "${type}_${env}" => {
             vars = merge(
@@ -69,29 +75,10 @@ locals {
               }
             )
           }
-        } : {}
-      ) if try(values.enable, true)
+        }
+      ) if values.enable && values.type == "CustomDeployment"
     ]...
   )
 
-  /* infrastructure_not_k8s = merge([
-    for type, values in var.harness_platform_infrastructures : {
-      for infra, details in values.infrastructure : infra => {
-        vars = merge(
-          try(local.infrastructure_tpl_dp_id[infra], {}),
-          values,
-          details,
-          {
-            name       = infra
-            identifier = "${lower(replace(infra, "/[\\s-.]/", "_"))}_${var.suffix}"
-            tags       = concat(try(values.vars.tags, []), var.tags)
-            org_id     = try(local.infrastructure_org_id[type], "") != "" ? local.infrastructure_org_id[type] : try(values.vars.org_id, var.common_values.org_id)
-            project_id = try(local.infrastructure_prj_id[type], "") != "" ? local.infrastructure_prj_id[type] : try(values.vars.project_id, var.common_values.project_id)
-            env_id     = harness_platform_environment.environment[details.environment].identifier
-          },
-        )
-      } if details.enable && values.type != "KubernetesDirect"
-    }
-  ]...) */
 }
 
