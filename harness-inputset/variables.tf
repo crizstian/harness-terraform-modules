@@ -13,12 +13,6 @@ variable "harness_platform_services" {
 variable "harness_platform_service_configs" {
   default = {}
 }
-variable "harness_platform_environments" {
-  default = {}
-}
-variable "harness_platform_infrastructures" {
-  default = {}
-}
 variable "suffix" {}
 variable "org_id" {
   default = ""
@@ -44,7 +38,12 @@ variable "connectors" {
 variable "templates" {
   default = {}
 }
-
+variable "environments" {
+  default = {}
+}
+variable "infrastructures" {
+  default = {}
+}
 variable "usergroups" {
   default = {}
 }
