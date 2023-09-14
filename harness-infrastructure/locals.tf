@@ -35,7 +35,7 @@ locals {
     [
       for type, values in var.harness_platform_infrastructures : merge(
         {
-          for infra, details in var.connectors["${type}_connectors"] : "${type}_${infra}" => {
+          for infra, details in var.connectors["${values.connector_type}_connectors"] : "${type}_${infra}" => {
             vars = merge(
               values,
               details,
