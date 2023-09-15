@@ -51,7 +51,7 @@ locals {
                 connector_id       = details.identifier
               }
             )
-          } if try(var.harness_platform_environments[details.environment].enable, false)
+          } #if try(var.harness_platform_environments[details.environment].enable, false)
         }
       ) if values.enable && values.type != "CustomDeployment"
     ]...
