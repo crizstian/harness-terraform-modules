@@ -51,7 +51,7 @@ locals {
                 connector_id       = details.identifier
               }
             )
-          } #if try(var.harness_platform_environments[details.environment].enable, false)
+          } if can(harness_platform_environment.environment[details.environment])
         }
       ) if values.enable && values.type != "CustomDeployment"
     ]...
@@ -81,7 +81,7 @@ locals {
   )
 
   infrastructures = merge(
-    /* local.infra_by_connector, */
+    local.infra_by_connector,
     local.infra_by_custom
   )
 
