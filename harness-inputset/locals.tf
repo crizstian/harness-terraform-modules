@@ -1,17 +1,6 @@
 # github pipelines
 locals {
 
-  /* services = {
-    for svc, details in var.services : svc => merge(
-      var.harness_platform_service_configs[details.SERVICE_DEFINITION.type],
-      details.SERVICE_DEFINITION,
-      try(var.harness_platform_service_configs[details.SERVICE_DEFINITION.type].CONNECTORS, {}),
-      {
-        "${details.SERVICE_DEFINITION.type}_service_id" = "${lower(replace(svc, "/[\\s-.]/", "_"))}_${var.suffix}"
-      }
-    )
-  } */
-
   inpt_by_svc = merge(flatten([
     for name, details in var.harness_platform_inputsets : [
       for svc, variables in var.services : {
@@ -104,7 +93,7 @@ locals {
             for infra, infra_details in var.infrastructures : "${svc}_${name}_${env}_${infra}" => local.inpt["${svc}_${name}_${env}_${infra}"]
 
             if infra_details.env_id == env_details.identifier && !can(variables.vars.settings.infrastructure)
-          } if contains(keys(variables.vars.artifacts), env_details.primary_artifact) && !can(variables.vars.settings.environments) #&& try(local.inpt_by_svc["${svc}_${name}"].environment_type, env_details.type) == env_details.type
+          } if contains(keys(variables.vars.artifacts), env_details.primary_artifact) && !can(variables.vars.settings.environments) && try(local.inpt_by_svc["${svc}_${name}"].environment_type, env_details.type) == env_details.type
         ] if try(details.pipeline, name) == pipe && values.INPUTSET && !can(variables.vars.settings.pipelines)
       ] if try(variables.vars.settings.inputsets[name], false)
     ] if details.enable && details.type == "CD"
@@ -119,7 +108,7 @@ locals {
             for infra, infra_details in var.infrastructures : "${svc}_${name}_${env}_${infra}" => local.inpt["${svc}_${name}_${env}_${infra}"]
 
             if infra_details.env_id == env_details.identifier && try(variables.vars.settings.infrastructure[replace(infra, "${variables.vars.type}_", "")], false)
-          } if contains(keys(variables.vars.artifacts), env_details.primary_artifact) && !can(variables.vars.settings.environments) #&& try(local.inpt_by_svc["${svc}_${name}"].environment_type, env_details.type) == env_details.type
+          } if contains(keys(variables.vars.artifacts), env_details.primary_artifact) && !can(variables.vars.settings.environments) && try(local.inpt_by_svc["${svc}_${name}"].environment_type, env_details.type) == env_details.type
         ] if try(details.pipeline, name) == pipe && values.INPUTSET && !can(variables.vars.settings.pipelines)
       ] if !can(variables.vars.settings.inputsets)
     ] if details.enable && details.type == "CD"
@@ -136,7 +125,7 @@ locals {
             for infra, infra_details in var.infrastructures : "${svc}_${name}_${env}_${infra}" => local.inpt["${svc}_${name}_${env}_${infra}"]
 
             if infra_details.env_id == env_details.identifier && !can(variables.vars.settings.infrastructure)
-          } if contains(keys(variables.vars.artifacts), env_details.primary_artifact) && !can(variables.vars.settings.environments) #&& try(local.inpt_by_svc["${svc}_${name}"].environment_type, env_details.type) == env_details.type
+          } if contains(keys(variables.vars.artifacts), env_details.primary_artifact) && !can(variables.vars.settings.environments) && try(local.inpt_by_svc["${svc}_${name}"].environment_type, env_details.type) == env_details.type
         ] if try(details.pipeline, name) == pipe && values.INPUTSET && try(variables.vars.settings.pipelines[try(details.pipeline, name)], false)
       ] if !can(variables.vars.settings.inputsets)
     ] if details.enable && details.type == "CD"
@@ -152,7 +141,7 @@ locals {
             for infra, infra_details in var.infrastructures : "${svc}_${name}_${env}_${infra}" => local.inpt["${svc}_${name}_${env}_${infra}"]
 
             if infra_details.env_id == env_details.identifier && try(variables.vars.settings.infrastructure[replace(infra, "${variables.vars.type}_", "")], false)
-          } if contains(keys(variables.vars.artifacts), env_details.primary_artifact) && !can(variables.vars.settings.environments) #&& try(local.inpt_by_svc["${svc}_${name}"].environment_type, env_details.type) == env_details.type
+          } if contains(keys(variables.vars.artifacts), env_details.primary_artifact) && !can(variables.vars.settings.environments) && try(local.inpt_by_svc["${svc}_${name}"].environment_type, env_details.type) == env_details.type
         ] if try(details.pipeline, name) == pipe && values.INPUTSET && try(variables.vars.settings.pipelines[try(details.pipeline, name)], false)
       ] if !can(variables.vars.settings.inputsets)
     ] if details.enable && details.type == "CD"
@@ -167,7 +156,7 @@ locals {
             for infra, infra_details in var.infrastructures : "${svc}_${name}_${env}_${infra}" => local.inpt["${svc}_${name}_${env}_${infra}"]
 
             if infra_details.env_id == env_details.identifier && try(variables.vars.settings.infrastructure[replace(infra, "${variables.vars.type}_", "")], false)
-          } if contains(keys(variables.vars.artifacts), env_details.primary_artifact) && !can(variables.vars.settings.environments) #&& try(local.inpt_by_svc["${svc}_${name}"].environment_type, env_details.type) == env_details.type
+          } if contains(keys(variables.vars.artifacts), env_details.primary_artifact) && !can(variables.vars.settings.environments) && try(local.inpt_by_svc["${svc}_${name}"].environment_type, env_details.type) == env_details.type
         ] if try(details.pipeline, name) == pipe && values.INPUTSET && try(variables.vars.settings.pipelines[try(details.pipeline, name)], false)
       ] if try(variables.vars.settings.inputsets[name], false)
     ] if details.enable && details.type == "CD"
