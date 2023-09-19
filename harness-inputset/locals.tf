@@ -196,8 +196,8 @@ locals {
             },
             flatten([for env, env_details in var.environments : [
               for infra, infra_details in var.infrastructures : {
-                env_id                                                   = env_details.identifier
-                "${variables.vars.type}_${lower(env)}_infrastructure_id" = infra_details.identifier
+                env_id                                     = env_details.identifier
+                "${variables.vars.type}_infrastructure_id" = infra_details.identifier
               } if infra_details.env_id == env_details.identifier && details.vars.base_env == env
             ]])...
           )
