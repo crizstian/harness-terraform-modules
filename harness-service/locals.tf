@@ -75,7 +75,7 @@ locals {
       spec:
         store:
           spec:
-            connectorRef: ${try(local.service_connectors[svc]["GIT_CONNECTOR"].id, try(local.service_definition[svc].CONNECTORS.git_connector_id, ""))}
+            connectorRef: ${try(var.connectors.default_connectors.git_connector_id, try(local.service_definition[svc].CONNECTORS.git_connector_id, ""))}
             %{if can(v.reponame)}
             repoName: ${v.reponame}
             %{endif}
@@ -89,7 +89,7 @@ locals {
     ]
   }
   svc_manifest_values = { for svc, value in var.harness_platform_services : svc => [
-    for k, v in try(local.service_definition[svc].MANIFESTS, {}) : <<-EOT
+    for k, v in try(value.SERVICE_DEFINITION.MANIFESTS, {}) : <<-EOT
     manifest:
       identifier: ${k}
       type: ${v.type}
@@ -97,7 +97,7 @@ locals {
         store:
           spec:
             %{if v.git_provider != "Harness"}
-            connectorRef: ${try(local.service_connectors[svc]["GIT_CONNECTOR"].id, try(local.service_definition[svc].CONNECTORS.git_connector_id, ""))}
+            connectorRef: ${try(var.connectors.default_connectors.git_connector_id, try(local.service_definition[svc].CONNECTORS.git_connector_id, ""))}
             %{if can(v.reponame)}
             repoName: ${v.reponame}
             %{endif}
@@ -116,11 +116,7 @@ locals {
     ]
   }
 
-  service_manifests = { for svc, details in var.harness_platform_services : svc => flatten(concat(
-    try(local.svc_manifest_helm_chart[svc], []),
-    try(local.svc_manifest_k8s[svc], []),
-    try(local.svc_manifest_values[svc], [])))
-  }
+  service_manifests = { for svc, details in var.harness_platform_services : svc => flatten(concat(try(local.svc_manifest_helm_chart[svc], []), try(local.svc_manifest_k8s[svc], []), try(local.svc_manifest_values[svc], []))) }
 
   services = { for svc, details in var.harness_platform_services : svc => {
     vars = merge(
