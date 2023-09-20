@@ -135,6 +135,33 @@ locals {
     ] if details.enable && details.type == "ALL"
   ])...)
 
+  inpt_by_base_env = merge(flatten([
+    for name, details in var.harness_platform_triggers : [
+      for svc, variables in var.services : [
+        for pipe, values in variables.vars.PIPELINE : {
+          for trg, enable in try(values.TRIGGER, {}) : "${svc}_${name}_${trg}" =>
+          {
+            vars = merge(
+              local.trg_by_svc["${svc}_${name}_${trg}"],
+              {
+                name       = "${svc}"
+                identifier = "${lower(replace("${svc}_${name}_${trg}", "/[\\s-.]/", "_"))}_${var.suffix}"
+                /* inputset_ids = try([for inpt, enable in definition.TRIGGER_INPUTSET : local.inputsets["${svc}_${name}_${inpt}_${trg}"].identifier if enable], ["NOT_DEFINED"]) */
+              },
+              /* try(local.inputsets_verbose_by_infra["${svc}_${name}"], {}), */
+              flatten([for env, env_details in var.environments : [
+                for infra, infra_details in var.infrastructures : {
+                  env_id                                     = env_details.identifier
+                  "${variables.vars.type}_infrastructure_id" = infra_details.identifier
+                } if infra_details.env_id == env_details.identifier && details.vars.base_env == env
+              ]])...
+            )
+          } if enable
+        } if try(details.pipeline, name) == pipe
+      ] if contains(keys(variables.vars.artifacts), try(details.vars.type, "NONE"))
+    ] if details.enable && details.type == "ALL" && can(details.vars.base_env)
+  ])...)
+
 
   /* cd_type_trigger = merge(flatten([
     for name, details in var.harness_platform_triggers : [
@@ -275,5 +302,6 @@ locals {
     local.ci,
     local.trg_by_infra,
     local.trg_by_all_infra,
+    local.inpt_by_base_env,
   )
 }
