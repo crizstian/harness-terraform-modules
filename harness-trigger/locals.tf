@@ -132,7 +132,7 @@ locals {
           } if enable
         } if try(details.pipeline, name) == pipe
       ] if contains(keys(variables.vars.artifacts), try(details.vars.type, "NONE"))
-    ] if details.enable && details.type == "ALL"
+    ] if details.enable && details.type == "ALL" && !can(details.vars.base_env)
   ])...)
 
   inpt_by_base_env = merge(flatten([
