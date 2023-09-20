@@ -181,18 +181,18 @@ locals {
           )
         } if try(details.pipeline, name) == pipe && values.INPUTSET
       } if !can(variables.vars.settings.infrastructure)
-    ] if details.enable && details.type == "ALL" && !can(details.vars.base_env)
+    ] if details.enable && details.type == "ALL"
   ])...)
 
   inpt_by_base_env = merge(flatten([
     for name, details in var.harness_platform_inputsets : [
       for svc, variables in var.services : {
-        for pipe, values in variables.vars.PIPELINE : "${svc}_${name}_ALL" => {
+        for pipe, values in variables.vars.PIPELINE : "${svc}_${name}_BASED_ENV" => {
           vars = merge(
             local.inpt_by_svc["${svc}_${name}"],
             {
               name       = "${svc}"
-              identifier = "${lower(replace("${svc}_${name}_ALL", "/[\\s-.]/", "_"))}_${var.suffix}"
+              identifier = "${lower(replace("${svc}_${name}_BASED_ENV", "/[\\s-.]/", "_"))}_${var.suffix}"
             },
             flatten([for env, env_details in var.environments : [
               for infra, infra_details in var.infrastructures : {
@@ -203,7 +203,7 @@ locals {
           )
         } if try(details.pipeline, name) == pipe && values.INPUTSET
       } if !can(variables.vars.settings.infrastructure)
-    ] if details.enable && details.type == "ALL" && can(details.vars.base_env)
+    ] if details.enable && details.type == "BASED_ENV"
   ])...)
 
 
