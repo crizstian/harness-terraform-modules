@@ -89,7 +89,7 @@ locals {
     ]
   }
   svc_manifest_values = { for svc, value in var.harness_platform_services : svc => [
-    for k, v in try(value.SERVICE_DEFINITION.MANIFESTS, {}) : <<-EOT
+    for k, v in try(local.service_definition[svc].MANIFESTS, {}) : <<-EOT
     manifest:
       identifier: ${k}
       type: ${v.type}
