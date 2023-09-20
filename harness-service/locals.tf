@@ -89,7 +89,7 @@ locals {
     ]
   }
   svc_manifest_values = { for svc, value in var.harness_platform_services : svc => [
-    for k, v in try(value.SERVICE_DEFINITION.MANIFESTS, {}) : <<-EOT
+    for k, v in try(local.service_definition[svc].MANIFESTS, {}) : <<-EOT
     manifest:
       identifier: ${k}
       type: ${v.type}
@@ -116,7 +116,11 @@ locals {
     ]
   }
 
-  service_manifests = { for svc, details in var.harness_platform_services : svc => flatten(concat(try(local.svc_manifest_helm_chart[svc], []), try(local.svc_manifest_k8s[svc], []), try(local.svc_manifest_values[svc], []))) }
+  service_manifests = { for svc, details in var.harness_platform_services : svc => flatten(concat(
+    try(local.svc_manifest_helm_chart[svc], []),
+    try(local.svc_manifest_k8s[svc], []),
+    try(local.svc_manifest_values[svc], [])))
+  }
 
   services = { for svc, details in var.harness_platform_services : svc => {
     vars = merge(
