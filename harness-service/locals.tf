@@ -75,7 +75,7 @@ locals {
       spec:
         store:
           spec:
-            connectorRef: ${try(var.connectors.default_connectors.git_connector_id, try(local.service_definition[svc].CONNECTORS.git_connector_id, ""))}
+            connectorRef: ${try(local.service_connectors[svc]["GIT_CONNECTOR"].id, try(local.service_definition[svc].CONNECTORS.git_connector_id, ""))}
             %{if can(v.reponame)}
             repoName: ${v.reponame}
             %{endif}
@@ -97,7 +97,7 @@ locals {
         store:
           spec:
             %{if v.git_provider != "Harness"}
-            connectorRef: ${try(var.connectors.default_connectors.git_connector_id, try(local.service_definition[svc].CONNECTORS.git_connector_id, ""))}
+            connectorRef: ${try(local.service_connectors[svc]["GIT_CONNECTOR"].id, try(local.service_definition[svc].CONNECTORS.git_connector_id, ""))}
             %{if can(v.reponame)}
             repoName: ${v.reponame}
             %{endif}
