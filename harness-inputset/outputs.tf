@@ -14,3 +14,10 @@ output "verbose" {
 output "verbose_by_infra" {
   value = { for key, details in local.inpt_by_infra : key => details }
 }
+
+output "inpt_by_all_infra" {
+  value = { for key, details in local.inpt_by_all_infra : key => details }
+}
+output "inpt_by_base_env" {
+  value = { for key, details in local.inpt_by_base_env : key => details }
+}
