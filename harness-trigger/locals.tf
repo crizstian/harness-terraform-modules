@@ -71,7 +71,7 @@ locals {
                   }
                 )
               } if infra_details.env_id == env_details.identifier
-            } if contains(keys(variables.vars.artifacts), env_details.primary_artifact) && try(local.trg_by_svc["${svc}_${name}"].environment_type, env_details.type) == env_details.type
+            } if contains(keys(variables.vars.artifacts), env_details.primary_artifact) && try(var.pipelines[pipe].default_values.environment_type, "NONE") == env_details.type
           ] if enable
         ] if try(details.pipeline, name) == pipe
       ]
