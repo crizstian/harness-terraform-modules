@@ -60,7 +60,7 @@ locals {
   infra_by_connector = merge(
     [
       for type, values in var.harness_platform_infrastructures : merge(
-        flatten([
+        [
           for infra, details in var.connectors["${values.connector_type}_connectors"] : {
             for env, _env in flatten(concat([details.environment], [])) : "${type}_${infra}" => {
               vars = merge(
@@ -80,7 +80,7 @@ locals {
               )
             } if can(var.environments[env])
           }
-        ]...)
+        ]...
       ) if values.enable && values.type != "CustomDeployment"
     ]...
   )
