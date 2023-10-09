@@ -62,7 +62,7 @@ locals {
       for type, values in var.harness_platform_infrastructures : merge(
         [
           for infra, details in var.connectors["${values.connector_type}_connectors"] : {
-            for env, _env in flatten(concat([details.environment], [])) : "${type}_${infra}" => {
+            for index, env in flatten(concat([details.environment], [])) : "${type}_${infra}" => {
               vars = merge(
                 values,
                 details,
