@@ -18,14 +18,14 @@ output "role_bindings" {
 
 output "deployments" {
   value = [
-    try(kubernetes_deployment_v1.autostopping-router.0.metadata.0.name, "NONE"),
-    try(kubernetes_deployment_v1.autostopping-controller.0.metadata.0.name, "NONE")
+    try(kubernetes_deployment_v1.autostopping-router.metadata.0.name, "NONE"),
+    try(kubernetes_deployment_v1.autostopping-controller.metadata.0.name, "NONE")
   ]
 }
 output "services" {
   value = [
-    try(kubernetes_service_v1.autostopping-router.0.metadata.0.name, "NONE"),
-    try(kubernetes_service_v1.autostopping-controller.0.metadata.0.name, "NONE")
+    try(kubernetes_service_v1.autostopping-router.metadata.0.name, "NONE"),
+    try(kubernetes_service_v1.autostopping-controller.metadata.0.name, "NONE")
   ]
 }
 output "namespace" {
@@ -49,7 +49,7 @@ output "configmaps" {
 }
 
 output "metrics_server_service_metadata" {
-  value = try(data.kubernetes_service_v1.metrics_server.0.metadata, {})
+  value = try(data.kubernetes_service_v1.metrics_server.metadata, {})
 }
 
 
