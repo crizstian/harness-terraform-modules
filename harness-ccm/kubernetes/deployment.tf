@@ -71,7 +71,7 @@ resource "kubernetes_service_v1" "autostopping-router" {
   }
   spec {
     selector = {
-      app = kubernetes_deployment_v1.autostopping-router.0.metadata.0.labels.app
+      app = kubernetes_deployment_v1.autostopping-router.metadata.0.labels.app
     }
     type = "ClusterIP"
     port {
@@ -163,7 +163,7 @@ resource "kubernetes_service_v1" "autostopping-controller" {
   }
   spec {
     selector = {
-      app = kubernetes_deployment_v1.autostopping-controller.0.metadata.0.labels.app
+      app = kubernetes_deployment_v1.autostopping-controller.metadata.0.labels.app
     }
     port {
       port     = 18000
