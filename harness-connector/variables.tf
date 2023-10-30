@@ -51,7 +51,7 @@ variable "project_id" {
   default = ""
 }
 variable "tags" {
-  default = ""
+  default = []
 }
 variable "delegate_selectors" {
   default = []
