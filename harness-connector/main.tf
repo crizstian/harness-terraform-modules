@@ -275,3 +275,15 @@ resource "harness_platform_connector_helm" "connector" {
   delegate_selectors = each.value.delegate_selectors
   url                = each.value.url
 }
+
+resource "harness_platform_connector_kubernetes_cloud_cost" "connector" {
+  for_each         = local.kubernetes_ccm_connectors
+  identifier       = each.value.identifier
+  name             = each.key
+  description      = each.value.description
+  tags             = each.value.tags
+  project_id       = each.value.project_id
+  org_id           = each.value.org_id
+  features_enabled = each.value.features_enabled
+  connector_ref    = each.value.connector_ref
+}

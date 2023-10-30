@@ -199,4 +199,16 @@ locals {
         }
       } : {}
   }) if details.enable }
+
+  kubernetes_ccm_connectors = { for name, details in var.harness_platform_kubernetes_connectors : name => merge(
+    details,
+    {
+      delegate_selectors = can(details.inherit_from_delegate) ? null : try(details.delegate_selectors, var.delegate_selectors)
+      tags               = concat(try(details.tags, []), var.tags)
+      identifier         = "${lower(replace(name, "/[\\s-.]/", "_"))}_cloud_cost_connector_${var.suffix}"
+      org_id             = "" # support only for account level
+      project_id         = "" # support only for account level
+      features_enabled   = try(details.features_enabled, ["VISIBILITY"])
+      connector_ref      = harness_platform_connector_kubernetes.connector[name].identifier
+  }) if details.enable_ccm_connector }
 }

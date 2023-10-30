@@ -91,6 +91,11 @@ locals {
       identifier = value.project_id != "" ? value.identifier : value.org_id != "" ? "org.${value.identifier}" : "account.${value.identifier}"
     }
   }
+  kubernetes_ccm_connectors_output = { for key, value in harness_platform_connector_kubernetes_cloud_cost.connector : key =>
+    {
+      identifier = value.project_id != "" ? value.identifier : value.org_id != "" ? "org.${value.identifier}" : "account.${value.identifier}"
+    }
+  }
 }
 
 output "all" {
@@ -105,6 +110,7 @@ output "all" {
     length(keys(local.dynatrace_connectors_output)) > 0 ? { dynatrace_connectors = local.dynatrace_connectors_output } : {},
     length(keys(local.kubernetes_connectors_output)) > 0 ? { kubernetes_connectors = local.kubernetes_connectors_output } : {},
     length(keys(local.aws_connectors_output)) > 0 ? { aws_connectors = local.aws_connectors_output } : {},
-    length(keys(local.helm_connectors_output)) > 0 ? { helm_connectors = local.helm_connectors_output } : {}
+    length(keys(local.helm_connectors_output)) > 0 ? { helm_connectors = local.helm_connectors_output } : {},
+    length(keys(local.kubernetes_ccm_connectors_output)) > 0 ? { kubernetes_ccm_connectors = local.kubernetes_ccm_connectors_output } : {}
   )
 }
