@@ -200,7 +200,7 @@ locals {
       } : {}
   }) if details.enable }
 
-  kubernetes_ccm_connectors = { for name, details in var.harness_platform_kubernetes_connectors : name => merge(
+  kubernetes_ccm_connectors = { for name, details in var.harness_platform_kubernetes_ccm_connectors : name => merge(
     details,
     {
       delegate_selectors = can(details.inherit_from_delegate) ? null : try(details.delegate_selectors, var.delegate_selectors)
