@@ -35,7 +35,7 @@ locals {
       type: Gcr
       spec:
         connectorRef: ${try(var.connectors.default_connectors.gcr_connector_id, try(local.service_definition[svc].CONNECTORS.gcr_connector_id, ""))}
-        registryHostname: ${try(local.service_definition.registry, "us.gcr.io")}
+        registryHostname: ${try(local.service_definition[svc].registry, "us.gcr.io")}
         imagePath: ${v}
         tag: <+input>
     EOT
