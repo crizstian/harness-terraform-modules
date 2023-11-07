@@ -37,8 +37,8 @@ resource "harness_platform_pipeline" "chained_pipelines" {
   identifier  = each.value.vars.identifier
   org_id      = each.value.vars.org_id
   project_id  = each.value.vars.project_id
-  tags        = each.value.vars.tags
-  yaml        = templatefile(each.value.vars.yaml, each.value.vars)
+  # tags        = each.value.vars.tags
+  yaml = templatefile(each.value.vars.yaml, each.value.vars)
 
 
   dynamic "git_details" {
