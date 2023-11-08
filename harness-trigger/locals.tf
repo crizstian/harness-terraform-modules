@@ -159,7 +159,7 @@ locals {
             )
           } if enable
         } if try(details.pipeline, name) == pipe
-      ] if contains(keys(variables.vars.artifacts), try(details.vars.type, "NONE"))
+      ] #if contains(keys(variables.vars.artifacts), try(details.vars.type, "NONE"))
     ] if details.enable && details.type == "ALL" && can(details.vars.base_env)
   ])...)
 
