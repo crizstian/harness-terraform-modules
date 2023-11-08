@@ -26,6 +26,7 @@ locals {
               org_id                              = var.pipelines[pipe].org_id
               project_id                          = var.pipelines[pipe].project_id
               pipeline_id                         = var.pipelines[pipe].identifier
+              service_type                        = variables.vars.type
               "${variables.vars.type}_service_id" = "${lower(replace(svc, "/[\\s-.]/", "_"))}_${var.suffix}"
             },
             details

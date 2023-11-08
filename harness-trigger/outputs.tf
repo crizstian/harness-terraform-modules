@@ -10,7 +10,7 @@ output "trigger" {
     org_id      = details.org_id
     project_id  = details.project_id
     pipeline_id = details.target_id
-    service_id  = try(local.triggers[key].kubernetes_service_id, "NONE")
+    service_id  = try(local.triggers[key].vars["${local.triggers[key].vars.service_type}_service_id"], "NONE")
     name        = details.name
   } }
 }
