@@ -23,8 +23,8 @@ locals {
                   - ${details.file}
                 %{endif}
       EOT
-    }
-    ] if can(values.configfiles)
+    } if can(values.configfiles)
+    ]
   ]...))
 
   service_overrides = merge([for svc, value in var.services : {
