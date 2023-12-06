@@ -1,5 +1,5 @@
 resource "harness_platform_environment_service_overrides" "overrides" {
-  for_each   = local.environments_service_overrides
+  for_each   = local.service_overrides
   identifier = each.value.vars.identifier
   org_id     = each.value.vars.org_id
   env_id     = each.value.vars.env_id
