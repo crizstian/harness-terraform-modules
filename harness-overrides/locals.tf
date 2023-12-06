@@ -34,7 +34,7 @@ locals {
 
       for manifest, details in values.manifests : <<-EOT
       manifest:
-        identifier: ${k}
+        identifier: ${manifest}
         type: ${details.type}
         spec:
           store:
