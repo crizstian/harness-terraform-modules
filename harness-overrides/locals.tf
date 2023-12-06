@@ -39,7 +39,7 @@ locals {
           service_id  = var.services[svc].identifier
           variables   = []
           manifests   = []
-          configFiles = local.svc_configfiles["${svc}_${env}"]
+          configfiles = local.svc_configfiles["${svc}_${env}"]
         }
       )
     }
