@@ -29,6 +29,36 @@ locals {
     }
   ])...)
 
+  svc_manifests = merge(flatten([for svc, value in var.services : {
+    for env, values in try(value.vars.OVERRIDES.ENV, {}) : "${svc}_${env}" => [
+
+      for manifest, details in values.manifests : <<-EOT
+      manifest:
+        identifier: ${k}
+        type: ${details.type}
+        spec:
+          store:
+            spec:
+              %{if details.git_provider != "Harness"}
+              connectorRef: ${try(var.connectors.default_connectors.git_connector_id, "NOT_DEFINED")}
+              %{if can(details.reponame)}
+              repoName: ${details.reponame}
+              %{endif}
+              gitFetchType: Branch
+              branch: ${details.branch}
+              paths:
+              %{endif}
+              %{if details.git_provider == "Harness"}
+              files:
+              %{endif}
+                - "${details.file}"
+            type: ${details.git_provider}
+      EOT
+      if details.type == "Values"
+    ] if can(values.manifests)
+    }
+  ])...)
+
   service_overrides = merge([for svc, value in var.services : {
     for env, values in try(value.vars.OVERRIDES.ENV, {}) : "${svc}_${env}" => {
       vars = merge(
@@ -39,8 +69,8 @@ locals {
           project_id  = var.environments[env].project_id
           env_id      = var.environments[env].identifier
           service_id  = var.services[svc].identifier
-          variables   = []
-          manifests   = []
+          variables   = values.variables
+          manifests   = local.svc_manifests["${svc}_${env}"]
           configfiles = local.svc_configfiles["${svc}_${env}"]
         }
       )
