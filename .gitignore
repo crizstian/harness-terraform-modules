@@ -1,0 +1,6 @@
+terraform.*
+*.terraform*
+*.tfvars
+contrib/examples/vars.tf
+.kube
+*.json
