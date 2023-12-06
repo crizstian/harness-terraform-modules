@@ -30,7 +30,7 @@ locals {
   service_overrides = merge([for svc, value in var.services : {
     for env, values in try(value.vars.OVERRIDES.ENV, {}) : "${svc}_${env}" => {
       vars = merge(
-        try(value.SERVICE_OVERRIDE, {}),
+        try(value.vars.SERVICE_OVERRIDE, {}),
         {
           identifier  = "${lower(replace("${svc}_${env}", "/[\\s-.]/", "_"))}_${var.suffix}"
           org_id      = var.environments[env].org_id
