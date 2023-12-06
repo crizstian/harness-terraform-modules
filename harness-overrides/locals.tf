@@ -25,7 +25,7 @@ locals {
       EOT
     } if can(values.configfiles)
     ]
-  ]...))
+  ])...)
 
   service_overrides = merge([for svc, value in var.services : {
     for env, values in try(value.vars.OVERRIDES.ENV, {}) : "${svc}_${env}" => {
