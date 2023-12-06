@@ -1,8 +1,9 @@
 locals {
 
-  svc_configfiles = merge(flatten([for svc, value in var.services : [
-    for env, values in try(value.vars.OVERRIDES.ENV, {}) : {
-      for cfg, details in values.configfiles : "${svc}_${env}" => <<-EOT
+  svc_configfiles = merge(flatten([for svc, value in var.services : {
+    for env, values in try(value.vars.OVERRIDES.ENV, {}) : "${svc}_${env}" => [
+
+      for cfg, details in values.configfiles : <<-EOT
       configFile:
         identifier: ${cfg}
         spec:
@@ -23,8 +24,9 @@ locals {
                   - ${details.file}
                 %{endif}
       EOT
-    } if can(values.configfiles)
-    ]
+
+    ] if can(values.configfiles)
+    }
   ])...)
 
   service_overrides = merge([for svc, value in var.services : {
