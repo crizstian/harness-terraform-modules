@@ -24,7 +24,7 @@ locals {
                 %{endif}
       EOT
     }
-    ] if contains(keys(values), "configfiles")
+    ] if can(values.configfiles)
   ]...))
 
   service_overrides = merge([for svc, value in var.services : {
