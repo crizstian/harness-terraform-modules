@@ -69,9 +69,9 @@ locals {
           project_id  = var.environments[env].project_id
           env_id      = var.environments[env].identifier
           service_id  = var.services[svc].identifier
-          variables   = values.variables
-          manifests   = local.svc_manifests["${svc}_${env}"]
-          configfiles = local.svc_configfiles["${svc}_${env}"]
+          variables   = try(values.variables, [])
+          manifests   = try(local.svc_manifests["${svc}_${env}"], [])
+          configfiles = try(local.svc_configfiles["${svc}_${env}"], [])
         }
       )
     }
