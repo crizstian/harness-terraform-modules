@@ -146,7 +146,7 @@ locals {
               local.trg_by_svc["${svc}_${name}_${trg}"],
               {
                 name       = "${svc}"
-                identifier = "${lower(replace("${svc}_${name}_${trg}", "/[\\s-.]/", "_"))}_${var.suffix}"
+                identifier = "${lower(replace("${svc}", "/[\\s-.]/", "_"))}_${var.suffix}"
                 /* inputset_ids = try([for inpt, enable in definition.TRIGGER_INPUTSET : local.inputsets["${svc}_${name}_${inpt}_${trg}"].identifier if enable], ["NOT_DEFINED"]) */
               },
               /* try(local.inputsets_verbose_by_infra["${svc}_${name}"], {}), */
