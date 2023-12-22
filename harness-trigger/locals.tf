@@ -136,23 +136,23 @@ locals {
     ] if details.enable && details.type == "ALL" && !can(details.vars.base_env)
   ])...)
 
-  simple_trg_by_all_infra = merge(flatten({
-    for name, details in var.harness_platform_triggers : "" => {
-      vars = merge(
-        {
-          "name"     = name
-          identifier = "${lower(replace("${name}", "/[\\s-.]/", "_"))}"
-          /* inputset_ids = try([for inpt, enable in definition.TRIGGER_INPUTSET : local.inputsets["${svc}_${name}_${inpt}_${trg}"].identifier if enable], ["NOT_DEFINED"]) */
-        },
-        /* try(local.inputsets_verbose_by_infra["${svc}_${name}"], {}), */
-        flatten([for env, env_details in var.environments : [
-          for infra, infra_details in var.infrastructures : {
-            "${variables.vars.type}_${lower(env)}_infrastructure_id" = infra_details.identifier
-          } if infra_details.env_id == env_details.identifier
-        ]])...
-      )
-    } if details.enable && details.type == "SIMPLE_ALL" && !can(details.vars.base_env)
-  })...)
+  # simple_trg_by_all_infra = merge(flatten({
+  #   for name, details in var.harness_platform_triggers : "" => {
+  #     vars = merge(
+  #       {
+  #         "name"     = name
+  #         identifier = "${lower(replace("${name}", "/[\\s-.]/", "_"))}"
+  #         /* inputset_ids = try([for inpt, enable in definition.TRIGGER_INPUTSET : local.inputsets["${svc}_${name}_${inpt}_${trg}"].identifier if enable], ["NOT_DEFINED"]) */
+  #       },
+  #       /* try(local.inputsets_verbose_by_infra["${svc}_${name}"], {}), */
+  #       flatten([for env, env_details in var.environments : [
+  #         for infra, infra_details in var.infrastructures : {
+  #           "${variables.vars.type}_${lower(env)}_infrastructure_id" = infra_details.identifier
+  #         } if infra_details.env_id == env_details.identifier
+  #       ]])...
+  #     )
+  #   } if details.enable && details.type == "SIMPLE_ALL" && !can(details.vars.base_env)
+  # })...)
 
   inpt_by_base_env = merge(flatten([
     for name, details in var.harness_platform_triggers : [
@@ -187,6 +187,6 @@ locals {
     local.trg_by_infra,
     local.trg_by_all_infra,
     local.inpt_by_base_env,
-    local.simple_trg_by_all_infra
+    # local.simple_trg_by_all_infra
   )
 }
