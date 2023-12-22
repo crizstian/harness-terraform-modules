@@ -16,7 +16,7 @@ locals {
           {
             svc                                 = "${svc}"
             suffix                              = var.suffix
-            tags                                = concat(try(variables.vars.tags, []), var.tags)
+            tags                                = [] #concat(try(variables.vars.tags, []), var.tags)
             git_details                         = try(variables.vars.git_details, {})
             org_id                              = var.pipelines[pipe].org_id
             project_id                          = var.pipelines[pipe].project_id
