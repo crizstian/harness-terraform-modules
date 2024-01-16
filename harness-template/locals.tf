@@ -50,7 +50,7 @@ locals {
       {
         step = {
           for k, v in details.template : k => {
-            template_id      = "${try(v.template_level, "project") == "project" ? "" : "${v.template_level}."}${try(harness_platform_template.step[v.template_name].identifier, "NOT_DEFINED")}"
+            template_id      = can(details.template_id) ? details.template_id : "${try(v.template_level, "project") == "project" ? "" : "${v.template_level}."}${try(harness_platform_template.step[v.template_name].identifier, "NOT_DEFINED")}"
             template_version = try(v.template_version, "1")
           } if try(v.type, "") == "step"
         }
@@ -65,13 +65,13 @@ locals {
         details.vars,
         {
           for k, v in try(details.template, {}) : k => {
-            template_id      = "${try(v.template_level, "project") == "project" ? "" : "${v.template_level}."}${try(harness_platform_template.step[v.template_name].identifier, "NOT_DEFINED")}"
+            template_id      = can(details.template_id) ? details.template_id : "${try(v.template_level, "project") == "project" ? "" : "${v.template_level}."}${try(harness_platform_template.step[v.template_name].identifier, "NOT_DEFINED")}"
             template_version = try(v.template_version, "1")
           } if try(v.type, "") == "step"
         },
         {
           for k, v in try(details.template, {}) : k => {
-            template_id      = "${try(v.template_level, "project") == "project" ? "" : "${v.template_level}."}${try(harness_platform_template.step-group[v.template_name].identifier, "NOT_DEFINED")}"
+            template_id      = can(details.template_id) ? details.template_id : "${try(v.template_level, "project") == "project" ? "" : "${v.template_level}."}${try(harness_platform_template.step-group[v.template_name].identifier, "NOT_DEFINED")}"
             template_version = try(v.template_version, "1")
           } if try(v.type, "") == "step-group"
       })
@@ -85,25 +85,25 @@ locals {
         details.vars,
         {
           for k, v in try(details.template, {}) : k => {
-            template_id      = "${try(v.template_level, "project") == "project" ? "" : "${v.template_level}."}${try(harness_platform_template.step[v.template_name].identifier, "NOT_DEFINED")}"
+            template_id      = can(details.template_id) ? details.template_id : "${try(v.template_level, "project") == "project" ? "" : "${v.template_level}."}${try(harness_platform_template.step[v.template_name].identifier, "NOT_DEFINED")}"
             template_version = try(v.template_version, "1")
           } if try(v.type, "") == "step"
         },
         {
           for k, v in try(details.template, {}) : k => {
-            template_id      = "${try(v.template_level, "project") == "project" ? "" : "${v.template_level}."}${try(harness_platform_template.step-group[v.template_name].identifier, "NOT_DEFINED")}"
+            template_id      = can(details.template_id) ? details.template_id : "${try(v.template_level, "project") == "project" ? "" : "${v.template_level}."}${try(harness_platform_template.step-group[v.template_name].identifier, "NOT_DEFINED")}"
             template_version = try(v.template_version, "1")
           } if try(v.type, "") == "step-group"
         },
         {
           for k, v in try(details.template, {}) : k => {
-            template_id      = "${try(v.template_level, "project") == "project" ? "" : "${v.template_level}."}${try(harness_platform_template.stage[v.template_name].identifier, "NOT_DEFINED")}"
+            template_id      = can(details.template_id) ? details.template_id : "${try(v.template_level, "project") == "project" ? "" : "${v.template_level}."}${try(harness_platform_template.stage[v.template_name].identifier, "NOT_DEFINED")}"
             template_version = try(v.template_version, "1")
           } if try(v.type, "") == "stage"
         },
         {
           for k, v in try(details.template, {}) : k => {
-            template_id      = "${try(v.template_level, "project") == "project" ? "" : "${v.template_level}."}${try(harness_platform_template.template_deployment[v.template_name].identifier, "NOT_DEFINED")}"
+            template_id      = can(details.template_id) ? details.template_id : "${try(v.template_level, "project") == "project" ? "" : "${v.template_level}."}${try(harness_platform_template.template_deployment[v.template_name].identifier, "NOT_DEFINED")}"
             template_version = try(v.template_version, "1")
           } if try(v.type, "") == "template-deployment"
         },
