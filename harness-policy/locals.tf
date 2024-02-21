@@ -30,7 +30,7 @@ locals {
         project_id  = try(local.policy_sets_prj_id[name], "") != "" ? local.policy_sets_prj_id[name] : try(details.project_id, var.common_values.project_id)
         description = details.description
         policies = { for k, v in details.policies : k => {
-          identifier = try(var.var.policies[k].identifier, "NOT_DEFINED")
+          identifier = try(var.policies[k].identifier, "NOT_DEFINED")
           severity   = v.severity
           }
         }
