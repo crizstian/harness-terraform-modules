@@ -14,6 +14,9 @@ variable "organizations" {
 variable "projects" {
   default = {}
 }
+variable "policies" {
+  default = {}
+}
 variable "common_values" {
   default = {
     org_id     = ""

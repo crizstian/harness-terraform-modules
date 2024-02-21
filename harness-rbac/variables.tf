@@ -13,3 +13,12 @@ variable "project_id" {
   default = ""
   type    = string
 }
+variable "harness_platform_roles" {
+  default = {}
+}
+variable "harness_platform_users" {
+  default = {}
+}
+variable "harness_platform_user_groups" {
+  default = {}
+}
