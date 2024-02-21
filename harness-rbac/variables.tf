@@ -1,17 +1,27 @@
-variable "suffix" {
-  type = string
-}
-variable "global_tags" {
+variable "suffix" {}
+variable "tags" {
   default = []
-  type    = list(string)
 }
 variable "org_id" {
-  default = "default"
-  type    = string
+  default = ""
 }
 variable "project_id" {
   default = ""
-  type    = string
+}
+variable "organizations" {
+  default = {}
+}
+variable "projects" {
+  default = {}
+}
+variable "policies" {
+  default = {}
+}
+variable "common_values" {
+  default = {
+    org_id     = ""
+    project_id = ""
+  }
 }
 variable "harness_platform_roles" {
   default = {}
