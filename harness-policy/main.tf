@@ -16,6 +16,8 @@ resource "harness_platform_policyset" "policyset" {
   action     = each.value.action
   type       = each.value.type
   enabled    = each.value.enabled
+  org_id     = each.value.org_id
+  project_id = each.value.project_id
 
   dynamic "policies" {
     for_each = each.value.policies
