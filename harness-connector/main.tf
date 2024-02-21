@@ -85,26 +85,26 @@ resource "harness_platform_connector_nexus" "connector" {
   }
 }
 
-resource "harness_platform_connector_service_now" "connector" {
-  for_each           = local.service_now_connectors
-  identifier         = each.value.identifier
-  name               = each.key
-  description        = each.value.description
-  org_id             = each.value.org_id
-  project_id         = each.value.project_id
-  tags               = each.value.tags
-  delegate_selectors = each.value.delegate_selectors
-  service_now_url    = each.value.service_now_url
+# resource "harness_platform_connector_service_now" "connector" {
+#   for_each           = local.service_now_connectors
+#   identifier         = each.value.identifier
+#   name               = each.key
+#   description        = each.value.description
+#   org_id             = each.value.org_id
+#   project_id         = each.value.project_id
+#   tags               = each.value.tags
+#   delegate_selectors = each.value.delegate_selectors
+#   service_now_url    = each.value.service_now_url
 
-  auth {
-    auth_type = each.value.auth.credentials.auth_type
+#   auth {
+#     auth_type = each.value.auth.credentials.auth_type
 
-    username_password {
-      username     = each.value.auth.credentials.username
-      password_ref = each.value.auth.credentials.password_ref
-    }
-  }
-}
+#     username_password {
+#       username     = each.value.auth.credentials.username
+#       password_ref = each.value.auth.credentials.password_ref
+#     }
+#   }
+# }
 
 resource "harness_platform_connector_dynatrace" "connector" {
   for_each           = local.dynatrace_connectors

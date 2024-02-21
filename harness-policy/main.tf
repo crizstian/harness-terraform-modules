@@ -10,7 +10,6 @@ resource "harness_platform_policy" "policy" {
 }
 
 resource "harness_platform_policyset" "policyset" {
-  depends_on = [harness_platform_policy.policy]
   for_each   = local.harness_policy_sets
   identifier = each.value.identifier
   name       = each.value.name
