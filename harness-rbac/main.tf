@@ -59,7 +59,7 @@ resource "harness_platform_usergroup" "usergroup" {
 }
 
 resource "harness_platform_service_account" "service_account" {
-  for_each    = local.service_accounts
+  for_each    = local.harness_service_accounts
   name        = each.value.name
   description = each.value.description
   identifier  = each.value.identifier
