@@ -31,7 +31,7 @@ locals {
   }
   harness_user_groups = {}
   harness_service_accounts = {
-    for name, details in var.harness_platform_users : name => merge(
+    for name, details in var.harness_platform_service_accounts : name => merge(
       details,
       {
         name        = "${name}"
