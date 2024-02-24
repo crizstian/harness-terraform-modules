@@ -38,3 +38,6 @@ variable "harness_platform_service_accounts" {
 variable "harness_resource_groups" {
   default = {}
 }
+variable "harness_role_assignments" {
+  default = {}
+}

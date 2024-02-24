@@ -81,4 +81,19 @@ locals {
       }
     )
   }
+  harness_role_assignments = {
+    for name, details in var.harness_role_assignments : name => merge(
+      details,
+      {
+        name        = "${name}"
+        identifier  = "${lower(replace(name, "/[\\s-.]/", "_"))}_${var.suffix}"
+        tags        = concat(try(details.vars.tags, []), var.tags)
+        org_id      = try(local.role_org_id[name], "") != "" ? local.role_org_id[name] : try(details.org_id, var.common_values.org_id)
+        project_id  = try(local.role_prj_id[name], "") != "" ? local.role_prj_id[name] : try(details.project_id, var.common_values.project_id)
+        description = details.description
+        included_scopes = try(details.included_scopes, {})
+        resource_filter = try(details.resource_filter, {})
+      }
+    )
+  }
 }

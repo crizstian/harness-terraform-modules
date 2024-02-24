@@ -105,3 +105,22 @@ resource "harness_platform_resource_group" "resource_group" {
     }
   }
 }
+
+resource "harness_platform_role_assignments" "role_assignments" {
+  for_each                  = local.harness_role_assignments
+  org_id                    = each.value.org_id
+  project_id                = each.value.project_id
+  resource_group_identifier = each.value.resource_group_identifier
+  role_identifier           = each.value.role_identifier
+
+  dynamic "principal" {
+    for_each = each.value.principal
+    content {
+      identifier = principal.value.identifier
+      type       = principal.value.type
+    }
+  }
+
+  disabled = each.value.disabled
+  managed  = each.value.managed
+}
