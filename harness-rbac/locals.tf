@@ -66,4 +66,17 @@ locals {
       }
     )
   }
+  harness_resource_groups = {
+    for name, details in var.harness_resource_groups : name => merge(
+      details,
+      {
+        name        = "${name}"
+        identifier  = "${lower(replace(name, "/[\\s-.]/", "_"))}_${var.suffix}"
+        tags        = concat(try(details.vars.tags, []), var.tags)
+        org_id      = try(local.role_org_id[name], "") != "" ? local.role_org_id[name] : try(details.org_id, var.common_values.org_id)
+        project_id  = try(local.role_prj_id[name], "") != "" ? local.role_prj_id[name] : try(details.project_id, var.common_values.project_id)
+        description = details.description
+      }
+    )
+  }
 }

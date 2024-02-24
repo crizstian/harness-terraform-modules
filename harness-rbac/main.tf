@@ -67,3 +67,41 @@ resource "harness_platform_service_account" "service_account" {
   email       = each.value.email
   account_id  = each.value.account_id
 }
+
+resource "harness_platform_resource_group" "resource_group" {
+  for_each    = local.harness_resource_groups
+  name        = each.value.name
+  description = each.value.description
+  identifier  = each.value.identifier
+  tags        = each.value.tags
+  account_id  = each.value.account_id
+  allowed_scope_levels = each.value.allowed_scope_levels
+
+  dynamic "included_scopes" {
+    for_each = each.value.included_scopes
+    content {
+      filter     = included_scopes.value.filter
+      account_id = each.value.account_id
+    }
+  }
+
+  dynamic "resource_filter" {
+    for_each = each.value.resource_filter
+    content {
+      include_all_resources = resource_filter.value.include_all_resources
+      dynamic "resources" {
+        for_each = resource_filter.value.resources
+        content {
+          resource_type = resources.value.resource_type
+          dynamic "attribute_filter" {
+            for_each = resources.value.attribute_filter
+            content {
+              attribute_name   = attribute_filter.value.attribute_name
+              attribute_values = attribute_filter.value.attribute_values
+            }
+          }
+        }
+      }
+    }
+  }
+}

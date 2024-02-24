@@ -35,3 +35,6 @@ variable "harness_platform_usergroups" {
 variable "harness_platform_service_accounts" {
   default = {}
 }
+variable "harness_resource_groups" {
+  default = {}
+}
