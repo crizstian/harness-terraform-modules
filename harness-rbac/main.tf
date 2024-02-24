@@ -43,11 +43,11 @@ resource "harness_platform_usergroup" "usergroup" {
     for_each = each.value.notification_configs
     content {
       type                        = notification_configs.value.type
-      slack_webhook_url           = notification_configs.value.slack_webhook_url
-      group_email                 = notification_configs.value.group_email
-      send_email_to_all_users     = notification_configs.value.send_email_to_all_users
-      microsoft_teams_webhook_url = notification_configs.value.microsoft_teams_webhook_url
-      pager_duty_key              = notification_configs.value.pager_duty_key
+      slack_webhook_url           = try(notification_configs.value.slack_webhook_url, "")
+      group_email                 = try(notification_configs.value.group_email, "")
+      send_email_to_all_users     = try(notification_configs.value.send_email_to_all_users, "")
+      microsoft_teams_webhook_url = try(notification_configs.value.microsoft_teams_webhook_url, "")
+      pager_duty_key              = try(notification_configs.value.pager_duty_key, "")
     }
   }
 

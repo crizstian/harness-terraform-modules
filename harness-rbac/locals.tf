@@ -49,7 +49,7 @@ locals {
         sso_group_id            = try(details.sso_group_id, "")
         sso_group_name          = try(details.sso_group_name, "")
         linked_sso_type         = try(details.linked_sso_type, "")
-        sso_linked              = try(details.sso_linked, "")
+        sso_linked              = try(details.sso_linked, false)
       }
     )
   }
