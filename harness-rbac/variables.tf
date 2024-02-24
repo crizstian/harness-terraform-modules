@@ -29,7 +29,7 @@ variable "harness_platform_roles" {
 variable "harness_platform_users" {
   default = {}
 }
-variable "harness_platform_user_groups" {
+variable "harness_platform_usergroups" {
   default = {}
 }
 variable "harness_platform_service_accounts" {

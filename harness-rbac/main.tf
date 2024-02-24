@@ -10,7 +10,7 @@ resource "harness_platform_roles" "role" {
   allowed_scope_levels = each.value.allowed_scope_levels
 }
 
-resource "harness_platform_user" "example" {
+resource "harness_platform_user" "user" {
   for_each    = local.harness_users
   email       = each.value.email
   user_groups = each.value.user_groups

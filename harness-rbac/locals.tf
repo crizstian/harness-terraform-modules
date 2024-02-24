@@ -26,10 +26,33 @@ locals {
         org_id      = try(local.role_org_id[name], "") != "" ? local.role_org_id[name] : try(details.org_id, var.common_values.org_id)
         project_id  = try(local.role_prj_id[name], "") != "" ? local.role_prj_id[name] : try(details.project_id, var.common_values.project_id)
         description = details.description
+        user_groups = try(details.user_groups, [])
+        role_bindings = try(details.role_bindings, {})
       }
     )
   }
-  harness_user_groups = {}
+  harness_user_groups = {
+    for name, details in var.harness_platform_usergroups : name => merge(
+      details,
+      {
+        name                    = "${name}"
+        identifier              = "${lower(replace(name, "/[\\s-.]/", "_"))}_${var.suffix}"
+        tags                    = concat(try(details.vars.tags, []), var.tags)
+        org_id                  = try(local.role_org_id[name], "") != "" ? local.role_org_id[name] : try(details.org_id, var.common_values.org_id)
+        project_id              = try(local.role_prj_id[name], "") != "" ? local.role_prj_id[name] : try(details.project_id, var.common_values.project_id)
+        description             = details.description
+        linked_sso_id           = try(details.linked_sso_id, "")
+        externally_managed      = try(details.externally_managed, false)
+        user_emails             = try(details.user_emails, [])
+        notification_configs    = try(details.notification_configs, {})
+        linked_sso_display_name = try(details.linked_sso_display_name, "")
+        sso_group_id            = try(details.sso_group_id, "")
+        sso_group_name          = try(details.sso_group_name, "")
+        linked_sso_type         = try(details.linked_sso_type, "")
+        sso_linked              = try(details.sso_linked, "")
+      }
+    )
+  }
   harness_service_accounts = {
     for name, details in var.harness_platform_service_accounts : name => merge(
       details,
