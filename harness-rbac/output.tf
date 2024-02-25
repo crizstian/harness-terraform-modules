@@ -11,5 +11,5 @@ output "service_accounts" {
   value = { for k, v in harness_platform_service_account.service_account : k => v.identifier }
 }
 output "resource_groups" {
-  value = { for k, v in harness_platform_resource_group.esource_groups : k => v.identifier }
+  value = { for k, v in harness_platform_resource_group.resource_group : k => v.identifier }
 }
