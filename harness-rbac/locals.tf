@@ -95,6 +95,7 @@ locals {
           for k, v in details.principal: k => {
             identifier = v.type == "USER_GROUP" ? try(var.usergroups[k].identifier, "NOT_DEFINED") : v.type == "SERVICE_ACCOUNT" ? try(var.service_accounts[k].identifier, "NOT_DEFINED") : v.type == "USER" ? try(var.users[k].identifier, "NOT_DEFINED") : v.type == "API_KEY" ? try(var.users[k].identifier, "NOT_DEFINED") : "NOT_DEFINED"
             type = v.type
+            scope_level = try(v.scope_level, "")
           }
         }
       }
