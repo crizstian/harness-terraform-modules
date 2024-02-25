@@ -87,10 +87,8 @@ locals {
       {
         name        = "${name}"
         identifier  = "${lower(replace(name, "/[\\s-.]/", "_"))}_${var.suffix}"
-        tags        = concat(try(details.vars.tags, []), var.tags)
         org_id      = try(local.role_org_id[name], "") != "" ? local.role_org_id[name] : try(details.org_id, var.common_values.org_id)
         project_id  = try(local.role_prj_id[name], "") != "" ? local.role_prj_id[name] : try(details.project_id, var.common_values.project_id)
-        description = details.description
         resource_group_identifier = try(var.resource_groups[details.resource_group_identifier],details.resource_group_identifier)
         role_identifier           = try(var.roles[details.role_identifier],details.role_identifier)
         principal = {
