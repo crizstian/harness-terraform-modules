@@ -41,3 +41,18 @@ variable "harness_resource_groups" {
 variable "harness_role_assignments" {
   default = {}
 }
+variable "roles" {
+  default = {}
+}
+variable "users" {
+  default = {}
+}
+variable "usergroups" {
+  default = {}
+}
+variable "service_accounts" {
+  default = {}
+}
+variable "resource_groups" {
+  default = {}
+}
