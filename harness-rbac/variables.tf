@@ -55,6 +55,6 @@ variable "usergroups" {
 variable "service_accounts" {
   default = {}
 }
-variable "esource_groups" {
+variable "resource_groups" {
   default = {}
 }
