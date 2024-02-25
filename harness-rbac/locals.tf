@@ -92,7 +92,7 @@ locals {
         project_id  = try(local.role_prj_id[name], "") != "" ? local.role_prj_id[name] : try(details.project_id, var.common_values.project_id)
         description = details.description
         resource_group_identifier = try(var.roles[details.resource_group_identifier],details.resource_group_identifier)
-        role_identifier           = try(var.esource_groups[details.role_identifier],details.role_identifier)
+        role_identifier           = try(var.resource_groups[details.role_identifier],details.role_identifier)
         principal = {
           for k, v in details.principal: k => {
             identifier = v.type == "USER_GROUP" ? try(var.usergroups[k].identifier, "NOT_DEFINED") : v.type == "SERVICE_ACCOUNT" ? try(var.service_accounts[k].identifier, "NOT_DEFINED") : v.type == "USER" ? try(var.users[k].identifier, "NOT_DEFINED") : v.type == "API_KEY" ? try(var.users[k].identifier, "NOT_DEFINED") : "NOT_DEFINED"
