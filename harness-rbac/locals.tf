@@ -89,8 +89,8 @@ locals {
         identifier  = "${lower(replace(name, "/[\\s-.]/", "_"))}_${var.suffix}"
         org_id      = try(local.role_org_id[name], "") != "" ? local.role_org_id[name] : try(details.org_id, var.common_values.org_id)
         project_id  = try(local.role_prj_id[name], "") != "" ? local.role_prj_id[name] : try(details.project_id, var.common_values.project_id)
-        resource_group_identifier = try(var.resource_groups[details.resource_group_identifier],details.resource_group_identifier)
-        role_identifier           = try(var.roles[details.role_identifier],details.role_identifier)
+        resource_group_identifier = try(var.resource_groups[details.resource_group_identifier].identifier,details.resource_group_identifier)
+        role_identifier           = try(var.roles[details.role_identifier].identifier,details.role_identifier)
         principal = {
           for k, v in details.principal: k => {
             identifier = v.type == "USER_GROUP" ? try(var.usergroups[k].identifier, "NOT_DEFINED") : v.type == "SERVICE_ACCOUNT" ? try(var.service_accounts[k].identifier, "NOT_DEFINED") : v.type == "USER" ? try(var.users[k].identifier, "NOT_DEFINED") : v.type == "API_KEY" ? try(var.users[k].identifier, "NOT_DEFINED") : "NOT_DEFINED"
