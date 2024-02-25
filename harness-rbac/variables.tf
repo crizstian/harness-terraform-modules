@@ -35,12 +35,14 @@ variable "harness_platform_usergroups" {
 variable "harness_platform_service_accounts" {
   default = {}
 }
-variable "harness_resource_groups" {
+variable "harness_platform_resource_groups" {
   default = {}
 }
-variable "harness_role_assignments" {
+variable "harness_platform_role_assignments" {
   default = {}
 }
+
+
 variable "roles" {
   default = {}
 }
@@ -53,6 +55,6 @@ variable "usergroups" {
 variable "service_accounts" {
   default = {}
 }
-variable "resource_groups" {
+variable "esource_groups" {
   default = {}
 }

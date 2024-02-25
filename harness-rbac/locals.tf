@@ -67,7 +67,7 @@ locals {
     )
   }
   harness_resource_groups = {
-    for name, details in var.harness_resource_groups : name => merge(
+    for name, details in var.harness_platform_resource_groups : name => merge(
       details,
       {
         name        = "${name}"
@@ -82,7 +82,7 @@ locals {
     )
   }
   harness_role_assignments = {
-    for name, details in var.harness_role_assignments : name => merge(
+    for name, details in var.harness_platform_role_assignments : name => merge(
       details,
       {
         name        = "${name}"
