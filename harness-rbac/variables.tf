@@ -41,7 +41,9 @@ variable "harness_platform_resource_groups" {
 variable "harness_platform_role_assignments" {
   default = {}
 }
-
+variable "harness_platform_apikey" {
+  default = {}
+}
 
 variable "roles" {
   default = {}

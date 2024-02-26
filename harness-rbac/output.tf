@@ -13,3 +13,6 @@ output "service_accounts" {
 output "resource_groups" {
   value = { for k, v in harness_platform_resource_group.resource_group : k => {identifier = v.identifier} }
 }
+output "apikey" {
+  value = { for k, v in harness_platform_apikey.apikey : k => {identifier = v.identifier} }
+}
