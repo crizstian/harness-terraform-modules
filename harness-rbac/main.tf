@@ -134,4 +134,5 @@ resource "harness_platform_apikey" "apikey" {
   account_id  = each.value.account_id
   parent_id   = each.value.parent_id
   apikey_type = each.value.apikey_type
+  default_time_to_expire_token = each.value.default_time_to_expire_token
 }
