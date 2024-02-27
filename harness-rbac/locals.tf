@@ -134,6 +134,7 @@ locals {
         identifier  = "${lower(replace(name, "/[\\s-.]/", "_"))}_${var.suffix}"
         org_id      = try(local.apikey_org_id[name], "") != "" ? local.apikey_org_id[name] : try(details.org_id, var.common_values.org_id)
         project_id  = try(local.apikey_prj_id[name], "") != "" ? local.apikey_prj_id[name] : try(details.project_id, var.common_values.project_id)
+        parent_id   = details.apikey_type == "SERVICE_ACCOUNT" ? var.service_accounts[local.harness_apikey[name].parent_id].identifier : details.parent_id
       }
     )
   }
