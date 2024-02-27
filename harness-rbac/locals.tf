@@ -148,7 +148,7 @@ locals {
         org_id                = local.harness_apikey[name].org_id
         project_id            = local.harness_apikey[name].project_id
         account_id            = local.harness_apikey[name].account_id
-        parent_id             = local.harness_apikey[name].parent_id
+        parent_id             = local.harness_apikey[name].apikey_type == "SERVICE_ACCOUNT" ? var.service_accounts[local.harness_apikey[name].parent_id].identifier : local.harness_apikey[name].parent_id
         apikey_type           = local.harness_apikey[name].apikey_type
         apikey_id             = local.harness_apikey[name].identifier
         description           = try(details.description, "")
