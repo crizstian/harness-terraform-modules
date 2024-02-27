@@ -167,4 +167,6 @@ resource "harness_platform_secret_text" "secret" {
   secret_manager_identifier = "harnessSecretManager"
   value_type                = "Inline"
   value                     = each.value.value
+  org_id                    = each.value.org_id
+  project_id                = each.value.project_id
 }
