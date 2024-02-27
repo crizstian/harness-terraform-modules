@@ -158,3 +158,13 @@ resource "harness_platform_token" "token" {
   valid_from            = each.value.valid_from
   valid_to              = each.value.valid_to
 }
+
+resource "harness_platform_secret_text" "secret" {
+  for_each                  = harness_platform_token.token
+  identifier                = each.value.identifier
+  name                      = each.value.name
+  description               = each.value.description
+  secret_manager_identifier = "harnessSecretManager"
+  value_type                = "Inline"
+  value                     = each.value.value
+}

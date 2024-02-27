@@ -13,3 +13,9 @@ output "service_accounts" {
 output "resource_groups" {
   value = { for k, v in harness_platform_resource_group.resource_group : k => {identifier = v.identifier} }
 }
+output "apikey" {
+  value = { for k, v in harness_platform_secret_text.secret : k => {
+    identifier = value.project_id != "" ? value.identifier : value.org_id != "" ? "org.${value.identifier}" : "account.${value.identifier}"
+    } 
+    }
+}
