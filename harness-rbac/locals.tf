@@ -126,18 +126,18 @@ locals {
   apikey_prj_id = merge([for apikey, values in var.harness_platform_apikey : { for prj, details in var.projects : apikey => details.identifier if lower(prj) == lower(try(values.project, "NOT_FOUND")) }]...)
 
 
-  harness_apikey = {
-    for name, details in var.harness_platform_apikey : name => merge(
-      details,
-      {
-        name        = "${name}"
-        identifier  = "${lower(replace(name, "/[\\s-.]/", "_"))}_${var.suffix}"
-        org_id      = try(local.apikey_org_id[name], "") != "" ? local.apikey_org_id[name] : try(details.org_id, var.common_values.org_id)
-        project_id  = try(local.apikey_prj_id[name], "") != "" ? local.apikey_prj_id[name] : try(details.project_id, var.common_values.project_id)
-        parent_id   = details.apikey_type == "SERVICE_ACCOUNT" ? var.service_accounts[details.parent_id].identifier : details.parent_id
-      }
-    )
-  }
+  # harness_apikey = {
+  #   for name, details in var.harness_platform_apikey : name => merge(
+  #     details,
+  #     {
+  #       name        = "${name}"
+  #       identifier  = "${lower(replace(name, "/[\\s-.]/", "_"))}_${var.suffix}"
+  #       org_id      = try(local.apikey_org_id[name], "") != "" ? local.apikey_org_id[name] : try(details.org_id, var.common_values.org_id)
+  #       project_id  = try(local.apikey_prj_id[name], "") != "" ? local.apikey_prj_id[name] : try(details.project_id, var.common_values.project_id)
+  #       parent_id   = details.apikey_type == "SERVICE_ACCOUNT" ? var.service_accounts[details.parent_id].identifier : details.parent_id
+  #     }
+  #   )
+  # }
 
   harness_token = merge([
     for name, details in var.harness_platform_apikey : {
@@ -146,12 +146,12 @@ locals {
       {
         name                  = "${k}"
         identifier            = "${lower(replace(k, "/[\\s-.]/", "_"))}_${var.suffix}"
-        org_id                = local.harness_apikey[name].org_id
-        project_id            = local.harness_apikey[name].project_id
-        account_id            = local.harness_apikey[name].account_id
-        parent_id             = local.harness_apikey[name].apikey_type == "SERVICE_ACCOUNT" ? var.service_accounts[details.parent_id].identifier : details.parent_id
-        apikey_type           = local.harness_apikey[name].apikey_type
-        apikey_id             = local.harness_apikey[name].identifier
+        org_id                = try(local.apikey_org_id[name], "") != "" ? local.apikey_org_id[name] : try(details.org_id, var.common_values.org_id)
+        project_id            = try(local.apikey_prj_id[name], "") != "" ? local.apikey_prj_id[name] : try(details.project_id, var.common_values.project_id)
+        parent_id             = details.apikey_type == "SERVICE_ACCOUNT" ? var.service_accounts[details.parent_id].identifier : details.parent_id
+        account_id            = details.account_id
+        apikey_type           = details.apikey_type
+        apikey_id             = "${lower(replace(name, "/[\\s-.]/", "_"))}_${var.suffix}"
         description           = try(details.description, "")
         email                 = try(details.email, "")
         encoded_password      = try(details.encoded_password, "")

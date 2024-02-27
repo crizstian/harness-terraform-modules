@@ -127,16 +127,16 @@ resource "harness_platform_role_assignments" "role_assignments" {
   managed  = each.value.managed
 }
 
-resource "harness_platform_apikey" "apikey" {
-  for_each    = local.harness_apikey
-  name        = each.value.name
-  identifier  = each.value.identifier
-  org_id      = each.value.org_id
-  project_id  = each.value.project_id
-  account_id  = each.value.account_id
-  parent_id   = each.value.parent_id
-  apikey_type = each.value.apikey_type
-}
+# resource "harness_platform_apikey" "apikey" {
+#   for_each    = local.harness_apikey
+#   name        = each.value.name
+#   identifier  = each.value.identifier
+#   org_id      = each.value.org_id
+#   project_id  = each.value.project_id
+#   account_id  = each.value.account_id
+#   parent_id   = each.value.parent_id
+#   apikey_type = each.value.apikey_type
+# }
 
 resource "harness_platform_token" "token" {
   for_each              = local.harness_token
