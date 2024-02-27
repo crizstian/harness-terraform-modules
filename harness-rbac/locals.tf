@@ -114,9 +114,9 @@ locals {
     )
   }
 
-  harness_token = [
+  harness_token = merge([
     for name, details in var.harness_platform_apikey : {
-      for k, v in details.tokens: k => merge(
+      for k, v in try(details.token, {}): k => merge(
       details,
       {
         name                  = "${k}"
@@ -139,5 +139,5 @@ locals {
       }
     )
     }
-  ]
+  ]...)
 }
