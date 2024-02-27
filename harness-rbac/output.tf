@@ -15,7 +15,7 @@ output "resource_groups" {
 }
 output "apikey" {
   value = { for k, v in harness_platform_secret_text.secret : k => {
-    identifier = value.project_id != "" ? value.identifier : value.org_id != "" ? "org.${value.identifier}" : "account.${value.identifier}"
+    identifier = v.project_id != "" ? v.identifier : v.org_id != "" ? "org.${v.identifier}" : "account.${v.identifier}"
     } 
     }
 }
