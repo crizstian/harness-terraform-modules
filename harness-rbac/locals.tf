@@ -110,8 +110,34 @@ locals {
         identifier  = "${lower(replace(name, "/[\\s-.]/", "_"))}_${var.suffix}"
         org_id      = try(local.role_org_id[name], "") != "" ? local.role_org_id[name] : try(details.org_id, var.common_values.org_id)
         project_id  = try(local.role_prj_id[name], "") != "" ? local.role_prj_id[name] : try(details.project_id, var.common_values.project_id)
-        default_time_to_expire_token = try(details.default_time_to_expire_token, 0)
       }
     )
   }
+
+  harness_token = [
+    for name, details in var.harness_platform_apikey : {
+      for k, v in details.token: k => merge(
+      details,
+      {
+        name                  = "${k}"
+        identifier            = "${lower(replace(k, "/[\\s-.]/", "_"))}_${var.suffix}"
+        org_id                = local.harness_apikey[name].org_id
+        project_id            = local.harness_apikey[name].project_id
+        account_id            = local.harness_apikey[name].account_id
+        parent_id             = local.harness_apikey[name].parent_id
+        apikey_type           = local.harness_apikey[name].apikey_type
+        apikey_id             = local.harness_apikey[name].identifier
+        description           = try(details.description, "")
+        email                 = try(details.email, "")
+        encoded_password      = try(details.encoded_password, "")
+        scheduled_expire_time = try(details.scheduled_expire_time, 0)
+        tags                  = try(details.tags, [""])
+        username              = try(details.username, "")
+        valid                 = try(details.valid, true)
+        valid_from            = try(details.valid_from, 0)
+        valid_to              = try(details.valid_to, 0)
+      }
+    )
+    }
+  ]
 }

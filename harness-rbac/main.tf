@@ -82,6 +82,8 @@ resource "harness_platform_resource_group" "resource_group" {
     content {
       filter     = included_scopes.value.filter
       account_id = each.value.account_id
+      org_id     = try(each.value.org_id, "")
+      project_id = try(each.value.project_id, "")
     }
   }
 
@@ -94,7 +96,7 @@ resource "harness_platform_resource_group" "resource_group" {
         content {
           resource_type = resources.value.resource_type
           dynamic "attribute_filter" {
-            for_each = resources.value.attribute_filter
+            for_each = try(resources.value.attribute_filter, {})
             content {
               attribute_name   = attribute_filter.value.attribute_name
               attribute_values = attribute_filter.value.attribute_values
@@ -134,5 +136,25 @@ resource "harness_platform_apikey" "apikey" {
   account_id  = each.value.account_id
   parent_id   = each.value.parent_id
   apikey_type = each.value.apikey_type
-  default_time_to_expire_token = each.value.default_time_to_expire_token
+}
+
+resource "harness_platform_token" "token" {
+  for_each              = local.harness_token
+  name                  = each.value.name
+  identifier            = each.value.identifier
+  org_id                = each.value.org_id
+  project_id            = each.value.project_id
+  account_id            = each.value.account_id
+  parent_id             = each.value.parent_id
+  apikey_type           = each.value.apikey_type
+  apikey_id             = each.value.apikey_id
+  description           = each.value.description
+  email                 = each.value.email
+  encoded_password      = each.value.encoded_password
+  scheduled_expire_time = each.value.scheduled_expire_time
+  tags                  = each.value.tags
+  username              = each.value.username
+  valid                 = each.value.valid
+  valid_from            = each.value.valid_from
+  valid_to              = each.value.valid_to
 }
