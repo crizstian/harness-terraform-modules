@@ -1,3 +1,6 @@
+variable "harness_platform_git_connectors" {
+  default = {}
+}
 variable "harness_platform_github_connectors" {
   default = {}
 }

@@ -14,7 +14,9 @@ ARG STATICCHECK_VERSION=2020.2.1
 RUN apk upgrade --no-cache && \
   apk add --no-cache --progress git build-base findutils make bat exa \
   coreutils wget curl aria2 bash ncurses binutils jq sudo ripgrep g++ \
-  fuse-dev libcap neofetch docker docker-compose openssh py3-pip yq && \
+  vault fuse-dev libcap neofetch docker docker-compose openssh py3-pip yq && \
+  setcap cap_ipc_lock= /usr/sbin/vault && \
+  vault --version && \
   sed -i '/root/s/ash/bash/g' /etc/passwd
 RUN wget -O- -nv https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b /bin -d ${GOLANGCI_LINT_VERSION}
 # Base Go tools needed for VS code Go extension

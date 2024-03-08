@@ -1,3 +1,24 @@
+resource "harness_platform_connector_git" "connector" {
+  for_each           = local.git_connectors
+  identifier         = each.value.identifier
+  name               = each.key
+  description        = each.value.description
+  url                = each.value.url
+  connection_type    = each.value.connection_type
+  validation_repo    = each.value.validation_repo
+  org_id             = each.value.org_id
+  project_id         = each.value.project_id
+  tags               = each.value.tags
+  delegate_selectors = each.value.delegate_selectors
+
+  credentials {
+    http {
+      username     = each.value.credentials.http.username
+      password_ref = each.value.credentials.http.token_ref_id
+    }
+  }
+}
+
 resource "harness_platform_connector_gitlab" "connector" {
   for_each           = local.gitlab_connectors
   identifier         = each.value.identifier
@@ -85,26 +106,26 @@ resource "harness_platform_connector_nexus" "connector" {
   }
 }
 
-# resource "harness_platform_connector_service_now" "connector" {
-#   for_each           = local.service_now_connectors
-#   identifier         = each.value.identifier
-#   name               = each.key
-#   description        = each.value.description
-#   org_id             = each.value.org_id
-#   project_id         = each.value.project_id
-#   tags               = each.value.tags
-#   delegate_selectors = each.value.delegate_selectors
-#   service_now_url    = each.value.service_now_url
+resource "harness_platform_connector_service_now" "connector" {
+  for_each           = local.service_now_connectors
+  identifier         = each.value.identifier
+  name               = each.key
+  description        = each.value.description
+  org_id             = each.value.org_id
+  project_id         = each.value.project_id
+  tags               = each.value.tags
+  delegate_selectors = each.value.delegate_selectors
+  service_now_url    = each.value.service_now_url
 
-#   auth {
-#     auth_type = each.value.auth.credentials.auth_type
+  auth {
+    auth_type = each.value.auth.credentials.auth_type
 
-#     username_password {
-#       username     = each.value.auth.credentials.username
-#       password_ref = each.value.auth.credentials.password_ref
-#     }
-#   }
-# }
+    username_password {
+      username     = each.value.auth.credentials.username
+      password_ref = each.value.auth.credentials.password_ref
+    }
+  }
+}
 
 resource "harness_platform_connector_dynatrace" "connector" {
   for_each           = local.dynatrace_connectors

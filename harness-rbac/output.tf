@@ -14,8 +14,5 @@ output "resource_groups" {
   value = { for k, v in harness_platform_resource_group.resource_group : k => {identifier = v.identifier} }
 }
 output "apikey" {
-  value = { for k, v in harness_platform_secret_text.secret : k => {
-    identifier = v.project_id != "" ? v.identifier : v.org_id != "" ? "org.${v.identifier}" : "account.${v.identifier}"
-    } 
-    }
+  value = { for k, v in harness_platform_apikey.apikey : k => {identifier = v.identifier} }
 }

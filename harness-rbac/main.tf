@@ -75,6 +75,8 @@ resource "harness_platform_resource_group" "resource_group" {
   identifier  = each.value.identifier
   tags        = each.value.tags
   account_id  = each.value.account_id
+  org_id      = each.value.org_id
+  project_id  = each.value.project_id
   allowed_scope_levels = each.value.allowed_scope_levels
 
   dynamic "included_scopes" {
@@ -127,16 +129,16 @@ resource "harness_platform_role_assignments" "role_assignments" {
   managed  = each.value.managed
 }
 
-# resource "harness_platform_apikey" "apikey" {
-#   for_each    = local.harness_apikey
-#   name        = each.value.name
-#   identifier  = each.value.identifier
-#   org_id      = each.value.org_id
-#   project_id  = each.value.project_id
-#   account_id  = each.value.account_id
-#   parent_id   = each.value.parent_id
-#   apikey_type = each.value.apikey_type
-# }
+resource "harness_platform_apikey" "apikey" {
+  for_each    = local.harness_apikey
+  name        = each.value.name
+  identifier  = each.value.identifier
+  org_id      = each.value.org_id
+  project_id  = each.value.project_id
+  account_id  = each.value.account_id
+  parent_id   = each.value.parent_id
+  apikey_type = each.value.apikey_type
+}
 
 resource "harness_platform_token" "token" {
   for_each              = local.harness_token
@@ -157,16 +159,4 @@ resource "harness_platform_token" "token" {
   valid                 = each.value.valid
   valid_from            = each.value.valid_from
   valid_to              = each.value.valid_to
-}
-
-resource "harness_platform_secret_text" "secret" {
-  for_each                  = harness_platform_token.token
-  identifier                = each.value.identifier
-  name                      = each.value.name
-  description               = each.value.description
-  secret_manager_identifier = "harnessSecretManager"
-  value_type                = "Inline"
-  value                     = each.value.value
-  org_id                    = each.value.org_id
-  project_id                = each.value.project_id
 }
