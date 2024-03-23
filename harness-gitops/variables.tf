@@ -7,6 +7,9 @@ variable "harness_platform_gitops_cluster" {
 variable "harness_platform_gitops_applications" {
   default = {}
 }
+variable "harness_platform_gitops_repository" {
+  default = {}
+}
 variable "suffix" {}
 variable "org_id" {
   default = ""

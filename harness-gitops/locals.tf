@@ -33,4 +33,15 @@ locals {
         project_id    = try(local.gitops_prj_id[app], "") != "" ? local.gitops_prj_id[app] : try(details.project_id, var.common_values.project_id)
       }
   ) } if details.enable }
+
+  gitops_repo = { for app, details in var.harness_platform_gitops_repository : app => {
+    vars = merge(
+      details,
+      {
+        identifier    = "${lower(replace(app, "/[\\s-.]/", "_"))}_${var.suffix}"
+        tags          = concat([], var.tags)
+        org_id        = try(local.gitops_org_id[app], "") != "" ? local.gitops_org_id[app] : try(details.org_id, var.common_values.org_id)
+        project_id    = try(local.gitops_prj_id[app], "") != "" ? local.gitops_prj_id[app] : try(details.project_id, var.common_values.project_id)
+      }
+  ) } if details.enable }
 }

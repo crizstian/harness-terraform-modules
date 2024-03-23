@@ -40,6 +40,27 @@ resource "harness_platform_gitops_cluster" "cluster" {
   }
 }
 
+resource "harness_platform_gitops_repository" "repo" {
+  for_each = local.gitops_repo
+  identifier = each.value.identifier
+  account_id = each.value.account_id
+  org_id     = each.value.org_id
+  project_id = each.value.project_id
+  agent_id   = each.value.agent_id
+  upsert = each.value.repo.upsert
+  
+  repo {
+    repo            = each.value.repo.repo
+    name            = each.value.repo.name
+    insecure        = each.value.repo.insecure
+    username        = each.value.repo.username
+    password        = each.value.repo.password
+    connection_type = each.value.repo.connection_type
+    type_           = each.value.repo.type_
+    enable_oci      = each.value.repo.enable_oci
+  }
+}
+
 resource "harness_platform_gitops_applications" "app" {
   for_each = local.gitops_applications
   identifier = each.value.identifier

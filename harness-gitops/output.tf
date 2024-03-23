@@ -13,6 +13,13 @@ output "cluster" {
       }
   }
 }
+output "repo" {
+  value = { for key, details in harness_platform_gitops_repository.cluster : key =>
+      {
+        identifier = details.identifier
+      }
+  }
+}
 output "app" {
   value = { for key, details in harness_platform_gitops_applications.app : key =>
       {
