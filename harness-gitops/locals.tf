@@ -12,8 +12,7 @@ locals {
       }
   ) if details.enable }
 
-  gitops_cluster = { for app, details in var.harness_platform_gitops_cluster : app => {
-    vars = merge(
+  gitops_cluster = { for app, details in var.harness_platform_gitops_cluster : app => merge(
       details,
       {
         identifier    = "${lower(replace(app, "/[\\s-.]/", "_"))}_${var.suffix}"
@@ -22,7 +21,7 @@ locals {
         project_id    = try(local.gitops_prj_id[app], "") != "" ? local.gitops_prj_id[app] : try(details.project_id, var.common_values.project_id)
         agent_id      = try(harness_platform_gitops_agent.agent[details.agent].id, details.agent_id)
       }
-  ) } if details.enable }
+  ) if details.enable }
 
   gitops_applications = { for app, details in var.harness_platform_gitops_applications : app => {
     vars = merge(
