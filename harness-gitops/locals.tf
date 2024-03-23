@@ -1,6 +1,6 @@
 locals {
   gitops_org_id = merge([for gitops, values in var.harness_platform_gitops_applications : { for org, details in var.organizations : gitops => details.identifier if lower(org) == lower(try(values.organization, "")) }]...)
-  gitops_prj_id = merge([for gitops, values in var.harness_platform_gitops_applications : { for prj, details in var.projects : connector => details.identifier if lower(prj) == lower(try(values.project, "")) }]...)
+  gitops_prj_id = merge([for gitops, values in var.harness_platform_gitops_applications : { for prj, details in var.projects : gitops => details.identifier if lower(prj) == lower(try(values.project, "")) }]...)
 
   gitops_agents = { for app, details in var.harness_platform_gitops_agent : svc => {
     vars = merge(
