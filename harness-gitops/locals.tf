@@ -20,7 +20,7 @@ locals {
         tags          = concat([], var.tags)
         org_id        = try(local.gitops_org_id[app], "") != "" ? local.gitops_org_id[app] : try(details.org_id, var.common_values.org_id)
         project_id    = try(local.gitops_prj_id[app], "") != "" ? local.gitops_prj_id[app] : try(details.project_id, var.common_values.project_id)
-        agent_id   = try(harness_platform_gitops_agent.cluster[details.agent].agent_id, details.agent_id)
+        agent_id   = try(harness_platform_gitops_agent.agent[details.agent].agent_id, details.agent_id)
       }
   ) } if details.enable }
 
