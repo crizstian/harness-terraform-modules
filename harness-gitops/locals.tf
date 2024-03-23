@@ -4,6 +4,7 @@ locals {
 
   gitops_agents = { for app, details in var.harness_platform_gitops_agent : app => {
     vars = merge(
+      details,
       {
         identifier    = "${lower(replace(app, "/[\\s-.]/", "_"))}_${var.suffix}"
         tags          = concat([], var.tags)
@@ -14,6 +15,7 @@ locals {
 
   gitops_cluster = { for app, details in var.harness_platform_gitops_cluster : app => {
     vars = merge(
+      details,
       {
         identifier    = "${lower(replace(app, "/[\\s-.]/", "_"))}_${var.suffix}"
         tags          = concat([], var.tags)
@@ -24,6 +26,7 @@ locals {
 
   gitops_applications = { for app, details in var.harness_platform_gitops_applications : app => {
     vars = merge(
+      details,
       {
         identifier    = "${lower(replace(app, "/[\\s-.]/", "_"))}_${var.suffix}"
         tags          = concat([], var.tags)
