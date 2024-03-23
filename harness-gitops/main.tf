@@ -24,7 +24,7 @@ resource "harness_platform_gitops_cluster" "cluster" {
     upsert = each.value.upsert
     cluster {
       server = each.value.server
-      name   = each.value.name
+      name   = each.key
       config {
         tls_client_config {
           insecure = each.value.insecure
