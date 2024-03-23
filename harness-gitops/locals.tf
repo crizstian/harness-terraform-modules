@@ -7,8 +7,8 @@ locals {
       {
         identifier    = "${lower(replace(app, "/[\\s-.]/", "_"))}_${var.suffix}"
         tags          = concat([], var.tags)
-        org_id        = try(local.gitops_org_id[svc], "") != "" ? local.gitops_org_id[svc] : try(details.org_id, var.common_values.org_id)
-        project_id    = try(local.gitops_prj_id[svc], "") != "" ? local.gitops_prj_id[svc] : try(details.project_id, var.common_values.project_id)
+        org_id        = try(local.gitops_org_id[app], "") != "" ? local.gitops_org_id[app] : try(details.org_id, var.common_values.org_id)
+        project_id    = try(local.gitops_prj_id[app], "") != "" ? local.gitops_prj_id[app] : try(details.project_id, var.common_values.project_id)
       }
   ) } if details.enable }
 
@@ -17,8 +17,8 @@ locals {
       {
         identifier    = "${lower(replace(app, "/[\\s-.]/", "_"))}_${var.suffix}"
         tags          = concat([], var.tags)
-        org_id        = try(local.gitops_org_id[svc], "") != "" ? local.gitops_org_id[svc] : try(details.org_id, var.common_values.org_id)
-        project_id    = try(local.gitops_prj_id[svc], "") != "" ? local.gitops_prj_id[svc] : try(details.project_id, var.common_values.project_id)
+        org_id        = try(local.gitops_org_id[app], "") != "" ? local.gitops_org_id[app] : try(details.org_id, var.common_values.org_id)
+        project_id    = try(local.gitops_prj_id[app], "") != "" ? local.gitops_prj_id[app] : try(details.project_id, var.common_values.project_id)
       }
   ) } if details.enable }
 
@@ -27,8 +27,8 @@ locals {
       {
         identifier    = "${lower(replace(app, "/[\\s-.]/", "_"))}_${var.suffix}"
         tags          = concat([], var.tags)
-        org_id        = try(local.gitops_org_id[svc], "") != "" ? local.gitops_org_id[svc] : try(details.org_id, var.common_values.org_id)
-        project_id    = try(local.gitops_prj_id[svc], "") != "" ? local.gitops_prj_id[svc] : try(details.project_id, var.common_values.project_id)
+        org_id        = try(local.gitops_org_id[app], "") != "" ? local.gitops_org_id[app] : try(details.org_id, var.common_values.org_id)
+        project_id    = try(local.gitops_prj_id[app], "") != "" ? local.gitops_prj_id[app] : try(details.project_id, var.common_values.project_id)
       }
   ) } if details.enable }
 }
