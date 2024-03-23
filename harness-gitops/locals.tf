@@ -2,7 +2,7 @@ locals {
   gitops_org_id = merge([for gitops, values in var.harness_platform_gitops_applications : { for org, details in var.organizations : gitops => details.identifier if lower(org) == lower(try(values.organization, "")) }]...)
   gitops_prj_id = merge([for gitops, values in var.harness_platform_gitops_applications : { for prj, details in var.projects : gitops => details.identifier if lower(prj) == lower(try(values.project, "")) }]...)
 
-  gitops_agents = { for app, details in var.harness_platform_gitops_agent : svc => {
+  gitops_agents = { for app, details in var.harness_platform_gitops_agent : app => {
     vars = merge(
       {
         identifier    = "${lower(replace(app, "/[\\s-.]/", "_"))}_${var.suffix}"
@@ -12,7 +12,7 @@ locals {
       }
   ) } if details.enable }
 
-  gitops_cluster = { for app, details in var.harness_platform_gitops_cluster : svc => {
+  gitops_cluster = { for app, details in var.harness_platform_gitops_cluster : app => {
     vars = merge(
       {
         identifier    = "${lower(replace(app, "/[\\s-.]/", "_"))}_${var.suffix}"
@@ -22,7 +22,7 @@ locals {
       }
   ) } if details.enable }
 
-  gitops_applications = { for app, details in var.harness_platform_gitops_applications : svc => {
+  gitops_applications = { for app, details in var.harness_platform_gitops_applications : app => {
     vars = merge(
       {
         identifier    = "${lower(replace(app, "/[\\s-.]/", "_"))}_${var.suffix}"
